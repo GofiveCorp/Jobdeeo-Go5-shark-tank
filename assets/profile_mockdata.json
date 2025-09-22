@@ -1,0 +1,25 @@
+{
+"name": "วินิตรา แสงสร้อย",
+"role": "Mobile Developer",
+"experience": "2 yrs experience",
+"location": "Bangkok",
+"email": "Winittra.works@gmail.com",
+"profileStrength": 80,
+"appliedJobs": 1,
+"aiSuggestion": {
+"match": 85,
+"improvements": [
+"Improve your resume",
+"Add more skills"
+]
+},
+"skills": [
+{ "name": "Swift", "level": "สูง" },
+{ "name": "Kotlin", "level": "กลาง" },
+{ "name": "Firebase", "level": "เบื้องต้น" }
+],
+"resume": {
+"fileName": "Portfolio.pdf",
+"date": "05/04/2023"
+}
+}
