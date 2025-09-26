@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:jobdeeo/src/core/base/image_resource.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,79 +13,108 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView( // เผื่อ scroll ได้
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          // เผื่อ scroll ได้
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 🔹 Profile Header
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFB2EBF2), Color(0xFFE1F5FE)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    // Avatar + Name
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 36,
-                          backgroundColor: Colors.grey,
-                          // backgroundImage: AssetImage("assets/avatar.png"),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: SizedBox(
+                        width: double.infinity, // ✅ บังคับให้กินเต็มจอ
+                        child: SvgPicture.asset(
+                          ImageResource.icProfileHeader,
+                          fit: BoxFit.cover, // ✅ ยืดให้เต็มกว้าง
                         ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text("วินิตรา แสงสร้อย", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                            Text("Mobile Developer, 2 yrs experience", style: TextStyle(color: Colors.teal)),
-                            Text("Bangkok"),
-                            Text("Winittra.works@gmail.com"),
-                          ],
-                        )
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 12),
+                    Align(
+                      alignment: Alignment.topCenter,
 
-                    // Profile Strength + Jobs
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text("80% Profile Strength"),
-                                  Text("Update profile", style: TextStyle(color: Colors.teal)),
-                                ],
-                              ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Avatar + Name
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 36,
+                                  backgroundColor: Colors.grey[300],
+                                  backgroundImage: NetworkImage(
+                                    "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=2560&h=1440&crop=1",
+                                  ),
+                                ),
+
+                                const SizedBox(width: 12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      "วินิตรา แสงสร้อย",
+                                      style: fontTitleStrong,
+                                    ),
+                                    Text(
+                                      "Mobile Developer, 2 yrs experience",
+                                      style: fontTitleStrong,
+                                    ),
+                                    Text("Bangkok"),
+                                    Text("Winittra.works@gmail.com"),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 12),
+
+                            // Profile Strength + Jobs
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: const [
+                                          Text("80% Profile Strength"),
+                                          Text(
+                                            "Update profile",
+                                            style: TextStyle(
+                                              color: Colors.teal,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        children: const [
+                                          Text("1"),
+                                          Text("งานที่สมัคร"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                children: const [
-                                  Text("1"),
-                                  Text("งานที่สมัคร"),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
+                      ),
                     ),
                   ],
                 ),
@@ -104,15 +136,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text("✨ AI Suggestion", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text(
+                      "✨ AI Suggestion",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(height: 8),
-                    Text("You have 85% Matches with Mobile Developer",
-                        style: TextStyle(color: Colors.white)),
+                    Text(
+                      "You have 85% Matches with Mobile Developer",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     SizedBox(height: 8),
-                    Text("To get 100%, Try to", style: TextStyle(color: Colors.white70)),
+                    Text(
+                      "To get 100%, Try to",
+                      style: TextStyle(color: Colors.white70),
+                    ),
                     SizedBox(height: 8),
-                    Text("1. Improve your resume", style: TextStyle(color: Colors.white)),
-                    Text("2. Add more skills", style: TextStyle(color: Colors.white)),
+                    Text(
+                      "1. Improve your resume",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      "2. Add more skills",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -124,7 +173,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: const [
-                    Text("Skill", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
+                    Text(
+                      "Skill",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                      ),
+                    ),
                     SizedBox(width: 16),
                     Text("Resume"),
                     SizedBox(width: 16),
@@ -147,7 +202,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Chip(label: Text("Swift สูง")),
                     Chip(label: Text("Kotlin กลาง")),
                     Chip(label: Text("Firebase เบื้องต้น")),
-                    Chip(label: Text("+ Flutter กลาง"), backgroundColor: Colors.pink.shade100),
+                    Chip(
+                      label: Text("+ Flutter กลาง"),
+                      backgroundColor: Colors.pink.shade100,
+                    ),
                   ],
                 ),
               ),
@@ -159,7 +217,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Card(
                   child: ListTile(
-                    leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                    leading: const Icon(
+                      Icons.picture_as_pdf,
+                      color: Colors.red,
+                    ),
                     title: const Text("Portfolio.pdf"),
                     subtitle: const Text("05/04/2023"),
                     trailing: const Text("Default"),
@@ -171,7 +232,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
-
       ),
     );
   }

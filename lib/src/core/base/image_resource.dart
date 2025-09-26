@@ -15,5 +15,7 @@ class ImageResource {
   static const String profileSelected = 'assets/common/ic_profile.svg';
   static const String swipeSelected = 'assets/common/ic_swipe.svg';
 
+  static const String icProfileHeader = 'assets/common/ic_profile_header.svg';
+
 
 }

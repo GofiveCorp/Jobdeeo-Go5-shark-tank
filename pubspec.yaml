@@ -55,6 +55,19 @@ flutter:
   assets:
     - assets/profile_mockdata.json
     - assets/common/
+  fonts:
+    - family: gofive_bold
+      fonts:
+        - asset: assets/fonts/gofive_bold.ttf
+    - family: gofive_semi_bold
+      fonts:
+        - asset: assets/fonts/gofive_semi_bold.ttf
+    - family: gofive_medium
+      fonts:
+        - asset: assets/fonts/gofive_medium.ttf
+    - family: gofive_text
+      fonts:
+        - asset: assets/fonts/gofive_text.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
