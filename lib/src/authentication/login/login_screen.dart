@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/features/questionnaire/screen/questionaire_screen.dart';
 
 import '../../config/app_routes.dart';
 
@@ -31,7 +32,12 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // TODO: แทนที่ด้วย logic login จริง
-                Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuestionnaireScreen(),
+                  ),
+                );
               },
               child: const Text("Login"),
             )

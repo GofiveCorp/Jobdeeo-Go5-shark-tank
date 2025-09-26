@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/features/job_board/screen/job_board_screen.dart';
+import 'package:jobdeeo/src/features/questionnaire/screen/questionaire_screen.dart';
 import '../features/community/community_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/learn/learn_scren.dart';
@@ -16,8 +18,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
-    HomeScreen(),
-    CommunityScreen(),
+    JobBoardScreen(),
+    QuestionnaireScreen(),
     MatchingScreen(),
     LearnScreen(),
     ProfileScreen(),

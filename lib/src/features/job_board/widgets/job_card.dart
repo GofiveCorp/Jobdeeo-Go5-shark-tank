@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../utils/time_utils.dart';
+import '../../../../utils/time_utils.dart';
 import '../models/job_model.dart';
 
 class JobCard extends StatelessWidget {

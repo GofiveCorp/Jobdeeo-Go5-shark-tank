@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jobdeeo/src/features/job_board/screen/search_screen.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
-import '../widgets/search_bar_widget.dart';
 import '../widgets/job_card.dart';
+import '../widgets/search_bar_widget.dart';
 import 'job_detail_screen.dart';
-import 'search_screen.dart';
 
 class JobListScreen extends StatefulWidget {
   const JobListScreen({super.key});

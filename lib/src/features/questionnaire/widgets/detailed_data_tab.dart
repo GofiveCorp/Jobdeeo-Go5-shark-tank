@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jobdeeo/feature/questionnaire/widgets/questionaire_components.dart';
+import 'package:jobdeeo/src/features/questionnaire/widgets/questionaire_components.dart';
 
 import '../bloc/questionnaire_bloc.dart';
 import '../bloc/questionnaire_event.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jobdeeo/feature/questionnaire/bloc/questionnaire_event.dart';
-import 'package:jobdeeo/feature/questionnaire/bloc/questionnaire_state.dart';
+import 'package:jobdeeo/src/features/questionnaire/bloc/questionnaire_event.dart';
+import 'package:jobdeeo/src/features/questionnaire/bloc/questionnaire_state.dart';
 
 import '../models/questionnaire_models.dart';
 

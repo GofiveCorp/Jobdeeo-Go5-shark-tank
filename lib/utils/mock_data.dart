@@ -1,5 +1,7 @@
-import '../feature/job_board/models/company_model.dart';
-import '../feature/job_board/models/job_model.dart';
+
+
+import '../src/features/job_board/models/company_model.dart';
+import '../src/features/job_board/models/job_model.dart';
 
 class MockData {
   static List<JobModel> getRecommendedJobs() {

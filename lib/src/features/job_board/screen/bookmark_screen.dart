@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'job_detail_screen.dart';
+
 import '../widgets/job_section/job_tab_content.dart';
+import 'job_detail_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
   const BookmarkScreen({super.key});

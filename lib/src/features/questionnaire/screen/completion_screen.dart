@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jobdeeo/feature/job_board/screen/job_board_screen.dart';
 
+import '../../../config/app_routes.dart';
+import '../../job_board/screen/job_board_screen.dart';
 import '../models/questionnaire_models.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -46,12 +47,7 @@ class CompletionScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (context) => const JobBoardScreen(),
-                    ),
-                  );
+                  Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF24CAB1),

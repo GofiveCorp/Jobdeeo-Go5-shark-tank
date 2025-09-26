@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../models/company_model.dart';
 
 abstract class CompanyState extends Equatable {

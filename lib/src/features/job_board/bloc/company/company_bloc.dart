@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../utils/mock_data.dart';
+import '../../../../../utils/mock_data.dart';
 import 'company_event.dart';
 import 'company_state.dart';
 

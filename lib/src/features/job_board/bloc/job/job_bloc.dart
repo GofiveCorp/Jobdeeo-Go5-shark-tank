@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../utils/mock_data.dart';
+import '../../../../../utils/mock_data.dart';
 import '../../models/job_model.dart';
 import 'job_event.dart';
 import 'job_state.dart';

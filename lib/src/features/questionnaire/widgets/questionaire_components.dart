@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 class MainSectionHeader extends StatelessWidget {
   final String title;
@@ -8,13 +9,13 @@ class MainSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
         style: const TextStyle(
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: Colors.black87,
+          color: ColorResources.colorIron,
         ),
       ),
     );
@@ -29,12 +30,12 @@ class SubSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 16,
-          color: Color(0xFF838395),
+          fontSize: 14,
+          color: ColorResources.colorPorpoise,
         ),
       ),
     );
@@ -63,7 +64,7 @@ class CustomTextField extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Color(0xFF838395)),
+            border: Border.all(color: ColorResources.colorSilver),
             borderRadius: BorderRadius.circular(6),
           ),
           child: TextFormField(
@@ -71,15 +72,17 @@ class CustomTextField extends StatelessWidget {
             onChanged: onChanged,
             style: const TextStyle(
               fontSize: 14,
-              color: Color(0xFF1c1c22),
+              color: ColorResources.colorSilver,
             ),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: const TextStyle(
-                color: Color(0xFFD2D2DA), // Updated hint text color
-                fontSize: 14, // Updated hint text size
+                color: ColorResources.colorCharcoal,
+                fontSize: 14,
               ),
-              border: InputBorder.none,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: ColorResources.primaryColor),
+              ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             ),
           ),
@@ -129,31 +132,31 @@ class MultiSelectChip extends StatelessWidget {
         return GestureDetector(
           onTap: () => onSelectionChanged(option),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: isSelected ? Color(0xFF24CAB1) : Colors.transparent,
+              color: isSelected ? ColorResources.ghostWhiteColor : Colors.transparent,
               border: Border.all(
-                color: isSelected ? Color(0xFF24CAB1) : Color(0xFF838395),
+                color: isSelected ? ColorResources.primaryColor : ColorResources.colorSmoke,
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(100),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isSelected)
-                  const Padding(
-                    padding: EdgeInsets.only(right: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
                     child: Icon(
-                      Icons.check,
-                      color: Colors.white,
+                      Icons.check_circle_rounded,
+                      color: ColorResources.primaryColor,
                       size: 16,
                     ),
                   ),
                 Text(
                   option,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+                    color: isSelected ? ColorResources.primaryColor : ColorResources.colorAnchor,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ],
