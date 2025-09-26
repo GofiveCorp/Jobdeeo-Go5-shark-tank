@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/features/job_board/screen/job_board_screen.dart';
 import 'package:jobdeeo/src/features/questionnaire/screen/questionaire_screen.dart';
+import 'package:jobdeeo/src/core/base/image_resource.dart';
 import '../features/community/community_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/learn/learn_scren.dart';
 import '../features/matching/matching_screen.dart';
 import '../features/profile/profile_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -25,39 +27,87 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ProfileScreen(),
   ];
 
-  final List<String> _titles = const [
-    "Home",
-    "Community",
-    "Matching",
-    "Learn",
-    "Profile",
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        iconSize: 28,
-        selectedItemColor: Colors.purple,   // สีตอนเลือก
-        unselectedItemColor: Colors.grey,   // สีตอนยังไม่เลือก
-        onTap: (index) {
-          setState(() => _currentIndex = index);
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.saved_search), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
+      bottomNavigationBar:
+      BottomNavigationBar(
+  currentIndex: _currentIndex,
+  type: BottomNavigationBarType.fixed,
+  showSelectedLabels: false,
+  showUnselectedLabels: false,
+  onTap: (index) {
+    setState(() => _currentIndex = index);
+  },
+  items: [
+    BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        ImageResource.homeUnselected,
+        width: 28,
+        height: 28,
       ),
-
-
+      activeIcon: SvgPicture.asset(
+        ImageResource.homeSelected,
+        width: 28,
+        height: 28,
+      ),
+      label: '',
+    ),
+    BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        ImageResource.newFeedUnselected,
+        width: 28,
+        height: 28,
+      ),
+      activeIcon: SvgPicture.asset(
+        ImageResource.newFeedSelected,
+        width: 28,
+        height: 28,
+      ),
+      label: '',
+    ),
+    BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        ImageResource.swipeUnselected,
+        width: 28,
+        height: 28,
+      ),
+      activeIcon: SvgPicture.asset(
+        ImageResource.swipeSelected,
+        width: 28,
+        height: 28,
+      ),
+      label: '',
+    ),
+    BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        ImageResource.learnUnselected,
+        width: 28,
+        height: 28,
+      ),
+      activeIcon: SvgPicture.asset(
+        ImageResource.learnSelected,
+        width: 28,
+        height: 28,
+      ),
+      label: '',
+    ),
+    BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        ImageResource.profileUnselected,
+        width: 28,
+        height: 28,
+      ),
+      activeIcon: SvgPicture.asset(
+        ImageResource.profileSelected,
+        width: 28,
+        height: 28,
+      ),
+      label: '',
+    ),
+  ],
+)
 
     );
   }
