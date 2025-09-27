@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 import '../models/company_model.dart';
 
 class CompanyCard extends StatelessWidget {
@@ -16,17 +18,16 @@ class CompanyCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 280,
+        width: 200,
         margin: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 2),
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 0),
             ),
           ],
         ),
@@ -35,12 +36,12 @@ class CompanyCard extends StatelessWidget {
           children: [
             // Company Image
             Container(
-              height: 120,
+              height: 100,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
                 ),
                 gradient: LinearGradient(
                   colors: [
@@ -51,74 +52,32 @@ class CompanyCard extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: const Center(
-                child: Icon(
-                  Icons.business,
-                  color: Colors.white,
-                  size: 40,
-                ),
+              child: Image.asset(company.image, fit: BoxFit.cover)
               ),
-            ),
+
 
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      // Company Logo
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: company.name == 'บริษัท โซว์ไรจ์นิล จำกัด'
-                              ? Colors.blue[600]
-                              : Colors.orange,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: company.name == 'บริษัท โซว์ไรจ์นิล จำกัด'
-                              ? const Text(
-                            'bt',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          )
-                              : const Icon(
-                            Icons.business,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           company.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                          maxLines: 2,
+                          style: fontSmallBold.copyWith(color: ColorResources.textColor),
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
 
                   Text(
                     company.description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      height: 1.4,
-                    ),
-                    maxLines: 3,
+                    style: fontExtraSmall.copyWith(color: ColorResources.colorGray),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],

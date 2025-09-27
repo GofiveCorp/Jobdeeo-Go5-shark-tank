@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 import '../../models/job_model.dart';
 import 'job_header_widget.dart';
 
-// Overview Tab - ย้าย job details มาที่นี่
 class OverviewTab extends StatelessWidget {
   final JobModel job;
 
@@ -13,27 +14,33 @@ class OverviewTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Job Details ที่ย้ายมาจาก header
-          JobOverviewDetails(job: job),
-          const SizedBox(height: 24),
-
-          TabSectionHeader(
-            icon: Icons.work,
-            title: 'ภาพรวมของตำแหน่งงาน',
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'As a Systems Analyst, you will be responsible for analyzing, designing, and implementing computer systems to meet the needs of our organization. You can work individually on a project or collaborate with a team of other systems analysts on multiple projects.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              height: 1.6,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Column(
+          spacing: 16,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            JobOverviewDetails(job: job),
+            const Divider(color: ColorResources.colorCloud, thickness: 1),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                TabSectionHeader(
+                  icon: Icons.work,
+                  title: 'ภาพรวมของตำแหน่งงาน',
+                ),
+                Text(
+                  'As a Systems Analyst, you will be responsible for analyzing, designing, and implementing computer systems to meet the needs of our organization. You can work individually on a project or collaborate with a team of other systems analysts on multiple projects.',
+                  style: fontBody.copyWith(color: ColorResources.colorLead)
+                ),
+              ],
             ),
-          ),
-        ],
+
+          ],
+        ),
       ),
     );
   }
@@ -48,13 +55,13 @@ class ResponsibilitiesTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 4,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TabSectionHeader(
             icon: Icons.list,
             title: 'หน้าที่และความรับผิดชอบ',
           ),
-          const SizedBox(height: 16),
           BulletPointList(
             points: [
               'Serve as the primary point of contact for new clients, guiding them through the onboarding process and ensuring a seamless transition onto our platform.',
@@ -112,9 +119,11 @@ class LifestyleTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 8,
         children: [
           // Row 1
           Row(
+            spacing: 8,
             children: [
               Expanded(
                 child: VideoCard(
@@ -125,7 +134,6 @@ class LifestyleTab extends StatelessWidget {
                   isVideoPost: true,
                 ),
               ),
-              const SizedBox(width: 12),
               Expanded(
                 child: VideoCard(
                   title: 'แจกการ์ด! สัมภาษณ์งาน',
@@ -137,8 +145,6 @@ class LifestyleTab extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          // Row 2
           Row(
             children: [
               Expanded(
@@ -169,31 +175,26 @@ class ContactTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'At Gofive, we share a passion for driving digital transformation for businesses of all sizes. We pay attention to every detail and are committed to delivering an exceptional software experience to our users.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-              height: 1.6,
-            ),
+            style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
-          const SizedBox(height: 24),
-          TabSectionHeader(
-            icon: Icons.location_city,
-            title: 'การติดต่อ',
+          Column(
+            spacing: 4,
+            children: [
+              TabSectionHeader(
+                icon: Icons.location_city,
+                title: 'การติดต่อ',
+              ),
+              Text(
+                'สาขาพระราม 2  |  สาขา FYI Center (พระรามที่ 4)',
+                style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
+                ),
+            ],
           ),
-          const SizedBox(height: 12),
-          const Text(
-            'สาขาพระราม 2  |  สาขา FYI Center (พระรามที่ 4)',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.teal,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 16),
           CompanyLocationMap(),
         ],
       ),
@@ -221,172 +222,119 @@ class VideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 168, // Adjusted to match your design specification
+      height: 240, // Fixed height as requested
+      margin: const EdgeInsets.only(right: 8), // Spacing between cards
+      padding: const EdgeInsets.only(top: 4, right: 4, left: 4, bottom: 8),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Video Thumbnail
-          Container(
-            height: 160,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                color: Colors.grey[200],
               ),
-              color: Colors.white,
-            ),
-            child: Stack(
-              children: [
-                // Background image placeholder
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                child: Stack(
+                  children: [
+                    // Background image
+                    Image.asset(
+                      'assets/mock/video_image_mock.png',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
                     ),
-                    color: Colors.grey[100],
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.video_library,
-                      size: 40,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
 
-                // Duration badge (for video posts)
-                if (isVideoPost && duration.isNotEmpty)
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                            size: 14,
+                    // Duration badge (for video posts)
+                    if (isVideoPost && duration.isNotEmpty)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(4),
                           ),
-                          const SizedBox(width: 2),
-                          Text(
-                            duration,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                duration,
+                                style: fontExtraTinyStrong.copyWith(color: Colors.white),
+                              ),
+                              const SizedBox(width: 2),
+                              const Icon(
+                                Icons.play_arrow_rounded,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                // Interview warmup badge
-                if (title.contains('AI ช่วยเตรียมตัว'))
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Text(
-                        'interview warmup',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                  ),
-              ],
+                  ],
+                ),
+              ),
             ),
           ),
 
           // Card Content
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
+                  style: fontSmallStrong.copyWith(color: ColorResources.textColor),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
+                      width: 16,
+                      height: 16,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
                         color: Colors.orange,
-                        borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Icon(
-                        Icons.business,
-                        color: Colors.white,
-                        size: 12,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/mock/company_logo_mock.png',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         company,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: fontExtraTiny.copyWith(color: ColorResources.text2Color),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 4), // Spacing before like section
                     Icon(
-                      Icons.favorite_border,
-                      size: 16,
-                      color: Colors.grey[500],
+                      Icons.favorite_border_rounded,
+                      size: 12,
+                      color: ColorResources.text2Color,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 2),
                     Text(
                       likes,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[500],
-                      ),
+                      style: fontExtraTiny.copyWith(color: ColorResources.text2Color),
                     ),
                   ],
                 ),
@@ -416,17 +364,13 @@ class TabSectionHeader extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: Colors.teal,
+          color: ColorResources.primaryColor,
           size: 20,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+          style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal)
         ),
       ],
     );
@@ -460,27 +404,23 @@ class BulletPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 6,
-            height: 6,
-            margin: const EdgeInsets.only(top: 6, right: 12),
+            width: 4,
+            height: 4,
+            margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
             decoration: const BoxDecoration(
-              color: Colors.teal,
+              color: ColorResources.colorLead,
               shape: BoxShape.circle,
             ),
           ),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.5,
-              ),
+              style: fontBody.copyWith(color: ColorResources.colorLead)
             ),
           ),
         ],
@@ -495,32 +435,13 @@ class CompanyLocationMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 173,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(6),
       ),
-      child: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.map,
-              size: 40,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 8),
-            Text(
-              'แผนที่ตำแหน่งบริษัท',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: Image.asset('assets/mock/map_mock.png', fit: BoxFit.cover)
     );
   }
 }

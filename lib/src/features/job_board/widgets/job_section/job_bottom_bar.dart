@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 class JobBottomBar extends StatelessWidget {
   final bool isBookmarked;
@@ -16,33 +18,35 @@ class JobBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            BookmarkButton(
-              isBookmarked: isBookmarked,
-              onPressed: onBookmarkPressed,
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, -2),
             ),
-            const SizedBox(width: 12),
+          ],
+        ),
+        child: Row(
+          spacing: 8,
+          children: [
             Expanded(
-              child: ApplyJobButton(
-                onPressed: onApplyPressed,
-                isLoading: isLoading,
+              child: BookmarkButton(
+                isBookmarked: isBookmarked,
+                onPressed: onBookmarkPressed,
               ),
             ),
+           Expanded(
+             child: ApplyJobButton(
+                  onPressed: onApplyPressed,
+                  isLoading: isLoading,
+                ),
+           ),
           ],
         ),
       ),
@@ -65,27 +69,25 @@ class BookmarkButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: isBookmarked ? Colors.teal : Colors.grey),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        side: BorderSide(color: isBookmarked ? ColorResources.primaryColor : ColorResources.colorSilver),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(6),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
-            color: isBookmarked ? Colors.teal : Colors.grey,
+            isBookmarked ? Icons.bookmark : Icons.bookmark_outline_rounded,
+            color: isBookmarked ? ColorResources.primaryColor : ColorResources.colorLead,
             size: 20,
           ),
           const SizedBox(width: 8),
           Text(
             'บันทึก',
-            style: TextStyle(
-              color: isBookmarked ? Colors.teal : Colors.grey,
-              fontWeight: FontWeight.w600,
-            ),
+            style: fontTitleStrong.copyWith(color: isBookmarked ? ColorResources.primaryColor : ColorResources.colorLead)
           ),
         ],
       ),
@@ -108,11 +110,11 @@ class ApplyJobButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.teal,
+        backgroundColor: ColorResources.buttonColor,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(6),
         ),
       ),
       child: isLoading
@@ -124,17 +126,14 @@ class ApplyJobButton extends StatelessWidget {
           strokeWidth: 2,
         ),
       )
-          : const Row(
+          : Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 8,
         children: [
           Icon(Icons.send, size: 20),
-          SizedBox(width: 8),
           Text(
             'สมัครงาน',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: fontTitleStrong.copyWith(color: Colors.white)
           ),
         ],
       ),

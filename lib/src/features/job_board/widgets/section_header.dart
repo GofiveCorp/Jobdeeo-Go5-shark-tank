@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;
@@ -14,43 +16,32 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: fontHeader4.copyWith(color: ColorResources.colorCharcoal)
+        ),
+        if (actionText != null)
+          GestureDetector(
+            onTap: onActionPressed,
+            child: Row(
+              children: [
+                Text(
+                  actionText!,
+                  style: fontSmallStrong.copyWith(color: ColorResources.primaryColor),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.chevron_right,
+                  color: ColorResources.primaryColor,
+                  size: 24,
+                ),
+              ],
             ),
           ),
-          if (actionText != null)
-            GestureDetector(
-              onTap: onActionPressed,
-              child: Row(
-                children: [
-                  Text(
-                    actionText!,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.teal,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: Colors.teal,
-                    size: 18,
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
+      ],
     );
   }
 }

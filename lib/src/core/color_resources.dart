@@ -125,4 +125,14 @@ class ColorResources {
       Color(0xFF1FAECE)
     ],
   );
+  static const LinearGradient gd3Gradient = LinearGradient(
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    stops: [0.11, 0.52, 1.0],
+    colors: [
+      Color(0xFF426CFF),
+      Color(0xFFFF6EBD),
+      Color(0xFFFEB83C)
+    ],
+  );
 }

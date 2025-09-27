@@ -42,10 +42,10 @@ class ToggleWorkFormat extends QuestionnaireEvent {
 }
 
 class ToggleWorkPlaceType extends QuestionnaireEvent {
-  final String format;
-  ToggleWorkPlaceType(this.format);
+  final String place;
+  ToggleWorkPlaceType(this.place);
   @override
-  List<Object?> get props => [format];
+  List<Object?> get props => [place];
 }
 
 // Detailed Data Events

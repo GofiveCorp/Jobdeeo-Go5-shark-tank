@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import '../../../core/color_resources.dart';
 import '../bloc/company/company_bloc.dart';
 import '../bloc/company/company_event.dart';
 import '../bloc/company/company_state.dart';
@@ -34,32 +36,33 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const JobBoardHeader(),
-            Expanded(
-              child: SingleChildScrollView(
+      backgroundColor: ColorResources.backgroundColor,
+      body: Column(
+        children: [
+          const JobBoardHeader(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
                 child: Column(
+                  spacing: 20,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 24),
                     _buildRecommendedJobsSection(),
-                    const SizedBox(height: 32),
                     _buildTopCompaniesSection(),
-                    const SizedBox(height: 24),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildRecommendedJobsSection() {
     return Column(
+      spacing: 8,
       children: [
         SectionHeader(
           title: 'งานแนะนำ',
@@ -71,9 +74,8 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
         SizedBox(
-          height: 220,
+          height: 260,
           child: BlocBuilder<JobBloc, JobState>(
             builder: (context, state) {
               if (state is JobLoading) {
@@ -81,22 +83,26 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
               } else if (state is JobLoaded) {
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: state.jobs.length,
                   itemBuilder: (context, index) {
                     final job = state.jobs[index];
-                    return JobCard(
-                      job: job,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => JobDetailScreen(jobId: job.id),
-                        ),
-                      ).then((shouldRefresh) {
-                        if (shouldRefresh == true) {
-                          context.read<JobBloc>().add(LoadRecommendedJobs());
-                        }
-                      }),
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: index == 0 ? 0 : 16,
+                      ),
+                      child: JobCard(
+                        job: job,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => JobDetailScreen(jobId: job.id),
+                          ),
+                        ).then((shouldRefresh) {
+                          if (shouldRefresh == true) {
+                            context.read<JobBloc>().add(LoadRecommendedJobs());
+                          }
+                        }),
+                      ),
                     );
                   },
                 );
@@ -118,6 +124,7 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
 
   Widget _buildTopCompaniesSection() {
     return Column(
+      spacing: 8,
       children: [
         SectionHeader(
           title: 'บริษัทชั้นนำ',
@@ -129,9 +136,8 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
         SizedBox(
-          height: 240,
+          height: 164,
           child: BlocBuilder<CompanyBloc, CompanyState>(
             builder: (context, state) {
               if (state is CompanyLoading) {
@@ -139,17 +145,21 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
               } else if (state is CompanyLoaded) {
                 return ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: state.companies.length,
                   itemBuilder: (context, index) {
                     final company = state.companies[index];
-                    return CompanyCard(
-                      company: company,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CompanyDetailScreen(
-                            companyId: company.id,
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: index == 0 ? 0 : 16,
+                      ),
+                      child: CompanyCard(
+                        company: company,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CompanyDetailScreen(
+                              companyId: company.id,
+                            ),
                           ),
                         ),
                       ),
@@ -173,26 +183,20 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
   }
 }
 
-// Header Widget with new design
 class JobBoardHeader extends StatelessWidget {
   const JobBoardHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF26C6DA), Color(0xFF00ACC1)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration: BoxDecoration(
+        gradient: ColorResources.gd1Gradient,
       ),
       child: Column(
         children: [
           const HeaderTopSection(),
           const HeaderMiddleSection(),
           HeaderSearchSection(),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -206,7 +210,7 @@ class HeaderTopSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(right: 16, top: 48),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -218,15 +222,15 @@ class HeaderTopSection extends StatelessWidget {
               ),
             ),
             child: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Icon(
-                Icons.bookmark_outline,
                 color: Colors.white,
-                size: 24,
+                borderRadius: BorderRadius.circular(81.25),
+              ),
+              child: Icon(
+                Icons.bookmark,
+                color: ColorResources.primaryColor,
+                size: 16,
               ),
             ),
           ),
@@ -242,26 +246,23 @@ class HeaderMiddleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             'โอกาสงานดี ๆ กำลังรอคุณอยู่!',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: fontHeader4.copyWith(color: Colors.white)
+          ),
+          SizedBox(height: 4),
+          Text(
+            'ก้าวหน้าในอาชีพของคุณ',
+            style: fontSmall.copyWith(color: Colors.white)
           ),
           Text(
-            'ก้าวหน้าในอาชีพของคุณ\nพร้อมเชื่อมต่อกับบริษัทชั้นนำระดับแนวหน้า',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              height: 1.4,
-            ),
+              'พร้อมเชื่อมต่อกับบริษัทชั้นนำระดับแนวหน้า',
+              style: fontSmall.copyWith(color: Colors.white)
           ),
         ],
       ),
@@ -276,7 +277,7 @@ class HeaderSearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.all(16),
       child: GestureDetector(
         onTap: () => Navigator.push(
           context,
@@ -285,26 +286,23 @@ class HeaderSearchSection extends StatelessWidget {
           ),
         ),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(100),
           ),
           child: Row(
             children: [
               Icon(
                 Icons.search,
-                color: Colors.grey[600],
-                size: 20,
+                color: ColorResources.colorFlint,
+                size: 16,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'ค้นหางานหรือบริษัท',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 16,
-                  ),
+                  style: fontBody.copyWith(color: ColorResources.colorFlint)
                 ),
               ),
             ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 import '../bloc/questionnaire_bloc.dart';
 import '../widgets/basic_data_tab.dart';
@@ -45,7 +47,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen>
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.08),
+                  color: ColorResources.colorCharcoal.withOpacity(0.08),
                   offset: const Offset(0, 1),
                   blurRadius: 3,
                   spreadRadius: 0,
@@ -56,12 +58,12 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen>
               backgroundColor: Colors.transparent,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF24CAB1)),
+                icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
                 onPressed: () => Navigator.pop(context),
               ),
-              title: const Text(
+              title: Text(
                 'เลือกความสนใจ',
-                style: TextStyle(color: Color(0xFF1C1C22), fontWeight: FontWeight.w700, fontSize: 18),
+                style: fontHeader5.copyWith(color: ColorResources.colorCharcoal)
               ),
               centerTitle: true,
             ),
@@ -73,19 +75,19 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen>
               color: Colors.white,
               child: TabBar(
                 controller: _tabController,
-                labelColor: Color(0xFF24CAB1),
-                unselectedLabelColor: Color(0xFF838395),
-                indicatorColor: Color(0xFF24CAB1),
+                labelColor: ColorResources.primaryColor,
+                unselectedLabelColor: ColorResources.colorPorpoise,
+                indicatorColor: ColorResources.primaryColor,
                 indicatorWeight: 2,
-                dividerColor: Colors.transparent, // Remove grey underline
-                isScrollable: true, // Enable scrollable tabs
-                tabAlignment: TabAlignment.start, // Align tabs to start (left)
-                indicatorSize: TabBarIndicatorSize.label, // Make indicator fit label width
-                labelPadding: EdgeInsets.only(right: 30, left: 0), // 30px spacing between tabs
-                padding: EdgeInsets.symmetric(horizontal: 16), // Add padding from screen edge
+                dividerColor: Colors.transparent,
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                indicatorSize: TabBarIndicatorSize.label,
+                labelPadding: EdgeInsets.only(right: 30, left: 0),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 tabs: const [
-                  Tab(text: 'ข้อมูลพื้นฐาน'),
-                  Tab(text: 'ข้อมูลเชิงลึก'),
+                  Tab(child: Text('ข้อมูลพื้นฐาน', style: fontBody)),
+                  Tab(child: Text('ข้อมูลเชิงลึก', style: fontBody)),
                 ],
               ),
             ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 import '../../../config/app_routes.dart';
-import '../../job_board/screen/job_board_screen.dart';
 import '../models/questionnaire_models.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -14,59 +15,55 @@ class CompletionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'สำเร็จ !',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF11B6AB),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'คุณสามารถเปลี่ยนแปลง\nความสนใจได้ทุกเมื่อ ใน Profile ของคุณ',
-              style: TextStyle(
-                fontSize: 16,
-                color: const Color(0xFF838395),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 48),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF24CAB1),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+      body: Column(
+        children: [
+          // Main content centered
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'สำเร็จ !',
+                  style: fontHeader1.copyWith(
+                    color: ColorResources.primaryColor,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                child: const Text(
-                  'เริ่มหางาน',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                const SizedBox(height: 16),
+                Text(
+                  'คุณสามารถเปลี่ยนแปลง\nความสนใจได้ทุกเมื่อ ใน Profile ของคุณ',
+                  style: fontTitle.copyWith(color: ColorResources.text2Color),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: 167.5,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorResources.buttonColor,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Text(
+                      'เริ่มหางาน',
+                      style: fontTitleStrong.copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-            const Spacer(),
-            SvgPicture.asset('assets/success_screen_icon.svg')
-          ],
-        ),
+          ),
+          // SVG at bottom without extra space
+          Image.asset(
+            'assets/success_img.png', // Convert SVG to PNG
+            fit: BoxFit.contain,
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gradient_borders/gradient_borders.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import '../../../core/color_resources.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
@@ -92,16 +95,20 @@ class _JobDetailScreenState extends State<JobDetailScreen>
       builder: (context, state) {
         String jobTitle = '';
         String companyName = '';
+        int matchPercentage = 0;
 
         if (state is JobDetailLoaded) {
           jobTitle = state.job.title;
           companyName = state.job.companyName;
+          matchPercentage = state.job.matchPercentage;
         }
 
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar: JobDetailAppBar(
             jobTitle: jobTitle,
             companyName: companyName,
+            matchPercentage: matchPercentage,
           ),
           body: _buildBody(state),
           bottomNavigationBar: JobBottomBar(
@@ -144,84 +151,87 @@ class _JobDetailScreenState extends State<JobDetailScreen>
 class JobDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String jobTitle;
   final String companyName;
+  final int matchPercentage;
 
   const JobDetailAppBar({
     super.key,
     required this.jobTitle,
     required this.companyName,
+    required this.matchPercentage,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      title: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.teal),
-            onPressed: () {
-              Navigator.pop(context, true); // ส่งค่า true เพื่อให้หน้าหลัก refresh
-            },
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  jobTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  companyName,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.purple[50],
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.purple[200]!),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.diamond,
-                  size: 16,
-                  color: Colors.purple[600],
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '89%',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.purple[600],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: ColorResources.colorCharcoal.withOpacity(0.08),
+            offset: const Offset(0, 1),
+            blurRadius: 3,
+            spreadRadius: 0,
           ),
         ],
+      ),
+      child: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
+              onPressed: () => Navigator.pop(context),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    jobTitle,
+                    style: fontBodyStrong.copyWith(color: ColorResources.colorCharcoal),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    companyName,
+                    style: fontSmall.copyWith(color: ColorResources.colorPorpoise),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 20,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                gradient: ColorResources.gd3Gradient.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: GradientBoxBorder(
+                  gradient: ColorResources.gd3Gradient,
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                spacing: 2,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.diamond,
+                    size: 12,
+                    color: Color(0xFF596DF8),
+                  ),
+                  Text(
+                    '$matchPercentage%',
+                    style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -244,18 +254,19 @@ class JobTabBar extends StatelessWidget {
       color: Colors.white,
       child: TabBar(
         controller: tabController,
-        labelColor: Colors.teal,
-        unselectedLabelColor: Colors.grey[600],
-        indicatorColor: Colors.teal,
+        labelColor: ColorResources.primaryColor,
+        unselectedLabelColor: ColorResources.colorPorpoise,
+        indicatorColor: ColorResources.primaryColor,
+        dividerColor: Colors.transparent,
         indicatorWeight: 2,
         isScrollable: true,
         tabAlignment: TabAlignment.start,
         tabs: const [
-          Tab(text: 'ภาพรวม'),
-          Tab(text: 'หน้าที่งาน'),
-          Tab(text: 'คุณสมบัติ'),
-          Tab(text: 'ไลฟ์สไตล์'),
-          Tab(text: 'ติดต่อ'),
+          Tab(child: Text('ภาพรวม', style: fontBody)),
+          Tab(child: Text('หน้าที่งาน', style: fontBody)),
+          Tab(child: Text('คุณสมบัติ', style: fontBody)),
+          Tab(child: Text('ไลฟ์สไตล์', style: fontBody)),
+          Tab(child: Text('ติดต่อ', style: fontBody)),
         ],
       ),
     );

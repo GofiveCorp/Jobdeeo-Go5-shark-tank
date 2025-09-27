@@ -156,7 +156,7 @@ class BasicDataTab extends StatelessWidget {
                       options: workPlaceOptions,
                       selectedValues: basicData.workPlaceTypes,
                       onSelectionChanged: (value) {
-                        context.read<QuestionnaireBloc>().add(ToggleWorkFormat(value));
+                        context.read<QuestionnaireBloc>().add(ToggleWorkPlaceType(value));
                       },
                     ),
                   ],
@@ -166,6 +166,7 @@ class BasicDataTab extends StatelessWidget {
           ),
           bottomNavigationBar: StickyBottomButtons(
             submitText: 'บันทึกและไปต่อ',
+            cancleText: 'ยกเลิก',
             isLoading: isLoading,
             onCancel: () => Navigator.pop(context),
             onSubmit: () {

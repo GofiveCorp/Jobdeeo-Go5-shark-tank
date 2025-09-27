@@ -53,6 +53,17 @@ class QuestionnaireBloc extends Bloc<QuestionnaireEvent, QuestionnaireState> {
       emit(QuestionnaireUpdated(_basicData, _detailedData));
     });
 
+    on<ToggleWorkPlaceType>((event, emit) {
+      final places = List<String>.from(_basicData.workPlaceTypes);
+      if (places.contains(event.place)) {
+        places.remove(event.place);
+      } else {
+        places.add(event.place);
+      }
+      _basicData = _basicData.copyWith(workPlaceTypes: places);
+      emit(QuestionnaireUpdated(_basicData, _detailedData));
+    });
+
     on<ToggleOrganizationType>((event, emit) {
       final types = List<String>.from(_detailedData.organizationTypes);
       if (types.contains(event.type)) {

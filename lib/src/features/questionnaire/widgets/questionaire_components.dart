@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 
 class MainSectionHeader extends StatelessWidget {
@@ -12,11 +13,12 @@ class MainSectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: ColorResources.colorIron,
-        ),
+        style: fontTitleStrong.copyWith(color: ColorResources.colorIron),
+        // style: const TextStyle(
+        //   fontSize: 16,
+        //   fontWeight: FontWeight.w600,
+        //   color: ColorResources.colorIron,
+        // ),
       ),
     );
   }
@@ -33,12 +35,9 @@ class SubSectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 14,
-          color: ColorResources.colorPorpoise,
+        style: fontBody.copyWith(color: ColorResources.colorPorpoise)
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -62,29 +61,47 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: ColorResources.colorSilver),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: TextFormField(
-            initialValue: initialValue,
-            onChanged: onChanged,
-            style: const TextStyle(
-              fontSize: 14,
-              color: ColorResources.colorSilver,
-            ),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: const TextStyle(
-                color: ColorResources.colorCharcoal,
-                fontSize: 14,
+        TextFormField(
+          initialValue: initialValue,
+          onChanged: onChanged,
+          cursorColor: ColorResources.primaryColor,
+          style: fontBody.copyWith(color: ColorResources.colorCharcoal),
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: fontBody.copyWith(color: ColorResources.colorSilver),
+            // Default border (unfocused)
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: BorderSide(
+                color: ColorResources.colorSilver,
+                width: 1,
               ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: ColorResources.primaryColor),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             ),
+            // Focused border
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: BorderSide(
+                color: ColorResources.primaryColor,
+                width: 1,
+              ),
+            ),
+            // Error border (if needed)
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: const BorderSide(
+                color: Colors.red,
+                width: 1,
+              ),
+            ),
+            // Focused error border (if needed)
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: const BorderSide(
+                color: Colors.red,
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
         ),
         if (isOptional && onAddPressed != null)
@@ -94,17 +111,13 @@ class CustomTextField extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: GestureDetector(
                 onTap: onAddPressed,
-                child: const Text(
+                child: Text(
                   '+ เพิ่ม',
-                  style: TextStyle(
-                    color: Color(0xFF24CAB1),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                  style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
                   ),
                 ),
               ),
             ),
-          ),
       ],
     );
   }
@@ -154,10 +167,8 @@ class MultiSelectChip extends StatelessWidget {
                   ),
                 Text(
                   option,
-                  style: TextStyle(
-                    color: isSelected ? ColorResources.primaryColor : ColorResources.colorAnchor,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
+                  style: isSelected ? fontBodyStrong.copyWith(color: ColorResources.primaryColor)
+                      : fontBody.copyWith(color: ColorResources.colorAnchor),
                 ),
               ],
             ),
@@ -172,6 +183,7 @@ class StickyBottomButtons extends StatelessWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onSubmit;
   final String submitText;
+  final String cancleText;
   final bool isLoading;
 
   const StickyBottomButtons({
@@ -179,13 +191,14 @@ class StickyBottomButtons extends StatelessWidget {
     this.onCancel,
     this.onSubmit,
     required this.submitText,
+    required this.cancleText,
     this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(top: 12, bottom: 8, left: 16, right: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -204,22 +217,28 @@ class StickyBottomButtons extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: isLoading ? null : onCancel,
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: const BorderSide(color: Colors.grey),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  side: const BorderSide(color: ColorResources.colorSmoke, width: 1),
                 ),
-                child: const Text(
-                  'ย้อนกลับ',
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                child: Text(
+                  cancleText,
+                  style: fontTitleStrong.copyWith(color: ColorResources.colorLead)
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
                 onPressed: isLoading ? null : onSubmit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF24CAB1),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  backgroundColor: ColorResources.primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 ),
                 child: isLoading
                     ? const SizedBox(
@@ -232,7 +251,7 @@ class StickyBottomButtons extends StatelessWidget {
                 )
                     : Text(
                   submitText,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  style: fontTitleStrong.copyWith(color: Colors.white)
                 ),
               ),
             ),

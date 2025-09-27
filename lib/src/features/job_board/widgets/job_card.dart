@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_borders/gradient_borders.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 import '../../../../utils/time_utils.dart';
 import '../models/job_model.dart';
 
@@ -17,165 +20,125 @@ class JobCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 280,
-        margin: const EdgeInsets.only(right: 16),
+        width: 253,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(color: ColorResources.colorCloud, width: 1),
         ),
         child: Column(
+          spacing: 8,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Company Logo
-                Container(
+                Image.asset(
+                  job.companyLogo,
                   width: 48,
                   height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.business,
-                    color: Colors.white,
-                    size: 24,
-                  ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        job.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        job.companyName,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 4),
+                Text(
+                  job.title,
+                  style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  job.companyName,
+                  style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
                 // Match Percentage
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  height: 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
-                    color: Colors.purple[50],
+                    gradient: ColorResources.gd3Gradient.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.purple[200]!),
+                    border: GradientBoxBorder(
+                      gradient: ColorResources.gd3Gradient,
+                      width: 1,
+                    ),
                   ),
                   child: Row(
+                    spacing: 2,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.diamond,
                         size: 12,
-                        color: Colors.purple[600],
+                        color: Color(0xFF596DF8),
                       ),
-                      const SizedBox(width: 4),
                       Text(
-                        '${job.matchPercentage}%',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.purple[600],
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                        '${job.matchPercentage}% Skill Matches',
+                        style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                      )
                     ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
 
-            // Job Details
-            Row(
-              children: [
-                Icon(
-                  Icons.work_outline,
-                  size: 16,
-                  color: Colors.grey[600],
+                Row(
+                  children: [
+                    Icon(
+                      Icons.work_outline,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${job.level}, ${job.workType}',
+                      style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                      ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  '${job.level}, ${job.workType}',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
 
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on_outlined,
-                  size: 16,
-                  color: Colors.grey[600],
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      job.location,
+                      style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  job.location,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
 
-            Row(
-              children: [
-                Icon(
-                  Icons.attach_money,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  job.salaryRange,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.attach_money,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      job.salaryRange,
+                      style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 12),
 
-            // Posted Time
             Text(
               TimeUtils.getTimeAgo(job.postedAt),
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[500],
-              ),
+              style: fontSmall.copyWith(color: ColorResources.colorFlint)
             ),
           ],
         ),

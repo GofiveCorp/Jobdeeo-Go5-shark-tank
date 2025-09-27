@@ -63,16 +63,26 @@ class DetailedDataTab extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20,
               children: [
-                const MainSectionHeader(title: 'ลักษณะองค์กร'),
-                MultiSelectChip(
-                  options: organizationOptions,
-                  selectedValues: detailedData.organizationTypes,
-                  onSelectionChanged: (value) {
-                    context.read<QuestionnaireBloc>().add(ToggleOrganizationType(value));
-                  },
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const MainSectionHeader(title: 'ลักษณะองค์กร'),
+                    MultiSelectChip(
+                      options: organizationOptions,
+                      selectedValues: detailedData.organizationTypes,
+                      onSelectionChanged: (value) {
+                        context.read<QuestionnaireBloc>().add(ToggleOrganizationType(value));
+                      },
+                    ),
+                  ],
                 ),
 
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 const MainSectionHeader(title: 'Vibes ที่ต้องการ'),
                 MultiSelectChip(
                   options: vibesOptions,
@@ -81,7 +91,12 @@ class DetailedDataTab extends StatelessWidget {
                     context.read<QuestionnaireBloc>().add(ToggleWorkVibe(value));
                   },
                 ),
+                ],
+            ),
 
+            Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
                 const MainSectionHeader(title: 'สไตล์ชีวิตที่อยากได้'),
                 MultiSelectChip(
                   options: lifestyleOptions,
@@ -90,7 +105,12 @@ class DetailedDataTab extends StatelessWidget {
                     context.read<QuestionnaireBloc>().add(ToggleLifestylePreference(value));
                   },
                 ),
+                ],
+            ),
 
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
                 const MainSectionHeader(title: 'อะไรที่ทำให้อยากทำงาน'),
                 MultiSelectChip(
                   options: motivationOptions,
@@ -101,9 +121,13 @@ class DetailedDataTab extends StatelessWidget {
                 ),
               ],
             ),
+            ],
+            ),
           ),
+
           bottomNavigationBar: StickyBottomButtons(
             submitText: 'บันทึก',
+            cancleText: 'ย้อนกลับ',
             isLoading: isLoading,
             onCancel: () => Navigator.pop(context),
             onSubmit: () {
