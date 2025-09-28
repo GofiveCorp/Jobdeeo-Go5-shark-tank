@@ -5,7 +5,7 @@ import 'package:jobdeeo/src/core/base/image_resource.dart';
 import '../features/community/community_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/learn/learn_scren.dart';
-import '../features/matching/matching_screen.dart';
+import '../features/matching/screen/matching_screen.dart';
 import '../features/profile/profile_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -21,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<Widget> _screens = const [
     JobBoardScreen(),
-    QuestionnaireScreen(),
+    CommunityScreen(),
     MatchingScreen(),
     LearnScreen(),
     ProfileScreen(),

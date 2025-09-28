@@ -5,6 +5,7 @@ import 'package:jobdeeo/src/authentication/login/login_screen.dart';
 import 'package:jobdeeo/src/dashboard/dashboard_screen.dart';
 import 'package:jobdeeo/src/features/job_board/bloc/company/company_bloc.dart';
 import 'package:jobdeeo/src/features/job_board/bloc/job/job_bloc.dart';
+import 'package:jobdeeo/src/features/matching/bloc/matching_bloc.dart';
 import 'src/config/app_routes.dart';
 
 void main() {
@@ -18,7 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-        BlocProvider(create: (context) => JobBloc()), BlocProvider(create: (context) => CompanyBloc())
+        BlocProvider(create: (context) => JobBloc()),
+          BlocProvider(create: (context) => CompanyBloc()),
+          BlocProvider(create: (context) => MatchingBloc()),
         ]
         , child: MaterialApp(
       title: 'Flutter App Demo',

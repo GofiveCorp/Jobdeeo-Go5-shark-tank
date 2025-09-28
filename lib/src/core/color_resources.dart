@@ -135,4 +135,13 @@ class ColorResources {
       Color(0xFFFEB83C)
     ],
   );
+
+  static const LinearGradient linearGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF24CAB1),
+      Color(0xFF2AA8B4)
+    ],
+  );
 }
