@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:jobdeeo/src/core/base/color_resource.dart';
 import 'package:jobdeeo/src/core/base/image_resource.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 
@@ -41,10 +42,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
+                            SvgPicture.asset(
+                              ImageResource.icSettings,
+                              width: 28,
+                              height: 28,
+                            ),
+                            const SizedBox(height: 8),
                             // Avatar + Name
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CircleAvatar(
                                   radius: 36,
@@ -57,18 +66,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(width: 12),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children:  [
                                     Text(
                                       "วินิตรา แสงสร้อย",
                                       style: fontTitleStrong,
                                     ),
-                                    Text(
-                                      "Mobile Developer, 2 yrs experience",
-                                      style: fontTitleStrong,
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Mobile Developer,",
+                                          style: fontSmallStrong.copyWith(color: ColorResources.colorCaribbean)),
+                                        
+                                        Text(
+                                      " 2 yrs experience",
+                                      style: fontSmallStrong,
                                     ),
-                                    Text("Bangkok"),
-                                    Text("Winittra.works@gmail.com"),
+                                      ],
+                                    ),
+                                    
+                                    Text("Bangkok", style: fontSmall),
+                                    Text(
+                                      "Winittra.works@gmail.com",
+                                      style: fontSmall,
+                                    ),
                                   ],
+                                ),
+                                const SizedBox(width: 12),
+                                SvgPicture.asset(
+                                  ImageResource.icEditProfile,
+                                  width: 28,
+                                  height: 28,
                                 ),
                               ],
                             ),
@@ -85,12 +112,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: const [
-                                          Text("80% Profile Strength"),
+                                          Text(
+                                            "80% Profile Strength",
+                                            style: fontTitleStrong,
+                                          ),
                                           Text(
                                             "Update profile",
-                                            style: TextStyle(
-                                              color: Colors.teal,
-                                            ),
+                                            style: fontTitleStrong,
                                           ),
                                         ],
                                       ),
@@ -103,8 +131,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       padding: const EdgeInsets.all(12.0),
                                       child: Column(
                                         children: const [
-                                          Text("1"),
-                                          Text("งานที่สมัคร"),
+                                          Text("1", style: fontTitleStrong),
+                                          Text(
+                                            "งานที่สมัคร",
+                                            style: fontTitleStrong,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -136,32 +167,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text(
-                      "✨ AI Suggestion",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text("✨ AI Suggestion", style: fontTitleStrong),
                     SizedBox(height: 8),
                     Text(
                       "You have 85% Matches with Mobile Developer",
-                      style: TextStyle(color: Colors.white),
+                      style: fontTitleStrong,
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      "To get 100%, Try to",
-                      style: TextStyle(color: Colors.white70),
-                    ),
+                    Text("To get 100%, Try to", style: fontTitleStrong),
                     SizedBox(height: 8),
-                    Text(
-                      "1. Improve your resume",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      "2. Add more skills",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    Text("1. Improve your resume", style: fontTitleStrong),
+                    Text("2. Add more skills", style: fontTitleStrong),
                   ],
                 ),
               ),
@@ -173,19 +189,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: const [
-                    Text(
-                      "Skill",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal,
-                      ),
-                    ),
+                    Text("Skill", style: fontTitleStrong),
                     SizedBox(width: 16),
-                    Text("Resume"),
+                    Text("Resume", style: fontTitleStrong),
                     SizedBox(width: 16),
-                    Text("Certifications"),
+                    Text("Certifications", style: fontTitleStrong),
                     SizedBox(width: 16),
-                    Text("Experience"),
+                    Text("Experience", style: fontTitleStrong),
                   ],
                 ),
               ),
@@ -199,11 +209,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    Chip(label: Text("Swift สูง")),
-                    Chip(label: Text("Kotlin กลาง")),
-                    Chip(label: Text("Firebase เบื้องต้น")),
+                    Chip(label: Text("Swift สูง", style: fontBodyBold)),
+                    Chip(label: Text("Kotlin กลาง", style: fontBodyBold)),
                     Chip(
-                      label: Text("+ Flutter กลาง"),
+                      label: Text("Firebase เบื้องต้น", style: fontBodyBold),
+                    ),
+                    Chip(
+                      label: Text("+ Flutter กลาง", style: fontBodyBold),
                       backgroundColor: Colors.pink.shade100,
                     ),
                   ],
@@ -221,9 +233,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icons.picture_as_pdf,
                       color: Colors.red,
                     ),
-                    title: const Text("Portfolio.pdf"),
-                    subtitle: const Text("05/04/2023"),
-                    trailing: const Text("Default"),
+                    title: const Text("Portfolio.pdf", style: fontTitleStrong),
+                    subtitle: const Text("05/04/2023", style: fontBody),
+                    trailing: const Text("Default", style: fontBodyBold),
                   ),
                 ),
               ),
