@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 
 import '../../bloc/job/job_bloc.dart';
+import '../../bloc/job/job_event.dart';
 import '../../bloc/job/job_state.dart';
 import '../../models/company_model.dart';
 import '../../screen/job_detail_screen.dart';
+import '../job_section/job_tab_content.dart';
 
 class CompanyTabContent extends StatelessWidget {
   final TabController tabController;
@@ -44,100 +48,61 @@ class CompanyInfoTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Company Logo and Name (again for tab content)
           Row(
             children: [
               Container(
-                width: 60,
-                height: 60,
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
-                  color: company.name == 'บริษัท โซว์ไรจ์นิล จำกัด'
-                      ? Colors.blue[600]
-                      : Colors.orange,
-                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.orange,
+                  shape: BoxShape.circle
                 ),
-                child: Center(
-                  child: company.name == 'บริษัท โซว์ไรจ์นิล จำกัด'
-                      ? const Text(
-                    'bt',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  )
-                      : const Icon(
-                    Icons.business,
-                    color: Colors.white,
-                    size: 30,
-                  ),
+                child: Image.asset(
+                  company.logo, fit: BoxFit.cover
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
                   company.name,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
+                  style: fontHeader4.copyWith(color: ColorResources.colorIron)
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-
           // Company Description
           Text(
             company.description,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              height: 1.6,
-            ),
+            style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
 
           if (company.name == 'Gofive Company Limited') ...[
-            const SizedBox(height: 24),
-            Text(
-              'Gofive คือบริษัท Startup ใน T.K.S. Group เราสร้าง Tech Ecosystem ที่เป็นแข็งแกร่งเพื่อผลักดันธุรกิจให้ Scale Up แบบก้าวกระโดดพร้อมกับ Career Path ที่มั่นคงในการทำงานที่ Gofive เราให้ความสำคัญในการใส่ใจเพื่อร่วมงาน รวมไปถึงการเปิดใจรับฟังและเรียนรู้สิ่งใหม่ๆอยู่เสมอ เพื่อให้ทีมงานของเรานั้นน่าอยู่สำหรับทุกคน',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.6,
-              ),
+            Column(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Gofive คือบริษัท Startup ใน T.K.S. Group เราสร้าง Tech Ecosystem ที่เป็นแข็งแกร่งเพื่อผลักดันธุรกิจให้ Scale Up แบบก้าวกระโดดพร้อมกับ Career Path ที่มั่นคงในการทำงานที่ Gofive เราให้ความสำคัญในการใส่ใจเพื่อร่วมงาน รวมไปถึงการเปิดใจรับฟังและเรียนรู้สิ่งใหม่ๆอยู่เสมอ เพื่อให้ทีมงานของเรานั้นน่าอยู่สำหรับทุกคน',
+                  style: fontBody.copyWith(color: ColorResources.colorLead)
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
             Text(
               'เรามี Products อะไรบ้าง?',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              style: fontBody.copyWith(color: ColorResources.colorLead)
             ),
-            const SizedBox(height: 12),
             CompanyProductsList(),
-            const SizedBox(height: 24),
             Text(
               'มารู้จักเรามากขึ้น?',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              style: fontBody.copyWith(color: ColorResources.colorLead)
             ),
-            const SizedBox(height: 24),
             Text(
               'บรรยากาศการทำงานที่ Gofive: https://youtu.be/LLRtw5_n764 \n\nติดตามเราที่: www.facebook.com/GofiveFamily',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.6,
-              ),
+              style: fontBody.copyWith(color: ColorResources.colorLead)
             ),
           ],
         ],
@@ -155,27 +120,23 @@ class CompanyBenefitsTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 4,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Icon(
                 Icons.card_giftcard,
-                color: Colors.teal,
+                color: ColorResources.primaryColor,
                 size: 20,
               ),
-              const SizedBox(width: 8),
-              const Text(
+              const SizedBox(width: 4),
+              Text(
                 'สวัสดิการ',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+                style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal)
               ),
             ],
           ),
-          const SizedBox(height: 16),
           BenefitsList(),
         ],
       ),
@@ -192,12 +153,14 @@ class CompanyLifestyleTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 8,
         children: [
           // Row 1
           Row(
+            spacing: 8,
             children: [
               Expanded(
-                child: CompanyVideoCard(
+                child: VideoCard(
                   title: 'วิธีเดินทางมาที่งาน',
                   company: 'Gofive Co., Ltd',
                   likes: '2228',
@@ -205,10 +168,9 @@ class CompanyLifestyleTab extends StatelessWidget {
                   isVideoPost: true,
                 ),
               ),
-              const SizedBox(width: 12),
               Expanded(
-                child: CompanyVideoCard(
-                  title: 'วิธีเดินทางมาที่งาน',
+                child: VideoCard(
+                  title: 'แจกการ์ด! สัมภาษณ์งาน',
                   company: 'Gofive Co., Ltd',
                   likes: '2228',
                   duration: '',
@@ -217,12 +179,10 @@ class CompanyLifestyleTab extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          // Row 2
           Row(
             children: [
               Expanded(
-                child: CompanyVideoCard(
+                child: VideoCard(
                   title: 'AI ช่วยเตรียมตัวสัมภาษณ์งาน',
                   company: 'Gofive Co., Ltd',
                   likes: '2228',
@@ -249,45 +209,26 @@ class CompanyContactTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'At Gofive, we share a passion for driving digital transformation for businesses of all sizes. We pay attention to every detail and are committed to delivering an exceptional software experience to our users.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-              height: 1.6,
-            ),
+          Text(
+              'At Gofive, we share a passion for driving digital transformation for businesses of all sizes. We pay attention to every detail and are committed to delivering an exceptional software experience to our users.',
+              style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
-          const SizedBox(height: 24),
-          Row(
+          Column(
+            spacing: 4,
             children: [
-              Icon(
-                Icons.location_city,
-                color: Colors.teal,
-                size: 20,
+              TabSectionHeader(
+                icon: Icons.location_city,
+                title: 'การติดต่อ',
               ),
-              const SizedBox(width: 8),
-              const Text(
-                'การติดต่อ',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+              Text(
+                  'สาขาพระราม 2  |  สาขา FYI Center (พระรามที่ 4)',
+                  style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          const Text(
-            'สาขาพระราม 2  |  สาขา FYI Center (พระรามที่ 4)',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.teal,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 16),
           CompanyLocationMap(),
         ],
       ),
@@ -331,7 +272,7 @@ class CompanyJobsWidget extends StatefulWidget {
 
 class _CompanyJobsWidgetState extends State<CompanyJobsWidget> {
   final TextEditingController _searchController = TextEditingController();
-  bool _showAllJobs = true; // true = All, false = Newest
+  bool _showAllJobs = true;
   List _filteredJobs = [];
   List _allCompanyJobs = [];
 
@@ -378,90 +319,89 @@ class _CompanyJobsWidgetState extends State<CompanyJobsWidget> {
           child: Column(
             children: [
               // Search Bar
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.search, color: Colors.grey[600], size: 20),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (_) => _performSearch(_allCompanyJobs),
-                        decoration: InputDecoration(
-                          hintText: 'ค้นหาตำแหน่งงาน',
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
-                          ),
-                        ),
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Filter Buttons
               Row(
+                spacing: 8,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      if (!_showAllJobs) {
-                        _toggleFilter(_allCompanyJobs);
-                      }
-                    },
+                  Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: _showAllJobs ? Colors.teal : Colors.grey[100],
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          color: _showAllJobs ? Colors.teal : Colors.grey[300]!,
-                        ),
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(color: ColorResources.colorCloud, width: 1),
                       ),
-                      child: Text(
-                        'All',
-                        style: TextStyle(
-                          color: _showAllJobs ? Colors.white : Colors.grey[600],
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search_rounded, color: ColorResources.colorFlint, size: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (_) => _performSearch(_allCompanyJobs),
+                              decoration: InputDecoration(
+                                hintText: 'ค้นหาตำแหน่งงาน',
+                                hintStyle: fontBody.copyWith(color: ColorResources.colorSilver),
+                                border: InputBorder.none,
+                              ),
+                              style: fontBody.copyWith(color: ColorResources.colorSilver)
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {
-                      if (_showAllJobs) {
-                        _toggleFilter(_allCompanyJobs);
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: !_showAllJobs ? Colors.teal : Colors.grey[100],
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          color: !_showAllJobs ? Colors.teal : Colors.grey[300]!,
+                  // Filter Buttons
+                  Row(
+                    spacing: 4,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (!_showAllJobs) {
+                            _toggleFilter(_allCompanyJobs);
+                          }
+                        },
+                        child: Container(
+                          height: 36,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: _showAllJobs ? ColorResources.primaryColor : Colors.white,
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                              color: _showAllJobs ? ColorResources.primaryColor : ColorResources.colorSmoke,
+                              width: 1
+                            ),
+                          ),
+                          child: Text(
+                            'ทั้งหมด',
+                            style: _showAllJobs
+                                ?fontBodyStrong.copyWith(color: Colors.white)
+                                :fontBody.copyWith(color: ColorResources.colorDarkGray)
+                          ),
                         ),
                       ),
-                      child: Text(
-                        'Newest',
-                        style: TextStyle(
-                          color: !_showAllJobs ? Colors.white : Colors.grey[600],
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                      GestureDetector(
+                        onTap: () {
+                          context.read<JobBloc>().add(SortJobsByDate());
+                        },
+                        child: Container(
+                          height: 36,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: !_showAllJobs ? ColorResources.primaryColor : Colors.white,
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                                color: !_showAllJobs ? ColorResources.primaryColor : ColorResources.colorSmoke,
+                                width: 1
+                            ),
+                          ),
+                          child: Text(
+                              'ล่าสุด',
+                              style: !_showAllJobs
+                                  ?fontBodyStrong.copyWith(color: Colors.white)
+                                  :fontBody.copyWith(color: ColorResources.colorDarkGray)
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -502,16 +442,13 @@ class _CompanyJobsWidgetState extends State<CompanyJobsWidget> {
                         const SizedBox(height: 16),
                         Text(
                           'ไม่พบตำแหน่ง "${_searchController.text}"',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
+                          style: fontTitle.copyWith(color: ColorResources.colorFlint)
                         ),
                       ],
                     ),
                   );
                 } else if (companyJobs.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -523,10 +460,7 @@ class _CompanyJobsWidgetState extends State<CompanyJobsWidget> {
                         SizedBox(height: 16),
                         Text(
                           'ไม่มีตำแหน่งที่เปิดรับในขณะนี้',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
+                          style: fontTitle.copyWith(color: ColorResources.colorFlint)
                         ),
                       ],
                     ),
@@ -601,22 +535,18 @@ class CompanyProductsList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 6,
-              height: 6,
-              margin: const EdgeInsets.only(top: 6, right: 12),
+              width: 2,
+              height: 2,
+              margin: const EdgeInsets.only(top: 12, right: 6, left: 6),
               decoration: const BoxDecoration(
-                color: Colors.teal,
+                color: ColorResources.colorLead,
                 shape: BoxShape.circle,
               ),
             ),
             Expanded(
               child: Text(
                 product,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[700],
-                  height: 1.5,
-                ),
+                style: fontBody.copyWith(color: ColorResources.colorLead)
               ),
             ),
           ],
@@ -653,18 +583,14 @@ class BenefitsList extends StatelessWidget {
               height: 6,
               margin: const EdgeInsets.only(top: 6, right: 12),
               decoration: const BoxDecoration(
-                color: Colors.teal,
+                color: ColorResources.colorLead,
                 shape: BoxShape.circle,
               ),
             ),
             Expanded(
               child: Text(
                 benefit,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[700],
-                  height: 1.5,
-                ),
+                style: fontBody.copyWith(color: ColorResources.colorLead)
               ),
             ),
           ],
@@ -1026,41 +952,5 @@ class CompanyJobCard extends StatelessWidget {
       final months = (difference.inDays / 30).floor();
       return '${months}mo ago';
     }
-  }
-}
-
-class CompanyLocationMap extends StatelessWidget {
-  const CompanyLocationMap({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.map,
-              size: 40,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 8),
-            Text(
-              'แผนที่ตำแหน่งบริษัท',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

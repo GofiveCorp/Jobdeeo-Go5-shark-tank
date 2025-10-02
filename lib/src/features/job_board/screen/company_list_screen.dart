@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/base/txt_styles.dart';
+import '../../../core/color_resources.dart';
 import '../bloc/company/company_bloc.dart';
 import '../bloc/company/company_event.dart';
 import '../bloc/company/company_state.dart';
@@ -47,180 +49,186 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.teal),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'บริษัทชั้นนำทั้งหมด',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+      backgroundColor: ColorResources.backgroundColor,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: ColorResources.colorCharcoal.withOpacity(0.08),
+                offset: const Offset(0, 1),
+                blurRadius: 3,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: Text(
+                'บริษัทชั้นนำทั้งหมด',
+                style: fontHeader5.copyWith(color: ColorResources.colorCharcoal)
+            ),
+            centerTitle: true,
           ),
         ),
-        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          spacing: 16,
+          children: [
+            // Search Bar
+            Container(
+              height: 36,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(color: Colors.grey[300]!),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(color: ColorResources.colorCloud, width: 1),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey[600], size: 20),
-                  const SizedBox(width: 12),
+                  Icon(Icons.search_rounded, color: ColorResources.colorFlint, size: 16),
                   Expanded(
                     child: TextField(
-                      controller: _searchController,
-                      onChanged: (_) => _performSearch(),
-                      decoration: InputDecoration(
-                        hintText: 'ค้นหาบริษัท',
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
+                        controller: _searchController,
+                        onChanged: (_) => _performSearch(),
+                        decoration: InputDecoration(
+                          hintText: 'ค้นหาบริษัท',
+                          hintStyle: fontBody.copyWith(color: ColorResources.colorSilver),
+                          border: InputBorder.none,
                         ),
-                      ),
-                      style: const TextStyle(fontSize: 14),
+                        style: fontBody.copyWith(color: ColorResources.colorCharcoal)
                     ),
                   ),
                 ],
               ),
             ),
-          ),
 
-          // Company List
-          Expanded(
-            child: BlocBuilder<CompanyBloc, CompanyState>(
-              builder: (context, state) {
-                if (state is CompanyLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: Colors.teal),
-                  );
-                } else if (state is CompanyLoaded) {
-                  // Update companies list for filtering
-                  if (_allCompanies != state.companies) {
-                    _allCompanies = state.companies;
-                    _filteredCompanies = state.companies;
-                  }
+            // Company List
+            Expanded(
+              child: BlocBuilder<CompanyBloc, CompanyState>(
+                builder: (context, state) {
+                  if (state is CompanyLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.teal),
+                    );
+                  } else if (state is CompanyLoaded) {
+                    // Update companies list for filtering
+                    if (_allCompanies != state.companies) {
+                      _allCompanies = state.companies;
+                      _filteredCompanies = state.companies;
+                    }
 
-                  if (_filteredCompanies.isEmpty && _searchController.text.isNotEmpty) {
+                    if (_filteredCompanies.isEmpty && _searchController.text.isNotEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.search_off_rounded,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'ไม่พบบริษัท "${_searchController.text}"',
+                              style: fontTitle.copyWith(color: ColorResources.colorFlint),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (_filteredCompanies.isEmpty) {
+                      return const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.business_outlined,
+                              size: 64,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'ไม่พบบริษัทชั้นนำ',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      itemCount: _filteredCompanies.length,
+                      separatorBuilder: (context, index) => const SizedBox(height: 16),
+                      itemBuilder: (context, index) {
+                        final company = _filteredCompanies[index];
+                        return CompanyListCard(
+                          company: company,
+                          searchQuery: _searchController.text,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CompanyDetailScreen(
+                                companyId: company.id,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else if (state is CompanyError) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Icon(
-                            Icons.search_off,
+                            Icons.error_outline,
                             size: 64,
-                            color: Colors.grey,
+                            color: Colors.red,
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'ไม่พบบริษัท "${_searchController.text}"',
+                            state.message,
                             style: const TextStyle(
+                              color: Colors.red,
                               fontSize: 16,
-                              color: Colors.grey,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
-                    );
-                  } else if (_filteredCompanies.isEmpty) {
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.business_outlined,
-                            size: 64,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'ไม่พบบริษัทชั้นนำ',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<CompanyBloc>().add(LoadAllCompanies());
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              foregroundColor: Colors.white,
                             ),
+                            child: const Text('ลองใหม่'),
                           ),
                         ],
                       ),
                     );
                   }
-
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filteredCompanies.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 16),
-                    itemBuilder: (context, index) {
-                      final company = _filteredCompanies[index];
-                      return CompanyListCard(
-                        company: company,
-                        searchQuery: _searchController.text,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CompanyDetailScreen(
-                              companyId: company.id,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                } else if (state is CompanyError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: Colors.red,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          state.message,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<CompanyBloc>().add(LoadAllCompanies());
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text('ลองใหม่'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -244,92 +252,59 @@ class CompanyListCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.05),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          border: Border.all(color: ColorResources.colorCloud),
         ),
-        child: Row(
-          children: [
-            // Company Logo
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: company.name == 'บริษัท โซว์ไรจ์นิล จำกัด'
-                    ? Colors.blue[600]
-                    : Colors.orange,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: company.name == 'บริษัท โซว์ไรจ์นิล จำกัด'
-                    ? const Text(
-                  'bt',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                )
-                    : const Icon(
-                  Icons.business,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-
-            // Company Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            spacing: 8,
+            children: [
+              Row(
+                spacing: 16,
                 children: [
-                  RichText(
-                    text: _highlightSearchText(
-                      company.name,
-                      searchQuery,
-                      const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                  // Company Logo
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    child: Image.asset(
+                      company.logo, fit: BoxFit.cover
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    company.description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      height: 1.4,
+
+                  // Company Info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: _highlightSearchText(
+                            company.name,
+                            searchQuery,
+                            fontTitleStrong.copyWith(color: ColorResources.colorCharcoal)
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-            ),
-            const SizedBox(width: 12),
 
-            // Arrow Icon
-            Icon(
-              Icons.chevron_right,
-              color: Colors.grey[400],
-              size: 24,
-            ),
-          ],
+              Text(
+                company.description,
+                style: fontSmall.copyWith(color: ColorResources.colorPorpoise),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );

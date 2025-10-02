@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gradient_borders/gradient_borders.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
 import 'package:jobdeeo/src/features/job_board/screen/search_screen.dart';
+import '../../../../utils/time_utils.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
-import '../widgets/job_card.dart';
-import '../widgets/search_bar_widget.dart';
 import 'job_detail_screen.dart';
 
 class JobListScreen extends StatefulWidget {
@@ -21,67 +23,139 @@ class _JobListScreenState extends State<JobListScreen> {
     super.initState();
     context.read<JobBloc>().add(LoadAllJobs());
   }
+  bool _showAllJobs = true;
+  List _allCompanyJobs = [];
+  void _toggleFilter(List allJobs) {
+    setState(() {
+      _showAllJobs = !_showAllJobs;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.teal),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'งานแนะนำ',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+      backgroundColor: ColorResources.backgroundColor,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: ColorResources.colorCharcoal.withOpacity(0.08),
+                offset: const Offset(0, 1),
+                blurRadius: 3,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: Text(
+                'งานแนะนำ',
+                style: fontHeader5.copyWith(color: ColorResources.colorCharcoal)
+            ),
+            centerTitle: true,
           ),
         ),
-        centerTitle: true,
       ),
-      body: Column(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          spacing: 16,
         children: [
-          // Search Bar และปุ่มล่าสุด
+          // Search Bar
           Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
             child: Row(
+              spacing: 8,
               children: [
                 Expanded(
-                  child: SearchBarWidget(
-                    hintText: 'ค้นหางานหรือบริษัท',
+                  child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const SearchScreen(),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () {
-                    context.read<JobBloc>().add(SortJobsByDate());
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.teal,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: const Text(
-                      'ล่าสุด',
-                      style: TextStyle(
+                    child: Container(
+                      height: 36,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(color: ColorResources.colorCloud, width: 1),
+                      ),
+                      child: Row(
+                        spacing: 8,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.search_rounded, color: ColorResources.colorFlint, size: 16),
+                          Text('ค้นหางานหรือบริษัท',style: fontBody.copyWith(color: ColorResources.colorSilver))
+                        ],
                       ),
                     ),
                   ),
+                ),
+                // Filter Buttons
+                Row(
+                  spacing: 4,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (!_showAllJobs) {
+                          _toggleFilter(_allCompanyJobs);
+                        }
+                      },
+                      child: Container(
+                        height: 36,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: _showAllJobs ? ColorResources.primaryColor : Colors.white,
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                              color: _showAllJobs ? ColorResources.primaryColor : ColorResources.colorSmoke,
+                              width: 1
+                          ),
+                        ),
+                        child: Text(
+                            'ทั้งหมด',
+                            style: _showAllJobs
+                                ?fontBodyStrong.copyWith(color: Colors.white)
+                                :fontBody.copyWith(color: ColorResources.colorDarkGray)
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<JobBloc>().add(SortJobsByDate());
+                      },
+                      child: Container(
+                        height: 36,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: !_showAllJobs ? ColorResources.primaryColor : Colors.white,
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                              color: !_showAllJobs ? ColorResources.primaryColor : ColorResources.colorSmoke,
+                              width: 1
+                          ),
+                        ),
+                        child: Text(
+                            'ล่าสุด',
+                            style: !_showAllJobs
+                                ?fontBodyStrong.copyWith(color: Colors.white)
+                                :fontBody.copyWith(color: ColorResources.colorDarkGray)
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -120,7 +194,6 @@ class _JobListScreenState extends State<JobListScreen> {
                   }
 
                   return ListView.separated(
-                    padding: const EdgeInsets.all(16),
                     itemCount: state.jobs.length,
                     separatorBuilder: (context, index) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
@@ -134,7 +207,6 @@ class _JobListScreenState extends State<JobListScreen> {
                           ),
                         ).then((shouldRefresh) {
                           if (shouldRefresh == true) {
-                            // Reload jobs เมื่อกลับมา
                             context.read<JobBloc>().add(LoadAllJobs());
                           }
                         }),
@@ -180,12 +252,12 @@ class _JobListScreenState extends State<JobListScreen> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
 }
 
-// Job Card สำหรับหน้า List (แนวตั้ง)
 class JobListCard extends StatelessWidget {
   final job;
   final VoidCallback? onTap;
@@ -201,163 +273,132 @@ class JobListCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: 156,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.05),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          border: Border.all(color: ColorResources.colorCloud, width: 1),
         ),
         child: Column(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 16,
               children: [
-                // Company Logo
-                Container(
+                Image.asset(
+                  job.companyLogo,
                   width: 48,
                   height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.business,
-                    color: Colors.white,
-                    size: 24,
-                  ),
                 ),
-                const SizedBox(width: 12),
-
-                // Job Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         job.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+                        style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
                         job.companyName,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: fontBody.copyWith(color: ColorResources.colorPorpoise),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-
-                // Match Percentage
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  height: 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
-                    color: Colors.purple[50],
+                    gradient: ColorResources.gd3Gradient.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.purple[200]!),
+                    border: GradientBoxBorder(
+                      gradient: ColorResources.gd3Gradient,
+                      width: 1,
+                    ),
                   ),
                   child: Row(
+                    spacing: 2,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.diamond,
-                        size: 14,
-                        color: Colors.purple[600],
+                        size: 12,
+                        color: Color(0xFF596DF8),
                       ),
-                      const SizedBox(width: 4),
                       Text(
                         '${job.matchPercentage}%',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.purple[600],
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                        style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                      )
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
 
-            // Job Details
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
-                Icon(
-                  Icons.work_outline,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '${job.level}, ${job.workType}',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on_outlined,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  job.location,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            Row(
-              children: [
-                Icon(
-                  Icons.attach_money,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    job.salaryRange,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
+                Row(
+                  children: [
+                    Icon(
+                      Icons.work_outline,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Text(
+                        '${job.level}, ${job.workType}',
+                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                    ),
+                  ],
                 ),
-                Text(
-                  _getTimeAgo(job.postedAt),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[500],
-                  ),
+
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                        job.location,
+                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                    ),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.attach_money,
+                          size: 18,
+                          color: ColorResources.colorPorpoise,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                            job.salaryRange,
+                            style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                        ),
+                      ],
+                    ),
+                    Text(
+                        TimeUtils.getTimeAgo(job.postedAt),
+                        style: fontSmall.copyWith(color: ColorResources.colorFlint)
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -365,23 +406,5 @@ class JobListCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getTimeAgo(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inMinutes < 1) {
-      return 'เพิ่งลง';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays < 30) {
-      return '${difference.inDays}d ago';
-    } else {
-      final months = (difference.inDays / 30).floor();
-      return '${months}mo ago';
-    }
   }
 }

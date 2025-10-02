@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/features/job_board/screen/job_board_screen.dart';
-import 'package:jobdeeo/src/features/questionnaire/screen/questionaire_screen.dart';
 import 'package:jobdeeo/src/core/base/image_resource.dart';
 import '../features/community/community_screen.dart';
-import '../features/home/home_screen.dart';
 import '../features/learn/learn_scren.dart';
 import '../features/matching/screen/matching_screen.dart';
 import '../features/profile/profile_screen.dart';

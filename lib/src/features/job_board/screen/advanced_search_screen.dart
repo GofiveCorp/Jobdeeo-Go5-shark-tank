@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'job_list_screen.dart';
 import 'job_detail_screen.dart';
 
 class AdvancedSearchScreen extends StatefulWidget {

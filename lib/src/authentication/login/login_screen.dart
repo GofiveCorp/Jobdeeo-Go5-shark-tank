@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/features/questionnaire/screen/questionaire_screen.dart';
 
-import '../../config/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

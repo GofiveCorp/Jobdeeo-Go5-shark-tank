@@ -227,55 +227,7 @@ class _MatchingScreenState extends State<MatchingScreen>
     );
   }
 
-  Widget _buildCardIndicators(MatchingLoaded state) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Row(
-        children: List.generate(state.jobs.length, (index) {
-          final isActive = index == state.currentJobIndex;
-          return Expanded(
-            child: Container(
-              height: 3,
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              decoration: BoxDecoration(
-                color: isActive
-                    ? ColorResources.primaryColor
-                    : ColorResources.colorCloud,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
 
-  Widget _buildNavigationHint() {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.touch_app,
-              color: Colors.white,
-              size: 16,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'แตะด้านข้างเพื่อเปลี่ยนแท็บ',
-              style: fontSmall.copyWith(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildBottomBar() {
     return BlocBuilder<MatchingBloc, MatchingState>(

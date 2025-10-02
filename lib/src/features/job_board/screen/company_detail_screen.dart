@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jobdeeo/src/core/base/txt_styles.dart';
 
+import '../../../core/color_resources.dart';
 import '../bloc/company/company_bloc.dart';
 import '../bloc/company/company_event.dart';
 import '../bloc/company/company_state.dart';
@@ -92,24 +94,33 @@ class CompanyDetailAppBar extends StatelessWidget implements PreferredSizeWidget
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: ColorResources.colorCharcoal.withOpacity(0.08),
+              offset: const Offset(0, 1),
+              blurRadius: 3,
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.teal),
-        onPressed: () => Navigator.pop(context, true),
+        icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
+        onPressed: () => Navigator.pop(context),
       ),
       title: Text(
         companyName,
-        style: const TextStyle(
-          color: Colors.black87,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
+        style: fontHeader5.copyWith(color: ColorResources.colorCharcoal),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
       centerTitle: true,
+        )
     );
   }
 
@@ -131,18 +142,19 @@ class CompanyTabBar extends StatelessWidget {
       color: Colors.white,
       child: TabBar(
         controller: tabController,
-        labelColor: Colors.teal,
-        unselectedLabelColor: Colors.grey[600],
-        indicatorColor: Colors.teal,
+        labelColor: ColorResources.primaryColor,
+        unselectedLabelColor: ColorResources.colorPorpoise,
+        indicatorColor: ColorResources.primaryColor,
+        dividerColor: Colors.transparent,
         indicatorWeight: 2,
         isScrollable: true,
         tabAlignment: TabAlignment.start,
         tabs: const [
-          Tab(text: 'ข้อมูลบริษัท'),
-          Tab(text: 'สวัสดิการ'),
-          Tab(text: 'ไลฟ์สไตล์'),
-          Tab(text: 'ติดต่อ'),
-          Tab(text: 'ตำแหน่งที่เปิดรับ'),
+        Tab(child: Text( 'ข้อมูลบริษัท', style: fontBody)),
+          Tab(child: Text( 'สวัสดิการ', style: fontBody)),
+            Tab(child: Text( 'ไลฟ์สไตล์', style: fontBody)),
+              Tab(child: Text( 'ติดต่อ', style: fontBody)),
+                Tab(child: Text( 'ตำแหน่งที่เปิดรับ', style: fontBody)),
         ],
       ),
     );

@@ -4,7 +4,6 @@ import 'package:jobdeeo/src/core/color_resources.dart';
 
 import '../../../config/app_routes.dart';
 import '../models/questionnaire_models.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CompletionScreen extends StatelessWidget {
   final QuestionnaireCompleteData data;
