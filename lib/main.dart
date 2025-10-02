@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/app_start/presentation/splash_screen.dart';
 import 'package:jobdeeo/src/authentication/login/login_screen.dart';
 import 'package:jobdeeo/src/dashboard/dashboard_screen.dart';
+import 'package:jobdeeo/src/features/emsume/emsume_connect.dart';
+import 'package:jobdeeo/src/features/emsume/emsume_infomation.dart';
+import 'package:jobdeeo/src/features/emsume/resume_process_screen.dart';
+import 'package:jobdeeo/src/features/emsume/resume_upload_screen.dart';
 import 'src/config/app_routes.dart';
 
 
@@ -22,8 +26,12 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.splash,
       routes: {
         AppRoutes.splash: (_) => const SplashScreen(),
-        AppRoutes.login: (_) => const LoginScreen(),
         AppRoutes.dashboard: (_) => const DashboardScreen(),
+        AppRoutes.login: (_) => const LoginScreen(),
+        AppRoutes.emsumeConnect: (_) => const CreateEmsumeScreen(),
+        AppRoutes.resumeUpload: (_) => const ResumeUploadScreen(),
+        AppRoutes.resumeProcess: (_) => const ResumeProcessingScreen(),
+        AppRoutes.emsumeInformation: (_) => const EmsumeInfomationScreen(),
       },
     );
   }

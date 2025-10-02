@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:jobdeeo/src/core/base/image_resource.dart';
 import '../../config/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,16 +18,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // จำลองโหลดข้อมูล 2 วินาที
     Timer(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("🚀 Splash Screen", style: TextStyle(fontSize: 28)),
+    return Scaffold(
+    body: SizedBox.expand(  
+      child: SvgPicture.asset(
+        ImageResource.bgsplashScreen,
+        fit: BoxFit.cover, 
       ),
-    );
+    ),
+  );
+
   }
 }

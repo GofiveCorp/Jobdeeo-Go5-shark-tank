@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.1
+  dotted_border: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +56,7 @@ flutter:
   assets:
     - assets/profile_mockdata.json
     - assets/common/
+    - assets/common/bg/
   fonts:
     - family: gofive_bold
       fonts:
