@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/color_resource.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/features/questionnaire/screen/questionaire_screen.dart';
 
 class EmsumeInfomationScreen extends StatefulWidget {
   const EmsumeInfomationScreen({Key? key}) : super(key: key);
@@ -274,7 +275,12 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
                         ),
-                        onPressed: () {},
+                        onPressed: () {Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QuestionnaireScreen(),
+                          ),
+                        );},
                         child: const Text("ถัดไป"),
                       ),
                     ),

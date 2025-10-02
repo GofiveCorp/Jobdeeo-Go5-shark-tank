@@ -10,6 +10,7 @@ import 'package:jobdeeo/src/features/emsume/resume_upload_screen.dart';
 import 'package:jobdeeo/src/features/job_board/bloc/company/company_bloc.dart';
 import 'package:jobdeeo/src/features/job_board/bloc/job/job_bloc.dart';
 import 'package:jobdeeo/src/features/matching/bloc/matching_bloc.dart';
+import 'package:jobdeeo/src/features/matching/screen/matching_screen.dart';
 import 'src/config/app_routes.dart';
 
 
@@ -42,7 +43,9 @@ class MyApp extends StatelessWidget {
         AppRoutes.resumeUpload: (_) => const ResumeUploadScreen(),
         AppRoutes.resumeProcess: (_) => const ResumeProcessingScreen(),
         AppRoutes.emsumeInformation: (_) => const EmsumeInfomationScreen(),
+        AppRoutes.jobMatch: (_) => const MatchingScreen(),
       },
+    )
     );
   }
 }

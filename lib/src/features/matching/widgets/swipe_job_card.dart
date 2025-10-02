@@ -46,41 +46,59 @@ class SwipeJobCard extends StatelessWidget {
 
                 // Content area with tap zones
                 Expanded(
-                  child: Stack(
-                    children: [
-                      // Main content
-                      _buildTabContent(),
+                  child: GestureDetector(
+                    // ใช้ onTapUp แทน onTap เพื่อตรวจสอบตำแหน่ง
+                    onTapUp: (details) {
+                      final width = MediaQuery.of(context).size.width;
+                      final tapPosition = details.globalPosition.dx;
 
-                      // Invisible tap zones
-                      Row(
-                        children: [
-                          // Left tap zone
-                          Expanded(
-                            flex: 2,
-                            child: GestureDetector(
-                              onTap: _handleLeftTap,
-                              child: Container(
-                                color: Colors.transparent,
-                                height: double.infinity,
-                              ),
-                            ),
-                          ),
-                          // Right tap zone
-                          Expanded(
-                            flex: 3,
-                            child: GestureDetector(
-                              onTap: _handleRightTap,
-                              child: Container(
-                                color: Colors.transparent,
-                                height: double.infinity,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                      // แบ่งหน้าจอเป็น 2 ส่วน
+                      if (tapPosition < width * 0.4) {
+                        _handleLeftTap();
+                      } else if (tapPosition > width * 0.6) {
+                        _handleRightTap();
+                      }
+                    },
+                    // อนุญาตให้ scroll ทำงานได้
+                    child: _buildTabContent(),
                   ),
                 ),
+                // Expanded(
+                //   child: Stack(
+                //     children: [
+                //       // Main content
+                //       _buildTabContent(),
+                //
+                //       // Invisible tap zones
+                //       Row(
+                //         children: [
+                //           // Left tap zone
+                //           Expanded(
+                //             flex: 2,
+                //             child: GestureDetector(
+                //               onTap: _handleLeftTap,
+                //               child: Container(
+                //                 color: Colors.transparent,
+                //                 height: double.infinity,
+                //               ),
+                //             ),
+                //           ),
+                //           // Right tap zone
+                //           Expanded(
+                //             flex: 3,
+                //             child: GestureDetector(
+                //               onTap: _handleRightTap,
+                //               child: Container(
+                //                 color: Colors.transparent,
+                //                 height: double.infinity,
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -222,7 +240,7 @@ class SwipeJobCard extends StatelessWidget {
   }
 
   Widget _buildTabContent() {
-    return SingleChildScrollView( // เพิ่ม scroll ให้ content
+    return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.all(16),
         child: _getTabContent(),
@@ -233,7 +251,7 @@ class SwipeJobCard extends StatelessWidget {
   Widget _getTabContent() {
     switch (currentTabIndex) {
       case 0:
-        return OverviewTab(job: job);
+        return OverviewSwipeTab(job: job);
       case 1:
         return const QualificationsTab();
       case 2:
@@ -241,7 +259,7 @@ class SwipeJobCard extends StatelessWidget {
       case 3:
         return const ContactTab();
       default:
-        return OverviewTab(job: job);
+        return OverviewSwipeTab(job: job);
     }
   }
 
@@ -275,5 +293,111 @@ class SwipeJobCard extends StatelessWidget {
       final months = (difference.inDays / 30).floor();
       return '${months}mo ago';
     }
+  }
+}
+
+class OverviewSwipeTab extends StatelessWidget {
+  final JobModel job;
+
+  const OverviewSwipeTab({super.key, required this.job});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Column(
+          spacing: 16,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _buildSkillChip('Swift', 'สูง', Color(0xFF3AA8AF)),
+                const SizedBox(width: 8),
+                _buildSkillChip('Kotlin', 'กลาง', Color(0xFF7E4FFE)),
+              ],
+            ),
+
+            // Job Details
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: [
+                _buildDetailRow(Icons.work_outline, '${job.level}, ${job.workType}'),
+                _buildDetailRow(Icons.location_on_outlined, job.location),
+                _buildDetailRow(Icons.attach_money, job.salaryRange),
+              ],
+            ),
+            const Divider(color: ColorResources.colorCloud, thickness: 1),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                TabSectionHeader(
+                  icon: Icons.work,
+                  title: 'ภาพรวมของตำแหน่งงาน',
+                ),
+                Text(
+                    'As a Systems Analyst, you will be responsible for analyzing, designing, and implementing computer systems to meet the needs of our organization. You can work individually on a project or collaborate with a team of other systems analysts on multiple projects.',
+                    style: fontBody.copyWith(color: ColorResources.colorLead)
+                ),
+              ],
+            ),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: ColorResources.colorPorpoise,
+        ),
+        const SizedBox(width: 8),
+        Text(
+            text,
+            style: fontBody.copyWith(color: ColorResources.colorPorpoise)
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSkillChip(String skill, String level, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+              skill,
+              style: fontSmallStrong.copyWith(color: color)
+          ),
+          const SizedBox(width: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(
+                level,
+                style: fontExtraSmallStrong.copyWith(color: Colors.white)
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

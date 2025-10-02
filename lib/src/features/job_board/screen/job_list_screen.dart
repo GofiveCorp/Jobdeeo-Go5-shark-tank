@@ -8,6 +8,7 @@ import '../../../../utils/time_utils.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
+import 'advanced_search_screen.dart';
 import 'job_detail_screen.dart';
 
 class JobListScreen extends StatefulWidget {
@@ -79,7 +80,7 @@ class _JobListScreenState extends State<JobListScreen> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
+                        builder: (context) => const AdvancedSearchScreen(),
                       ),
                     ),
                     child: Container(

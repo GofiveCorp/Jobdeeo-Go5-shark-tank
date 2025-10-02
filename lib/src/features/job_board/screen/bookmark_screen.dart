@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_borders/gradient_borders.dart';
+import 'package:jobdeeo/src/core/color_resources.dart';
+import 'package:jobdeeo/src/features/job_board/models/job_model.dart';
 
+import '../../../../utils/time_utils.dart';
+import '../../../core/base/txt_styles.dart';
 import '../widgets/job_section/job_tab_content.dart';
 import 'job_detail_screen.dart';
 
@@ -29,8 +34,36 @@ class _BookmarkScreenState extends State<BookmarkScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: BookmarkAppBar(),
+      backgroundColor: ColorResources.backgroundColor,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: ColorResources.colorCharcoal.withOpacity(0.08),
+                offset: const Offset(0, 1),
+                blurRadius: 3,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: Text(
+                'งานของฉัน',
+                style: fontHeader5.copyWith(color: ColorResources.colorCharcoal)
+            ),
+            centerTitle: true,
+          ),
+        ),
+      ),
       body: Column(
         children: [
           BookmarkTabBar(tabController: _tabController),
@@ -93,29 +126,33 @@ class BookmarkTabBar extends StatelessWidget {
       color: Colors.white,
       child: TabBar(
         controller: tabController,
-        labelColor: Colors.teal,
-        unselectedLabelColor: Colors.grey[600],
-        indicatorColor: Colors.teal,
+        labelColor: ColorResources.primaryColor,
+        unselectedLabelColor: ColorResources.colorPorpoise,
+        indicatorColor: ColorResources.primaryColor,
         indicatorWeight: 2,
+        dividerColor: Colors.transparent,
+        isScrollable: true,
+        tabAlignment: TabAlignment.start,
+        indicatorSize: TabBarIndicatorSize.label,
+        labelPadding: EdgeInsets.only(right: 30, left: 0),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         tabs: [
           Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('งานที่บันทึก'),
+                const Text('งานที่บันทึก', style: fontBody),
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.teal,
+                    color: ColorResources.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Text(
+                  child: Text(
                     '2',
-                    style: TextStyle(
+                    style: fontBody.copyWith(
                       color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -124,27 +161,25 @@ class BookmarkTabBar extends StatelessWidget {
           ),
           Tab(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('งานที่สมัคร'),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.teal,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Text(
-                    '1',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+          const Text('งานที่สมัคร', style: fontBody),
+          const SizedBox(width: 8),
+          Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+          color: ColorResources.primaryColor,
+          borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+          '1',
+          style: fontBody.copyWith(
+          color: Colors.white,
+          ),
+          ),
+    ),
+    ],
+    ),
           ),
         ],
       ),
@@ -163,26 +198,28 @@ class SavedJobsTab extends StatelessWidget {
       {
         'id': '1',
         'title': 'UX/UI Designer',
-        'company': 'Gofive',
+        'companyName': 'Gofive',
+        'companyLogo' : 'assets/mock/company_logo_mock.png',
         'level': 'Senior',
-        'type': 'Full time',
+        'workType': 'Full time',
         'location': 'Bangkok',
-        'salary': '200,000 - 350,000',
+        'salaryRange': '200,000 - 350,000',
         'match': '89%',
-        'time': '1m ago',
+        'postedAt': DateTime.now().subtract(Duration(minutes: 1)),
         'applicationDate': null,
         'hasBookmarkIcon': true,
       },
       {
         'id': '2',
         'title': 'Sales Manager',
-        'company': 'Gofive',
+        'companyName': 'Gofive',
+        'companyLogo' : 'assets/mock/company_logo_mock.png',
         'level': 'Senior',
-        'type': 'Full time',
+        'workType': 'Full time',
         'location': 'Bangkok',
-        'salary': '200,000 - 350,000',
+        'salaryRange': '200,000 - 350,000',
         'match': '79%',
-        'time': '1m ago',
+        'postedAt': DateTime.now().subtract(Duration(minutes: 1)),
         'applicationDate': null,
         'hasBookmarkIcon': true,
       },
@@ -221,13 +258,14 @@ class AppliedJobsTab extends StatelessWidget {
       {
         'id': '3',
         'title': 'UX/UI Designer',
-        'company': 'Gofive',
+        'companyName': 'Gofive',
+        'companyLogo' : 'assets/mock/company_logo_mock.png',
         'level': 'Senior',
-        'type': 'Full time',
+        'workType': 'Full time',
         'location': 'Bangkok',
-        'salary': '200,000 - 350,000',
+        'salaryRange': '200,000 - 350,000',
         'match': '89%',
-        'time': '1m ago',
+        'postedAt': DateTime.now().subtract(Duration(minutes: 1)),
         'applicationDate': 'สมัครเมื่อ 9/9/68',
         'hasApplicationIcon': true,
       },
@@ -257,7 +295,7 @@ class AppliedJobsTab extends StatelessWidget {
 
 // Job Card for both tabs
 class BookmarkJobCard extends StatelessWidget {
-  final Map<String, dynamic> job;
+  final job;
   final VoidCallback? onTap;
 
   const BookmarkJobCard({
@@ -271,113 +309,103 @@ class BookmarkJobCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: 156,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.05),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          border: Border.all(color: ColorResources.colorCloud, width: 1),
         ),
         child: Column(
+          spacing: 8,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 16,
               children: [
-                Container(
+                Image.asset(
+                  // job.companyLogo,
+                  job['companyLogo'],
                   width: 48,
                   height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.business,
-                    color: Colors.white,
-                    size: 24,
-                  ),
                 ),
-                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
+                        // job.title,
                         job['title'],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+                        style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
-                        job['company'],
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
+                        // job.companyName,
+                        job['companyName'],
+                        style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
                 Row(
+                  spacing: 4,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      height: 20,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Colors.purple[50],
+                        gradient: ColorResources.gd3Gradient.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.purple[200]!),
+                        border: GradientBoxBorder(
+                          gradient: ColorResources.gd3Gradient,
+                          width: 1,
+                        ),
                       ),
                       child: Row(
+                        spacing: 2,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.diamond,
-                            size: 14,
-                            color: Colors.purple[600],
+                            size: 12,
+                            color: Color(0xFF596DF8),
                           ),
-                          const SizedBox(width: 4),
                           Text(
-                            job['match'],
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.purple[600],
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                            // '${job.matchPercentage}%',
+                            '${job['match']}',
+                            style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                          )
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
                     if (job['hasBookmarkIcon'] == true)
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                          color: Colors.teal,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.bookmark,
                           color: Colors.white,
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(color: ColorResources.buttonColor, width: 1),
+                        ),
+                        child: Icon(
+                          Icons.bookmark_rounded,
+                          color: ColorResources.buttonColor,
                           size: 16,
                         ),
                       ),
                     if (job['hasApplicationIcon'] == true)
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                          color: Colors.teal,
-                          borderRadius: BorderRadius.circular(8),
+                          color: ColorResources.primaryColor,
+                          borderRadius: BorderRadius.circular(100),
                         ),
                         child: const Icon(
-                          Icons.send,
+                          Icons.send_rounded,
                           color: Colors.white,
                           size: 16,
                         ),
@@ -386,67 +414,67 @@ class BookmarkJobCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Row(
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
-                Icon(
-                  Icons.work_outline,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '${job['level']}, ${job['type']}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on_outlined,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  job['location'],
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  Icons.attach_money,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    job['salary'],
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.work_outline,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Text(
+                        // '${job.level}, ${job.workType}',
+                        '${job['level']}, ${job['workType']}',
+                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                    ),
+                  ],
                 ),
-                Text(
-                  job['applicationDate'] ?? job['time'],
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: job['applicationDate'] != null ? Colors.teal : Colors.grey[500],
-                    fontWeight: job['applicationDate'] != null ? FontWeight.w500 : FontWeight.normal,
-                  ),
+
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 18,
+                      color: ColorResources.colorPorpoise,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                        // job.location,
+                        job['location'],
+                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                    ),
+                  ],
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.attach_money,
+                          size: 18,
+                          color: ColorResources.colorPorpoise,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                            // job.salaryRange,
+                            job['salaryRange'],
+                            style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                        ),
+                      ],
+                    ),
+                    Text(
+                        // TimeUtils.getTimeAgo(job.postedAt),
+                        TimeUtils.getTimeAgo(job['postedAt']),
+                        style: fontSmall.copyWith(color: ColorResources.colorFlint)
+                    ),
+                  ],
                 ),
               ],
             ),

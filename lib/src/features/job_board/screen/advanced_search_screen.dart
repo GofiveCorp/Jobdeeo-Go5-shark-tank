@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/features/job_board/screen/job_list_screen.dart';
+import '../../../core/base/color_resource.dart';
+import '../../../core/base/txt_styles.dart';
 import 'job_detail_screen.dart';
 
 class AdvancedSearchScreen extends StatefulWidget {
@@ -55,7 +58,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FilteredJobListScreen(searchParams: searchParams),
+        // builder: (context) => FilteredJobListScreen(searchParams: searchParams),
+        builder: (context) => JobListScreen(),
       ),
     );
   }
@@ -63,9 +67,20 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF26C6DA),
-      appBar: AdvancedSearchAppBar(),
-      body: Padding(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF3BB7C5),
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: ColorResources.gd1Gradient,
+          ),
+          child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -96,29 +111,9 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
             const Spacer(),
           ],
         ),
-      ),
+      ),),
     );
   }
-}
-
-// App Bar
-class AdvancedSearchAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const AdvancedSearchAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: const Color(0xFF26C6DA),
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () => Navigator.pop(context),
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 // Search Form
@@ -151,13 +146,13 @@ class AdvancedSearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 16,
       children: [
         // Search Bar with Search Button
         SearchInputWithButton(
           controller: searchController,
           onSearch: onSearch,
         ),
-        const SizedBox(height: 16),
 
         // Category Dropdown
         FilterDropdown(
@@ -165,7 +160,6 @@ class AdvancedSearchForm extends StatelessWidget {
           items: categories,
           onChanged: onCategoryChanged,
         ),
-        const SizedBox(height: 16),
 
         // Province Dropdown
         FilterDropdown(
@@ -173,7 +167,6 @@ class AdvancedSearchForm extends StatelessWidget {
           items: provinces,
           onChanged: onProvinceChanged,
         ),
-        const SizedBox(height: 16),
 
         // Transportation Filter
         TransportationFilter(
@@ -198,61 +191,49 @@ class SearchInputWithButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    return Container(
+      height: 40,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: ColorResources.colorCloud, width: 1),
+      ),
+      child: Row(
+        spacing: 8,
+        children: [
+          Icon(Icons.search_rounded, color: ColorResources.colorFlint, size: 16),
+          Expanded(
+            child: TextField(
+                controller: controller,
+              cursorColor: ColorResources.primaryColor,
+              style: fontBody.copyWith(color: ColorResources.colorCharcoal),
+              decoration: InputDecoration(
+                  hintText: 'ค้นหางานหรือบริษัท',
+                  hintStyle: fontBody.copyWith(color: ColorResources.colorSilver),
+                  border: InputBorder.none
+            ),
+          ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(25),
+              color: ColorResources.buttonColor,
+              borderRadius: BorderRadius.circular(200),
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.search,
-                  color: Colors.grey[600],
-                  size: 20,
+            child: GestureDetector(
+              onTap: onSearch,
+              child: Text(
+                'หางาน',
+                style: fontBodyStrong.copyWith(
+                  color: Colors.white
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      hintText: 'ค้นหางานหรือบริษัท',
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 16,
-                      ),
-                    ),
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: GestureDetector(
-            onTap: onSearch,
-            child: const Text(
-              'หางาน',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF26C6DA),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -273,25 +254,25 @@ class FilterDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      height: 40,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: ColorResources.colorSmoke, width: 1),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 16,
-          ),
+          icon: Icon(Icons.keyboard_arrow_down_rounded, color: ColorResources.colorFlint),
+          style: fontBody.copyWith(color: ColorResources.colorFlint),
           onChanged: onChanged,
           items: items.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
-              child: Text(value),
+              child: Text(value, style: fontBody.copyWith(color: ColorResources.colorCharcoal)),
             );
           }).toList(),
         ),
@@ -316,23 +297,22 @@ class TransportationFilter extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showTransportationModal(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        height: 40,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: ColorResources.colorSmoke, width: 1),
         ),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 selectedValue,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
-                ),
+                style: fontBody.copyWith(color: ColorResources.colorCharcoal)
               ),
             ),
-            Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+            Icon(Icons.keyboard_arrow_down_rounded, color: ColorResources.colorFlint),
           ],
         ),
       ),
@@ -344,7 +324,7 @@ class TransportationFilter extends StatelessWidget {
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
       builder: (context) => TransportationModal(
         selectedValue: selectedValue,
@@ -456,19 +436,21 @@ class _TransportationModalState extends State<TransportationModal> {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 12,
         mainAxisSize: MainAxisSize.min,
         children: [
           // Search Bar
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            height: 36,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(25),
+              color: ColorResources.colorSoftCloud,
+              borderRadius: BorderRadius.circular(100),
             ),
             child: Row(
+              spacing: 8,
               children: [
-                Icon(Icons.search, color: Colors.grey[600], size: 20),
-                const SizedBox(width: 12),
+                Icon(Icons.search_rounded, color: ColorResources.colorPewter, size: 16),
                 Expanded(
                   child: TextField(
                     controller: _searchController,
@@ -476,32 +458,22 @@ class _TransportationModalState extends State<TransportationModal> {
                     decoration: InputDecoration(
                       hintText: 'ค้นหาการเดินทาง',
                       border: InputBorder.none,
-                      hintStyle: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
+                      hintStyle: fontBody.copyWith(color: ColorResources.colorFlint)
                     ),
-                    style: const TextStyle(fontSize: 14),
+                    style: fontBody.copyWith(color: ColorResources.colorCharcoal),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-
           // Title
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'เลือกทั้งหมด',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+                style: fontBodyStrong.copyWith(color: ColorResources.colorCharcoal)
             ),
           ),
-          const SizedBox(height: 16),
 
           // Transportation Options
           Flexible(
@@ -544,11 +516,11 @@ class TransportationOption extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        margin: const EdgeInsets.only(bottom: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.teal : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          color: isSelected ? ColorResources.primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
           children: [
@@ -560,10 +532,10 @@ class TransportationOption extends StatelessWidget {
                 border: Border.all(
                   color: isSelected ? Colors.white : Colors.grey[300]!,
                 ),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(2),
               ),
               child: isSelected
-                  ? const Icon(Icons.check, size: 14, color: Colors.teal)
+                  ? Icon(Icons.check, size: 14, color: ColorResources.primaryColor)
                   : null,
             ),
             const SizedBox(width: 12),
@@ -579,15 +551,13 @@ class TransportationOption extends StatelessWidget {
             Expanded(
               child: Text(
                 option['name'],
-                style: TextStyle(
-                  fontSize: 14,
-                  color: isSelected ? Colors.white : Colors.black87,
-                ),
+                  style: fontBody.copyWith(color: isSelected ?Colors.white :ColorResources.colorCharcoal)
               ),
             ),
             Icon(
-              Icons.chevron_right,
-              color: isSelected ? Colors.white : Colors.grey[400],
+              Icons.chevron_right_rounded,
+              size: 16,
+              color: isSelected ? Colors.white : ColorResources.colorPorpoise,
             ),
           ],
         ),

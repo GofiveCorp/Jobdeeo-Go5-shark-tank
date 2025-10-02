@@ -130,48 +130,10 @@ class _MatchingScreenState extends State<MatchingScreen>
   }
 
   Widget _buildEmptyState() {
+    context.read<MatchingBloc>().add(ResetCards());
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.work_outline,
-            size: 64,
-            color: ColorResources.colorPorpoise,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'ไม่มีงานที่เหมาะสมแล้ว',
-            style: fontBodyStrong.copyWith(
-              color: ColorResources.colorCharcoal,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'ลองปรับการตั้งค่าการค้นหาของคุณ',
-            style: fontBody.copyWith(
-              color: ColorResources.colorPorpoise,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              context.read<MatchingBloc>().add(ResetCards());
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorResources.primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            child: const Text('เริ่มใหม่'),
-          ),
-        ],
+      child: Text(
+        '',
       ),
     );
   }
@@ -249,9 +211,7 @@ class _MatchingScreenState extends State<MatchingScreen>
                 icon: Icons.refresh_rounded,
                 color: Colors.grey,
                 onTap: () {
-                  context.read<MatchingBloc>().add(
-                    SwipeLeft(state.currentJob.id),
-                  );
+                  context.read<MatchingBloc>().add(ResetCards());
                 },
               ),
 

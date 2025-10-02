@@ -6,4 +6,5 @@ class AppRoutes {
   static const String resumeUpload = '/resumeUpload';
   static const String resumeProcess = '/resumeProcess';
   static const String emsumeInformation = '/emsumeInformation';
+  static const String jobMatch = '/jobMatch';
 }
