@@ -420,7 +420,7 @@ class _CompanyJobsWidgetState extends State<CompanyJobsWidget> {
               } else if (state is JobLoaded) {
                 // Filter jobs by company
                 final companyJobs = state.jobs
-                    .where((job) => job.companyName == widget.companyName)
+                    .where((job) => job.company.name == widget.companyName)
                     .toList();
 
                 // Update all company jobs for filtering

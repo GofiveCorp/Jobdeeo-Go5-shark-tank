@@ -3,7 +3,7 @@ import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 import '../../../../../utils/time_utils.dart';
-import '../../models/job_model.dart';
+import '../../../matching/models/job_model.dart';
 
 class JobAppBarInfo extends StatelessWidget {
   final JobModel job;
@@ -31,7 +31,7 @@ class JobAppBarInfo extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            job.companyName,
+            job.company.name,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[600],
@@ -69,7 +69,7 @@ class JobOverviewDetails extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Image.asset(
-                job.companyLogo,
+                'assets/mock/company_logo_mock.png',
                 width: 48,
                 height: 48,
               ),
@@ -85,7 +85,7 @@ class JobOverviewDetails extends StatelessWidget {
                     style: fontHeader4.copyWith(color: ColorResources.colorIron)
                   ),
                   Text(
-                    job.companyName,
+                    job.company.name,
                     style: fontTitleStrong.copyWith(color: ColorResources.colorPorpoise)
                   ),
                 ],
@@ -95,7 +95,7 @@ class JobOverviewDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    TimeUtils.getTimeAgo(job.postedAt),
+                    job.postedAgo,
                     style: fontSmall.copyWith(color: ColorResources.colorFlint)
                 ),
               ],
@@ -124,7 +124,7 @@ class JobOverviewDetails extends StatelessWidget {
                 color: Color(0xFF596DF8),
               ),
               Text(
-                '${job.matchPercentage}% Skill Matches',
+                '${job.aiSkillMatch.score * 10}% Skill Matches',
                 style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
               )
             ],
@@ -132,12 +132,11 @@ class JobOverviewDetails extends StatelessWidget {
         ),
         // Skills Section
         Row(
+          spacing: 8,
           children: [
-            _buildSkillChip('Swift', 'สูง', Color(0xFF3AA8AF)),
-            const SizedBox(width: 8),
-            _buildSkillChip('Kotlin', 'กลาง', Color(0xFF7E4FFE)),
-            const SizedBox(width: 8),
-            _buildSkillChip('Firebase', 'เบื้องต้น', Color(0xFF4C97FF)),
+            _buildSkillChip(job.skills[0].name, job.skills[0].level, Color(0xFF3AA8AF)),
+            _buildSkillChip(job.skills[1].name, job.skills[1].level, Color(0xFF7E4FFE)),
+            _buildSkillChip(job.skills[2].name, job.skills[2].level, Color(0xFF4C97FF)),
           ],
         ),
 
@@ -146,9 +145,9 @@ class JobOverviewDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [
-            _buildDetailRow(Icons.work_outline, '${job.level}, ${job.workType}'),
-            _buildDetailRow(Icons.location_on_outlined, job.location),
-            _buildDetailRow(Icons.attach_money, job.salaryRange),
+            _buildDetailRow(Icons.work_outline, '${job.employment.seniority}, ${job.employment.type}'),
+            _buildDetailRow(Icons.location_on_outlined, job.location.city),
+            _buildDetailRow(Icons.attach_money, '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}'),
             Row(
               children: [
                 Image.asset('assets/common/img_bts.png'

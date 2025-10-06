@@ -1,17 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../utils/mock_data.dart';
-import '../../job_board/models/job_model.dart';
+import '../models/job_model.dart';
+import '../repositories/matching_repositories.dart';
 import 'matching_event.dart';
 import 'matching_state.dart';
 
 class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
-  MatchingBloc() : super(MatchingInitial()) {
+  final MatchingRepository repository;
+
+  MatchingBloc({required this.repository}) : super(MatchingInitial()) {
     on<LoadMatchingJobs>(_onLoadMatchingJobs);
     on<ChangeTab>(_onChangeTab);
     on<NextCard>(_onNextCard);
     on<PreviousCard>(_onPreviousCard);
     on<SwipeLeft>(_onSwipeLeft);
     on<SwipeRight>(_onSwipeRight);
+    on<BookmarkJob>(_onBookmarkJob);
     on<ResetCards>(_onResetCards);
   }
 
@@ -21,9 +24,7 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       ) async {
     emit(MatchingLoading());
     try {
-      // Simulate API call delay
-      await Future.delayed(const Duration(milliseconds: 800));
-      final jobs = MockData.getRecommendedJobs();
+      final jobs = await repository.fetchAllJobs();
 
       if (jobs.isEmpty) {
         emit(MatchingEmpty());
@@ -35,7 +36,7 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
         ));
       }
     } catch (e) {
-      emit(MatchingError('Failed to load jobs'));
+      emit(MatchingError('Failed to load jobs: ${e.toString()}'));
     }
   }
 
@@ -58,7 +59,7 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       if (currentState.hasNextCard) {
         emit(currentState.copyWith(
           currentJobIndex: currentState.currentJobIndex + 1,
-          currentTabIndex: 0, // Reset to first tab when changing card
+          currentTabIndex: 0,
         ));
       }
     }
@@ -73,7 +74,7 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       if (currentState.hasPreviousCard) {
         emit(currentState.copyWith(
           currentJobIndex: currentState.currentJobIndex - 1,
-          currentTabIndex: 0, // Reset to first tab when changing card
+          currentTabIndex: 0,
         ));
       }
     }
@@ -85,14 +86,12 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       ) {
     if (state is MatchingLoaded) {
       final currentState = state as MatchingLoaded;
-      // Remove the current job from the list
       final updatedJobs = List<JobModel>.from(currentState.jobs)
         ..removeWhere((job) => job.id == event.jobId);
 
       if (updatedJobs.isEmpty) {
         emit(MatchingEmpty());
       } else {
-        // Adjust current index if needed
         int newIndex = currentState.currentJobIndex;
         if (newIndex >= updatedJobs.length) {
           newIndex = updatedJobs.length - 1;
@@ -113,9 +112,24 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       ) {
     if (state is MatchingLoaded) {
       final currentState = state as MatchingLoaded;
-      // Similar to swipe left - remove current job
+
+      final currentJob = currentState.currentJob;
+      final shouldShowSuccess = currentJob.actionFromCompany;
+
+      // ✅ เรียก API สมัครงานทันที
+      repository.applyJob(currentJob).then((_) {
+        print('✅ Job ${currentJob.id} applied successfully via swipe right');
+      }).catchError((e) {
+        print('❌ Error applying job via swipe right: $e');
+      });
+
       final updatedJobs = List<JobModel>.from(currentState.jobs)
         ..removeWhere((job) => job.id == event.jobId);
+
+      if (shouldShowSuccess) {
+        emit(MatchingSuccess(job: currentJob));
+        return;
+      }
 
       if (updatedJobs.isEmpty) {
         emit(MatchingEmpty());
@@ -134,10 +148,66 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
     }
   }
 
+  // ✅ แก้ไข: เรียก API เพื่อบันทึกงาน
+  Future<void> _onBookmarkJob(
+      BookmarkJob event,
+      Emitter<MatchingState> emit,
+      ) async {
+    if (state is MatchingLoaded) {
+      final currentState = state as MatchingLoaded;
+
+      try {
+        // เรียก API เพื่อบันทึกงาน
+        await repository.bookmarkJob(event.jobId);
+        print('✅ Job ${event.jobId} bookmarked successfully');
+
+        // ลบการ์ดออกจาก list หลังจากบันทึก
+        final updatedJobs = List<JobModel>.from(currentState.jobs)
+          ..removeWhere((job) => job.id == event.jobId);
+
+        if (updatedJobs.isEmpty) {
+          emit(MatchingEmpty());
+        } else {
+          int newIndex = currentState.currentJobIndex;
+          if (newIndex >= updatedJobs.length) {
+            newIndex = updatedJobs.length - 1;
+          }
+
+          emit(currentState.copyWith(
+            jobs: updatedJobs,
+            currentJobIndex: newIndex,
+            currentTabIndex: 0,
+          ));
+        }
+      } catch (e) {
+        print('❌ Error bookmarking job: $e');
+        // ถ้า API ล้มเหลว ก็ยังคงลบการ์ดออก (optional: แสดง error message)
+        final updatedJobs = List<JobModel>.from(currentState.jobs)
+          ..removeWhere((job) => job.id == event.jobId);
+
+        if (updatedJobs.isEmpty) {
+          emit(MatchingEmpty());
+        } else {
+          int newIndex = currentState.currentJobIndex;
+          if (newIndex >= updatedJobs.length) {
+            newIndex = updatedJobs.length - 1;
+          }
+
+          emit(currentState.copyWith(
+            jobs: updatedJobs,
+            currentJobIndex: newIndex,
+            currentTabIndex: 0,
+          ));
+        }
+      }
+    }
+  }
+
   void _onResetCards(
       ResetCards event,
       Emitter<MatchingState> emit,
       ) {
+    repository.resetCardIndex();
     add(LoadMatchingJobs());
   }
 }

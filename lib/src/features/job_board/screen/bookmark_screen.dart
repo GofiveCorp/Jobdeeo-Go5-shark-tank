@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import 'package:jobdeeo/src/features/job_board/models/job_model.dart';
 
-import '../../../../utils/time_utils.dart';
 import '../../../core/base/txt_styles.dart';
-import '../widgets/job_section/job_tab_content.dart';
+import '../../matching/repositories/matching_repositories.dart';
+import '../bloc/bookmark/bookmark_bloc.dart';
+import '../bloc/bookmark/bookmark_event.dart';
+import '../bloc/bookmark/bookmark_state.dart';
 import 'job_detail_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
@@ -33,82 +35,58 @@ class _BookmarkScreenState extends State<BookmarkScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorResources.backgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: ColorResources.colorCharcoal.withOpacity(0.08),
-                offset: const Offset(0, 1),
-                blurRadius: 3,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
-              onPressed: () => Navigator.pop(context),
-            ),
-            title: Text(
-                'งานของฉัน',
-                style: fontHeader5.copyWith(color: ColorResources.colorCharcoal)
-            ),
-            centerTitle: true,
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          BookmarkTabBar(tabController: _tabController),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: const [
-                SavedJobsTab(),
-                AppliedJobsTab(),
+    return BlocProvider(
+      // สร้าง BookmarkBloc และ load bookmarked jobs
+      create: (context) => BookmarkBloc(repository: MatchingRepository())
+        ..add(LoadBookmarkedJobs()),
+      child: Scaffold(
+        backgroundColor: ColorResources.backgroundColor,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: ColorResources.colorCharcoal.withOpacity(0.08),
+                  offset: const Offset(0, 1),
+                  blurRadius: 3,
+                  spreadRadius: 0,
+                ),
               ],
             ),
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios_new_rounded,
+                    color: ColorResources.buttonColor),
+                onPressed: () => Navigator.pop(context),
+              ),
+              title: Text('งานของฉัน',
+                  style: fontHeader5.copyWith(
+                      color: ColorResources.colorCharcoal)),
+              centerTitle: true,
+            ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-// App Bar
-class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const BookmarkAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.teal),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: const Text(
-        'งานของฉัน',
-        style: TextStyle(
-          color: Colors.black87,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
+        ),
+        body: Column(
+          children: [
+            BookmarkTabBar(tabController: _tabController),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  SavedJobsTab(),
+                  AppliedJobsTab(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-      centerTitle: true,
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 // Tab Bar
@@ -138,10 +116,35 @@ class BookmarkTabBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16),
         tabs: [
           Tab(
+            child: BlocBuilder<BookmarkBloc, BookmarkState>(
+              builder: (context, state) {
+                final count = state is BookmarkLoaded ? state.jobs.length : 0;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('งานที่บันทึก', style: fontBody.copyWith()),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: ColorResources.primaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '$count',
+                        style: fontBody.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          Tab(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('งานที่บันทึก', style: fontBody),
+                Text('งานที่สมัคร', style: fontBody.copyWith()),
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -150,36 +153,12 @@ class BookmarkTabBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    '2',
-                    style: fontBody.copyWith(
-                      color: Colors.white,
-                    ),
+                    '0',
+                    style: fontBody.copyWith(color: Colors.white),
                   ),
                 ),
               ],
             ),
-          ),
-          Tab(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          const Text('งานที่สมัคร', style: fontBody),
-          const SizedBox(width: 8),
-          Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(
-          color: ColorResources.primaryColor,
-          borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-          '1',
-          style: fontBody.copyWith(
-          color: Colors.white,
-          ),
-          ),
-    ),
-    ],
-    ),
           ),
         ],
       ),
@@ -187,115 +166,135 @@ class BookmarkTabBar extends StatelessWidget {
   }
 }
 
-// Saved Jobs Tab
+// Saved Jobs Tab - ใช้ BlocBuilder แทน mock data
 class SavedJobsTab extends StatelessWidget {
   const SavedJobsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Mock data for saved jobs
-    final savedJobs = [
-      {
-        'id': '1',
-        'title': 'UX/UI Designer',
-        'companyName': 'Gofive',
-        'companyLogo' : 'assets/mock/company_logo_mock.png',
-        'level': 'Senior',
-        'workType': 'Full time',
-        'location': 'Bangkok',
-        'salaryRange': '200,000 - 350,000',
-        'match': '89%',
-        'postedAt': DateTime.now().subtract(Duration(minutes: 1)),
-        'applicationDate': null,
-        'hasBookmarkIcon': true,
-      },
-      {
-        'id': '2',
-        'title': 'Sales Manager',
-        'companyName': 'Gofive',
-        'companyLogo' : 'assets/mock/company_logo_mock.png',
-        'level': 'Senior',
-        'workType': 'Full time',
-        'location': 'Bangkok',
-        'salaryRange': '200,000 - 350,000',
-        'match': '79%',
-        'postedAt': DateTime.now().subtract(Duration(minutes: 1)),
-        'applicationDate': null,
-        'hasBookmarkIcon': true,
-      },
-    ];
-
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: savedJobs.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final job = savedJobs[index];
-        return BookmarkJobCard(
-          job: job,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => JobDetailScreen(
-                jobId: job['id'] as String,
-              ),
+    return BlocBuilder<BookmarkBloc, BookmarkState>(
+      builder: (context, state) {
+        if (state is BookmarkLoading) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: ColorResources.primaryColor,
             ),
-          ),
-        );
+          );
+        }
+
+        if (state is BookmarkError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 64, color: Colors.red),
+                SizedBox(height: 16),
+                Text(
+                  state.message,
+                  style: fontBody.copyWith(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<BookmarkBloc>().add(LoadBookmarkedJobs());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorResources.primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('ลองใหม่'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state is BookmarkEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.bookmark_border,
+                  size: 80,
+                  color: ColorResources.colorPorpoise,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'ยังไม่มีงานที่บันทึก',
+                  style: fontHeader4.copyWith(color: ColorResources.colorCharcoal),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'เลื่อนการ์ดลงเพื่อบันทึกงาน',
+                  style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state is BookmarkLoaded) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<BookmarkBloc>().add(LoadBookmarkedJobs());
+            },
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.jobs.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final job = state.jobs[index];
+                return BookmarkJobCard(
+                  job: job,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => JobDetailScreen(jobId: job.id),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+
+        return SizedBox.shrink();
       },
     );
   }
 }
 
-// Applied Jobs Tab
+// Applied Jobs Tab (ยังใช้ mock data)
 class AppliedJobsTab extends StatelessWidget {
   const AppliedJobsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Mock data for applied jobs
-    final appliedJobs = [
-      {
-        'id': '3',
-        'title': 'UX/UI Designer',
-        'companyName': 'Gofive',
-        'companyLogo' : 'assets/mock/company_logo_mock.png',
-        'level': 'Senior',
-        'workType': 'Full time',
-        'location': 'Bangkok',
-        'salaryRange': '200,000 - 350,000',
-        'match': '89%',
-        'postedAt': DateTime.now().subtract(Duration(minutes: 1)),
-        'applicationDate': 'สมัครเมื่อ 9/9/68',
-        'hasApplicationIcon': true,
-      },
-    ];
-
-    return ListView.separated(
-      padding: const EdgeInsets.all(16),
-      itemCount: appliedJobs.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final job = appliedJobs[index];
-        return BookmarkJobCard(
-          job: job,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AppliedJobDetailScreen(
-                jobId: job['id'] as String,
-              ),
-            ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.work_outline,
+            size: 80,
+            color: ColorResources.colorPorpoise,
           ),
-        );
-      },
+          SizedBox(height: 16),
+          Text(
+            'ยังไม่มีงานที่สมัคร',
+            style: fontHeader4.copyWith(color: ColorResources.colorCharcoal),
+          ),
+        ],
+      ),
     );
   }
 }
 
-// Job Card for both tabs
+// BookmarkJobCard - รับ JobModel แทน Map
 class BookmarkJobCard extends StatelessWidget {
-  final job;
+  final dynamic job; // JobModel
   final VoidCallback? onTap;
 
   const BookmarkJobCard({
@@ -324,28 +323,42 @@ class BookmarkJobCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 16,
               children: [
-                Image.asset(
-                  // job.companyLogo,
-                  job['companyLogo'],
+                Container(
                   width: 48,
                   height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      job.company.logoUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.orange,
+                          child: Icon(Icons.business, color: Colors.white),
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        // job.title,
-                        job['title'],
-                        style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal),
+                        job.title,
+                        style: fontTitleStrong.copyWith(
+                            color: ColorResources.colorCharcoal),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        // job.companyName,
-                        job['companyName'],
-                        style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+                        job.company.name,
+                        style: fontBody.copyWith(
+                            color: ColorResources.colorPorpoise),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -376,45 +389,31 @@ class BookmarkJobCard extends StatelessWidget {
                             color: Color(0xFF596DF8),
                           ),
                           Text(
-                            // '${job.matchPercentage}%',
-                            '${job['match']}',
-                            style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                            '${job.aiSkillMatch.percentage}%',
+                            style: fontSmallStrong.copyWith(
+                                color: Color(0xFF596DF8)),
                           )
                         ],
                       ),
                     ),
-                    if (job['hasBookmarkIcon'] == true)
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: ColorResources.buttonColor, width: 1),
-                        ),
-                        child: Icon(
-                          Icons.bookmark_rounded,
-                          color: ColorResources.buttonColor,
-                          size: 16,
-                        ),
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                            color: ColorResources.buttonColor, width: 1),
                       ),
-                    if (job['hasApplicationIcon'] == true)
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: ColorResources.primaryColor,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: const Icon(
-                          Icons.send_rounded,
-                          color: Colors.white,
-                          size: 16,
-                        ),
+                      child: Icon(
+                        Icons.bookmark_rounded,
+                        color: ColorResources.buttonColor,
+                        size: 16,
                       ),
+                    ),
                   ],
                 ),
               ],
             ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 4,
@@ -428,13 +427,11 @@ class BookmarkJobCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                        // '${job.level}, ${job.workType}',
-                        '${job['level']}, ${job['workType']}',
-                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
-                    ),
+                        '${job.employment.seniority}, ${job.employment.type}',
+                        style: fontSmall.copyWith(
+                            color: ColorResources.colorPorpoise)),
                   ],
                 ),
-
                 Row(
                   children: [
                     Icon(
@@ -443,14 +440,11 @@ class BookmarkJobCard extends StatelessWidget {
                       color: ColorResources.colorPorpoise,
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                        // job.location,
-                        job['location'],
-                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
-                    ),
+                    Text(job.location.city,
+                        style: fontSmall.copyWith(
+                            color: ColorResources.colorPorpoise)),
                   ],
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -462,18 +456,14 @@ class BookmarkJobCard extends StatelessWidget {
                           color: ColorResources.colorPorpoise,
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                            // job.salaryRange,
-                            job['salaryRange'],
-                            style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
-                        ),
+                        Text(job.salaryRange.formattedRange,
+                            style: fontSmall.copyWith(
+                                color: ColorResources.colorPorpoise)),
                       ],
                     ),
-                    Text(
-                        // TimeUtils.getTimeAgo(job.postedAt),
-                        TimeUtils.getTimeAgo(job['postedAt']),
-                        style: fontSmall.copyWith(color: ColorResources.colorFlint)
-                    ),
+                    Text(job.postedAgo,
+                        style: fontSmall.copyWith(
+                            color: ColorResources.colorFlint)),
                   ],
                 ),
               ],
@@ -481,441 +471,6 @@ class BookmarkJobCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Applied Job Detail Screen (without bottom bar)
-class AppliedJobDetailScreen extends StatefulWidget {
-  final String jobId;
-
-  const AppliedJobDetailScreen({super.key, required this.jobId});
-
-  @override
-  State<AppliedJobDetailScreen> createState() => _AppliedJobDetailScreenState();
-}
-
-class _AppliedJobDetailScreenState extends State<AppliedJobDetailScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-    // Note: In real app, you would load job details here
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Mock job data for applied job detail
-    const jobTitle = 'Administrative Officer';
-    const companyName = 'Gofive Co., Ltd';
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppliedJobDetailAppBar(
-        jobTitle: jobTitle,
-        companyName: companyName,
-      ),
-      body: Column(
-        children: [
-          AppliedJobTabBar(tabController: _tabController),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: const [
-                AppliedJobOverviewTab(),
-                ResponsibilitiesTab(),
-                QualificationsTab(),
-                LifestyleTab(),
-                ContactTab(),
-              ],
-            ),
-          ),
-        ],
-      ),
-      // No bottom navigation bar for applied jobs
-    );
-  }
-}
-
-// Applied Job Detail App Bar
-class AppliedJobDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String jobTitle;
-  final String companyName;
-
-  const AppliedJobDetailAppBar({
-    super.key,
-    required this.jobTitle,
-    required this.companyName,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.teal),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: Column(
-        children: [
-          Text(
-            jobTitle,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            companyName,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-      centerTitle: true,
-      actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.purple[50],
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.purple[200]!),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.diamond,
-                size: 16,
-                color: Colors.purple[600],
-              ),
-              const SizedBox(width: 4),
-              Text(
-                '89%',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.purple[600],
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
-
-// Applied Job Tab Bar
-class AppliedJobTabBar extends StatelessWidget {
-  final TabController tabController;
-
-  const AppliedJobTabBar({
-    super.key,
-    required this.tabController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: TabBar(
-        controller: tabController,
-        labelColor: Colors.teal,
-        unselectedLabelColor: Colors.grey[600],
-        indicatorColor: Colors.teal,
-        indicatorWeight: 2,
-        isScrollable: true,
-        tabAlignment: TabAlignment.start,
-        tabs: const [
-          Tab(text: 'ภาพรวม'),
-          Tab(text: 'หน้าที่งาน'),
-          Tab(text: 'คุณสมบัติ'),
-          Tab(text: 'ไลฟ์สไตล์'),
-          Tab(text: 'ติดต่อ'),
-        ],
-      ),
-    );
-  }
-}
-
-// Applied Job Overview Tab
-class AppliedJobOverviewTab extends StatelessWidget {
-  const AppliedJobOverviewTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Job Header with application status
-          Row(
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.business,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Administrative Officer',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Gofive Co., Ltd',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'สมัครเมื่อ 9/9/68',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.teal,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Skill Match Section
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple[50]!, Colors.orange[50]!],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.diamond,
-                  color: Colors.purple[600],
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                const Text(
-                  '89% Skill Matches',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Skills Section
-          Row(
-            children: [
-              _buildSkillChip('Swift', 'สูง', Colors.green),
-              const SizedBox(width: 8),
-              _buildSkillChip('Kotlin', 'กลาง', Colors.purple),
-              const SizedBox(width: 8),
-              _buildSkillChip('Firebase', 'เบื้องต้น', Colors.blue),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Job Details
-          _buildDetailRow(Icons.work_outline, 'Senior, Full-time'),
-          const SizedBox(height: 8),
-          _buildDetailRow(Icons.location_on_outlined, 'Bangkok'),
-          const SizedBox(height: 8),
-          _buildDetailRow(Icons.attach_money, '200,000 - 350,000'),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: const Icon(
-                  Icons.clear,
-                  color: Colors.white,
-                  size: 12,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'ไม่โลก',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: const Text(
-                  'M',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'สุขุมวิท',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Job Description Section
-          Row(
-            children: [
-              const Icon(
-                Icons.info_outline,
-                color: Colors.teal,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'ภาพรวมของตำแหน่งงาน',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'As a Systems Analyst, you will be responsible for analyzing, designing, and implementing computer systems to meet the needs of our organization. You can work individually on a project or collaborate with a team of other systems analysts on multiple projects.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSkillChip(String skill, String level, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            skill,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              level,
-              style: const TextStyle(
-                fontSize: 10,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: Colors.grey[600],
-        ),
-        const SizedBox(width: 8),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-      ],
     );
   }
 }

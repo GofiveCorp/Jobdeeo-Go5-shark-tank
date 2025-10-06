@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
+import 'package:jobdeeo/src/features/matching/screen/matching_screen.dart';
 
 import '../../../config/app_routes.dart';
 import '../models/questionnaire_models.dart';
@@ -39,7 +40,12 @@ class CompletionScreen extends StatelessWidget {
                   width: 167.5,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MatchingScreen(),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorResources.buttonColor,

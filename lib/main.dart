@@ -10,6 +10,7 @@ import 'package:jobdeeo/src/features/emsume/resume_upload_screen.dart';
 import 'package:jobdeeo/src/features/job_board/bloc/company/company_bloc.dart';
 import 'package:jobdeeo/src/features/job_board/bloc/job/job_bloc.dart';
 import 'package:jobdeeo/src/features/matching/bloc/matching_bloc.dart';
+import 'package:jobdeeo/src/features/matching/repositories/matching_repositories.dart';
 import 'package:jobdeeo/src/features/matching/screen/matching_screen.dart';
 import 'src/config/app_routes.dart';
 
@@ -25,9 +26,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-        BlocProvider(create: (context) => JobBloc()),
+        BlocProvider(create: (context) => JobBloc(MatchingRepository())),
           BlocProvider(create: (context) => CompanyBloc()),
-          BlocProvider(create: (context) => MatchingBloc()),
+          BlocProvider(create: (context) => MatchingBloc(repository: MatchingRepository())),
         ]
         , child: MaterialApp(
       title: 'Flutter App Demo',

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 
-import '../../models/job_model.dart';
+import '../../../matching/models/job_model.dart';
 import 'job_header_widget.dart';
 
 class OverviewTab extends StatelessWidget {
@@ -48,7 +48,8 @@ class OverviewTab extends StatelessWidget {
 
 // Responsibilities Tab
 class ResponsibilitiesTab extends StatelessWidget {
-  const ResponsibilitiesTab({super.key});
+  final JobModel job;
+  const ResponsibilitiesTab({super.key, required this.job});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,8 @@ class ResponsibilitiesTab extends StatelessWidget {
 
 // Qualifications Tab
 class QualificationsTab extends StatelessWidget {
-  const QualificationsTab({super.key});
+  final JobModel job;
+  const QualificationsTab({super.key, required this.job});
 
   @override
   Widget build(BuildContext context) {
@@ -95,14 +97,7 @@ class QualificationsTab extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           BulletPointList(
-            points: [
-              "Bachelor's degree in Business Administration, Marketing, Communications, or a related field.",
-              'Excellent communication skills, both verbal and written.',
-              'Strong organizational skills with the ability to manage multiple clients and tasks simultaneously.',
-              'Customer-focused mindset with a passion for delivering exceptional service.',
-              'Ability to quickly learn new technologies and convey complex information in a clear and understandable manner.',
-              'Prior experience in customer service, account management, or onboarding is preferred but not required.',
-            ],
+            points: job.requirements
           ),
         ],
       ),
@@ -168,7 +163,8 @@ class LifestyleTab extends StatelessWidget {
 
 // Contact Tab
 class ContactTab extends StatelessWidget {
-  const ContactTab({super.key});
+  final JobModel job;
+  const ContactTab({super.key, required this.job});
 
   @override
   Widget build(BuildContext context) {
@@ -179,8 +175,7 @@ class ContactTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'At Gofive, we share a passion for driving digital transformation for businesses of all sizes. We pay attention to every detail and are committed to delivering an exceptional software experience to our users.',
-            style: fontBody.copyWith(color: ColorResources.colorLead)
+            job.aboutCompany, style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
           Column(
             spacing: 4,
@@ -190,7 +185,9 @@ class ContactTab extends StatelessWidget {
                 title: 'การติดต่อ',
               ),
               Text(
-                'สาขาพระราม 2  |  สาขา FYI Center (พระรามที่ 4)',
+                  job.branches[1].name != null || job.branches[0].name != null
+                      ?'${job.branches[0].name}  |  ${job.branches[1].name}'
+                  :'',
                 style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
                 ),
             ],

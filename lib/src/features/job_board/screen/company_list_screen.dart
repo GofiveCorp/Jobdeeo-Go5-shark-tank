@@ -181,11 +181,14 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CompanyDetailScreen(
-                                companyId: company.id,
+                              builder: (context) => BlocProvider(
+                                create: (context) => CompanyBloc()..add(LoadCompanyDetail(company.id)),
+                                child: CompanyDetailScreen(companyId: company.id),
                               ),
                             ),
-                          ),
+                          ).then((_) {
+                            context.read<CompanyBloc>().add(LoadTopCompanies());
+                          })
                         );
                       },
                     );

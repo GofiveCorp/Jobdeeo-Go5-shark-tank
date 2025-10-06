@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import '../../../core/color_resources.dart';
+import '../../matching/repositories/matching_repositories.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
@@ -21,20 +22,41 @@ class JobDetailScreen extends StatefulWidget {
 class _JobDetailScreenState extends State<JobDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late MatchingRepository _repository;
+
   bool _isBookmarked = false;
   bool _isApplying = false;
+  bool _isBookmarkLoading = false; // เพิ่ม loading state สำหรับ bookmark
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    _repository = MatchingRepository();
+
+    // โหลด bloc และเช็ค bookmark status
     context.read<JobBloc>().add(LoadJobDetail(widget.jobId));
+    _checkBookmarkStatus();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  // ✅ เช็คว่างานนี้ถูก bookmark หรือไม่
+  Future<void> _checkBookmarkStatus() async {
+    try {
+      final isBookmarked = await _repository.isJobBookmarked(widget.jobId);
+      if (mounted) {
+        setState(() {
+          _isBookmarked = isBookmarked;
+        });
+      }
+    } catch (e) {
+      print('Error checking bookmark status: $e');
+    }
   }
 
   Future<void> _applyJob() async {
@@ -44,7 +66,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
 
     try {
       // Simulate API call for job application
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(milliseconds: 500));
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -75,18 +97,70 @@ class _JobDetailScreenState extends State<JobDetailScreen>
     }
   }
 
-  void _toggleBookmark() {
+  // ✅ แก้ไข: เชื่อมต่อกับ API จริง
+  Future<void> _toggleBookmark() async {
+    // ป้องกันการกดซ้ำ
+    if (_isBookmarkLoading) return;
+
     setState(() {
-      _isBookmarked = !_isBookmarked;
+      _isBookmarkLoading = true;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_isBookmarked ? 'บันทึกงานแล้ว' : 'ยกเลิกการบันทึก'),
-        backgroundColor: _isBookmarked ? Colors.green : Colors.grey,
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    try {
+      if (_isBookmarked) {
+        // ลบ bookmark
+        await _repository.removeBookmark(widget.jobId);
+
+        if (mounted) {
+          setState(() {
+            _isBookmarked = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('ยกเลิกการบันทึกแล้ว', style: fontBody.copyWith()),
+              backgroundColor: ColorResources.colorPorpoise,
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        }
+      } else {
+        // เพิ่ม bookmark
+        await _repository.bookmarkJob(widget.jobId);
+
+        if (mounted) {
+          setState(() {
+            _isBookmarked = true;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('บันทึกงานแล้ว', style: fontBody.copyWith()),
+              backgroundColor: ColorResources.primaryColor,
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error toggling bookmark: $e');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('เกิดข้อผิดพลาด: ${e.toString()}', style: fontBody),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isBookmarkLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -99,8 +173,8 @@ class _JobDetailScreenState extends State<JobDetailScreen>
 
         if (state is JobDetailLoaded) {
           jobTitle = state.job.title;
-          companyName = state.job.companyName;
-          matchPercentage = state.job.matchPercentage;
+          companyName = state.job.company.name;
+          matchPercentage = state.job.aiSkillMatch.score * 10;
         }
 
         return Scaffold(
@@ -113,7 +187,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
           body: _buildBody(state),
           bottomNavigationBar: JobBottomBar(
             isBookmarked: _isBookmarked,
-            isLoading: _isApplying,
+            isLoading: _isApplying || _isBookmarkLoading, // รวม loading state
             onBookmarkPressed: _toggleBookmark,
             onApplyPressed: _applyJob,
           ),
@@ -182,7 +256,8 @@ class JobDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back_ios_new_rounded, color: ColorResources.buttonColor),
+              icon: Icon(Icons.arrow_back_ios_new_rounded,
+                  color: ColorResources.buttonColor),
               onPressed: () => Navigator.pop(context),
             ),
             Expanded(
@@ -192,13 +267,19 @@ class JobDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Text(
                     jobTitle,
-                    style: fontBodyStrong.copyWith(color: ColorResources.colorCharcoal),
+                    style: fontBodyStrong.copyWith(
+                        color: ColorResources.colorCharcoal),
                     textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     companyName,
-                    style: fontSmall.copyWith(color: ColorResources.colorPorpoise),
+                    style: fontSmall.copyWith(
+                        color: ColorResources.colorPorpoise),
                     textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -225,7 +306,7 @@ class JobDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   Text(
                     '$matchPercentage%',
-                    style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                    style: fontSmallStrong.copyWith(color: Color(0xFF596DF8)),
                   )
                 ],
               ),
@@ -289,10 +370,16 @@ class JobTabContent extends StatelessWidget {
       controller: tabController,
       children: [
         OverviewTab(job: job),
-        const ResponsibilitiesTab(),
-        const QualificationsTab(),
-        const LifestyleTab(),
-        const ContactTab(),
+        ResponsibilitiesTab(
+          job: job,
+        ),
+        QualificationsTab(
+          job: job,
+        ),
+        LifestyleTab(),
+        ContactTab(
+          job: job,
+        ),
       ],
     );
   }
@@ -303,8 +390,10 @@ class JobDetailLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Center(
+      child: CircularProgressIndicator(
+        color: ColorResources.primaryColor,
+      ),
     );
   }
 }
@@ -333,15 +422,16 @@ class JobDetailError extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             message,
-            style: const TextStyle(
-              color: Colors.red,
-              fontSize: 16,
-            ),
+            style: fontBody.copyWith(color: Colors.red),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: onRetry,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ColorResources.primaryColor,
+              foregroundColor: Colors.white,
+            ),
             child: const Text('ลองใหม่'),
           ),
         ],

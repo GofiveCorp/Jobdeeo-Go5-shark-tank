@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../job_board/models/job_model.dart';
+import '../models/job_model.dart';
 
 abstract class MatchingState extends Equatable {
   const MatchingState();
@@ -55,3 +55,12 @@ class MatchingError extends MatchingState {
 }
 
 class MatchingEmpty extends MatchingState {}
+
+class MatchingSuccess extends MatchingState {
+  final JobModel job;
+
+  const MatchingSuccess({required this.job});
+
+  @override
+  List<Object?> get props => [job];
+}

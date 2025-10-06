@@ -4,6 +4,7 @@ import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 import 'package:jobdeeo/src/features/job_board/screen/search_screen.dart';
+import 'package:jobdeeo/src/features/matching/repositories/matching_repositories.dart';
 import '../../../../utils/time_utils.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
@@ -204,13 +205,14 @@ class _JobListScreenState extends State<JobListScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => JobDetailScreen(jobId: job.id),
+                            builder: (context) => BlocProvider(
+                              create: (context) => JobBloc(MatchingRepository())..add(LoadJobDetail(job.id)),
+                              child: JobDetailScreen(jobId: job.id),
+                            ),
                           ),
-                        ).then((shouldRefresh) {
-                          if (shouldRefresh == true) {
-                            context.read<JobBloc>().add(LoadAllJobs());
-                          }
-                        }),
+                        ).then((_) {
+                          context.read<JobBloc>().add(LoadAllJobs());
+                        })
                       );
                     },
                   );
@@ -290,7 +292,7 @@ class JobListCard extends StatelessWidget {
               spacing: 16,
               children: [
                 Image.asset(
-                  job.companyLogo,
+                  'assets/mock/company_logo_mock.png',
                   width: 48,
                   height: 48,
                 ),
@@ -306,7 +308,7 @@ class JobListCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        job.companyName,
+                        job.company.name,
                         style: fontBody.copyWith(color: ColorResources.colorPorpoise),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -335,7 +337,7 @@ class JobListCard extends StatelessWidget {
                         color: Color(0xFF596DF8),
                       ),
                       Text(
-                        '${job.matchPercentage}%',
+                        '${job.aiSkillMatch.score * 10}%',
                         style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
                       )
                     ],
@@ -357,7 +359,7 @@ class JobListCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                        '${job.level}, ${job.workType}',
+                        '${job.employment.seniority}, ${job.employment.type}',
                         style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
                     ),
                   ],
@@ -372,7 +374,7 @@ class JobListCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                        job.location,
+                        job.location.city,
                         style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
                     ),
                   ],
@@ -390,13 +392,13 @@ class JobListCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                            job.salaryRange,
+                            '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}',
                             style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
                         ),
                       ],
                     ),
                     Text(
-                        TimeUtils.getTimeAgo(job.postedAt),
+                        job.postedAgo,
                         style: fontSmall.copyWith(color: ColorResources.colorFlint)
                     ),
                   ],

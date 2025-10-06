@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
+import 'package:jobdeeo/src/features/matching/repositories/matching_repositories.dart';
 import '../../../core/color_resources.dart';
 import '../bloc/company/company_bloc.dart';
 import '../bloc/company/company_event.dart';
@@ -95,13 +96,14 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => JobDetailScreen(jobId: job.id),
+                            builder: (context) => BlocProvider(
+                              create: (context) => JobBloc(MatchingRepository())..add(LoadJobDetail(job.id)),
+                              child: JobDetailScreen(jobId: job.id),
+                            ),
                           ),
-                        ).then((shouldRefresh) {
-                          if (shouldRefresh == true) {
-                            context.read<JobBloc>().add(LoadRecommendedJobs());
-                          }
-                        }),
+                        ).then((_) {
+                          context.read<JobBloc>().add(LoadRecommendedJobs());
+                        })
                       ),
                     );
                   },
@@ -157,11 +159,14 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CompanyDetailScreen(
-                              companyId: company.id,
+                            builder: (context) => BlocProvider(
+                              create: (context) => CompanyBloc()..add(LoadCompanyDetail(company.id)),
+                              child: CompanyDetailScreen(companyId: company.id),
                             ),
                           ),
-                        ),
+                        ).then((_) {
+                          context.read<CompanyBloc>().add(LoadTopCompanies());
+                        })
                       ),
                     );
                   },

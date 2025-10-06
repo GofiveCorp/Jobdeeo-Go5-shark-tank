@@ -3,7 +3,7 @@ import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 import '../../../../utils/time_utils.dart';
-import '../models/job_model.dart';
+import '../../matching/models/job_model.dart';
 
 class JobCard extends StatelessWidget {
   final JobModel job;
@@ -35,7 +35,7 @@ class JobCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
-                  job.companyLogo,
+                  'assets/mock/company_logo_mock.png',
                   width: 48,
                   height: 48,
                 ),
@@ -48,7 +48,7 @@ class JobCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  job.companyName,
+                  job.company.name,
                   style: fontBody.copyWith(color: ColorResources.colorPorpoise),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -82,7 +82,7 @@ class JobCard extends StatelessWidget {
                         color: Color(0xFF596DF8),
                       ),
                       Text(
-                        '${job.matchPercentage}% Skill Matches',
+                        '${job.aiSkillMatch.score * 10}% Skill Matches',
                         style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
                       )
                     ],
@@ -98,7 +98,7 @@ class JobCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '${job.level}, ${job.workType}',
+                      '${job.employment.seniority}, ${job.employment.type}',
                       style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
                       ),
                   ],
@@ -113,7 +113,7 @@ class JobCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      job.location,
+                      job.location.city,
                       style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
                     ),
                   ],
@@ -128,7 +128,7 @@ class JobCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      job.salaryRange,
+                        '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}',
                       style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
                     ),
                   ],
@@ -137,7 +137,7 @@ class JobCard extends StatelessWidget {
             ),
 
             Text(
-              TimeUtils.getTimeAgo(job.postedAt),
+              job.postedAgo,
               style: fontSmall.copyWith(color: ColorResources.colorFlint)
             ),
           ],

@@ -7,6 +7,7 @@ import '../bloc/matching_bloc.dart';
 import '../bloc/matching_event.dart';
 import '../bloc/matching_state.dart';
 import '../widgets/swipe_job_card.dart';
+import 'matching_success_screen.dart';
 
 class MatchingScreen extends StatefulWidget {
   const MatchingScreen({super.key});
@@ -46,30 +47,43 @@ class _MatchingScreenState extends State<MatchingScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
-      body: Stack(
-        children: [
-          // Background image
-          Positioned.fill(
-            child: Image.asset(
-              'assets/common/matching_background_with_card.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-          // Main content
-          Column(
-            children: [
-              Expanded(
-                child: BlocBuilder<MatchingBloc, MatchingState>(
-                  builder: (context, state) {
-                    return _buildBody(state);
-                  },
-                ),
+      body: BlocListener<MatchingBloc, MatchingState>(
+        listener: (context, state) {
+          // Navigate to success screen when MatchingSuccess state is emitted
+          if (state is MatchingSuccess) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MatchingSuccessScreen(job: state.job),
               ),
-              // Bottom bar as part of body
-              _buildBottomBar(),
-            ],
-          ),
-        ],
+            );
+          }
+        },
+        child: Stack(
+          children: [
+            // Background image
+            Positioned.fill(
+              child: Image.asset(
+                'assets/common/matching_background_with_card.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Main content
+            Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<MatchingBloc, MatchingState>(
+                    builder: (context, state) {
+                      return _buildBody(state);
+                    },
+                  ),
+                ),
+                // Bottom bar
+                _buildBottomBar(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -80,15 +94,16 @@ class _MatchingScreenState extends State<MatchingScreen>
         children: [
           SizedBox(height: 80),
           Container(
-              height: 520,
-              width: double.infinity,
-              margin: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Color(0xFFF1F7F7), width: 4)
-              ),
-              child: Center(child: CircularProgressIndicator()),),
+            height: 520,
+            width: double.infinity,
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Color(0xFFF1F7F7), width: 4),
+            ),
+            child: Center(child: CircularProgressIndicator()),
+          ),
         ],
       );
     } else if (state is MatchingError) {
@@ -130,51 +145,27 @@ class _MatchingScreenState extends State<MatchingScreen>
   }
 
   Widget _buildEmptyState() {
-    context.read<MatchingBloc>().add(ResetCards());
+    // Auto-reload เมื่อเจอ empty state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MatchingBloc>().add(ResetCards());
+    });
+
     return Center(
-      child: Text(
-        '',
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: ColorResources.primaryColor,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'กำลังโหลดงานใหม่...',
+            style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+          ),
+        ],
       ),
     );
   }
-
-  // Widget _buildLoadedState(MatchingLoaded state) {
-  //   return Stack(
-  //     children: [
-  //       // Main card stack
-  //       Positioned.fill(
-  //         child: PageView.builder(
-  //           controller: _pageController,
-  //           itemCount: state.jobs.length,
-  //           onPageChanged: (index) {
-  //             // Handle page change if needed
-  //           },
-  //           itemBuilder: (context, index) {
-  //             if (index == state.currentJobIndex) {
-  //               return SwipeJobCard(
-  //                 job: state.currentJob,
-  //                 currentTabIndex: state.currentTabIndex,
-  //                 onTabChanged: (tabIndex) {
-  //                   context.read<MatchingBloc>().add(ChangeTab(tabIndex));
-  //                 },
-  //               );
-  //             }
-  //             return const SizedBox.shrink();
-  //           },
-  //         ),
-  //       ),
-  //
-  //       // Card navigation indicators
-  //       if (state.jobs.length > 1)
-  //         Positioned(
-  //           top: 16,
-  //           left: 0,
-  //           right: 0,
-  //           child: _buildCardIndicators(state),
-  //         ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildLoadedState(MatchingLoaded state) {
     return Stack(
@@ -188,8 +179,6 @@ class _MatchingScreenState extends State<MatchingScreen>
       ],
     );
   }
-
-
 
   Widget _buildBottomBar() {
     return BlocBuilder<MatchingBloc, MatchingState>(
@@ -206,7 +195,7 @@ class _MatchingScreenState extends State<MatchingScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // retry button
+              // Retry button
               _buildActionButton(
                 icon: Icons.refresh_rounded,
                 color: Colors.grey,
@@ -215,35 +204,31 @@ class _MatchingScreenState extends State<MatchingScreen>
                 },
               ),
 
-              // Pass button
+              // Pass button (กากบาท - swipe left)
               _buildActionButton(
                 icon: Icons.close_rounded,
                 color: Colors.red,
                 onTap: () {
-                  context.read<MatchingBloc>().add(
-                    SwipeLeft(state.currentJob.id),
-                  );
+                  _swipeLeft(); // เรียก animation แทนการส่ง event โดยตรง
                 },
               ),
 
-              // Bookmark button
+              // Bookmark button (บันทึก - swipe down)
               _buildActionButton(
                 icon: Icons.bookmark,
                 color: ColorResources.primaryColor,
                 onTap: () {
-                  // Handle bookmark
+                  _swipeDown(); // animation ลงข้างล่าง
                 },
               ),
 
-              // Like button
+              // Like button (ส่ง - swipe right)
               _buildActionButton(
                 icon: Icons.send_rounded,
                 color: Colors.white,
                 gradientBackground: ColorResources.linearGradient,
                 onTap: () {
-                  context.read<MatchingBloc>().add(
-                    SwipeRight(state.currentJob.id),
-                  );
+                  _swipeRight(); // เรียก animation แทนการส่ง event โดยตรง
                 },
               ),
             ],
@@ -262,7 +247,7 @@ class _MatchingScreenState extends State<MatchingScreen>
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width:48,
+        width: 48,
         height: 48,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -298,9 +283,11 @@ class _MatchingScreenState extends State<MatchingScreen>
                   SwipeJobCard(
                     job: job,
                     currentTabIndex: isTopCard ? state.currentTabIndex : 0,
-                    onTabChanged: isTopCard ? (tabIndex) {
+                    onTabChanged: isTopCard
+                        ? (tabIndex) {
                       context.read<MatchingBloc>().add(ChangeTab(tabIndex));
-                    } : (tabIndex) {},
+                    }
+                        : (tabIndex) {},
                   ),
                   if (isTopCard && _isDragging) _buildSwipeOverlay(),
                 ],
@@ -338,13 +325,15 @@ class _MatchingScreenState extends State<MatchingScreen>
   }
 
   void _swipeRight() {
-    // Animate card out to the right
-    _animateCardOut(isRight: true);
+    _animateCardOut(direction: SwipeDirection.right);
   }
 
   void _swipeLeft() {
-    // Animate card out to the left
-    _animateCardOut(isRight: false);
+    _animateCardOut(direction: SwipeDirection.left);
+  }
+
+  void _swipeDown() {
+    _animateCardOut(direction: SwipeDirection.down);
   }
 
   void _resetCard() {
@@ -359,74 +348,90 @@ class _MatchingScreenState extends State<MatchingScreen>
     final isSwipingLeft = _dragPosition.dx < -50;
 
     return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: isSwipingLeft
-              ? Colors.red.withOpacity(0.3)
-              : isSwipingRight
-              ? Colors.green.withOpacity(0.3)
-              : Colors.transparent,
-        ),
-        child: Stack(
-          children: [
-            if (isSwipingLeft)
-              Positioned(
-                top: 20,
-                right: 20,
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.close, color: Colors.white, size: 30),
+      child: Stack(
+        children: [
+          if (isSwipingLeft)
+            Positioned(
+              top: 20,
+              right: 20,
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
                 ),
+                child: Icon(Icons.close, color: Colors.white, size: 30),
               ),
-            if (isSwipingRight)
-              Positioned(
-                top: 20,
-                right: 20,
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.check, color: Colors.white, size: 30),
+            ),
+          if (isSwipingRight)
+            Positioned(
+              top: 20,
+              left: 20,
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
                 ),
+                child: Icon(Icons.check, color: Colors.white, size: 30),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
-  void _animateCardOut({required bool isRight}) {
+
+  void _animateCardOut({required SwipeDirection direction}) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final endPosition = Offset(isRight ? screenWidth : -screenWidth, _dragPosition.dy);
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    Offset endPosition;
+
+    switch (direction) {
+      case SwipeDirection.left:
+        endPosition = Offset(-screenWidth, _dragPosition.dy);
+        break;
+      case SwipeDirection.right:
+        endPosition = Offset(screenWidth, _dragPosition.dy);
+        break;
+      case SwipeDirection.down:
+        endPosition = Offset(_dragPosition.dx, screenHeight);
+        break;
+    }
 
     _swipeAnimationController.forward().then((_) {
-      // Reset animation and position
       _swipeAnimationController.reset();
       setState(() {
         _dragPosition = Offset.zero;
         _isDragging = false;
       });
 
-      // Trigger appropriate bloc event
+      // ส่ง event ไปที่ bloc หลังจาก animation เสร็จ
       final currentState = context.read<MatchingBloc>().state;
       if (currentState is MatchingLoaded) {
-        if (isRight) {
-          context.read<MatchingBloc>().add(SwipeRight(currentState.currentJob.id));
-        } else {
-          context.read<MatchingBloc>().add(SwipeLeft(currentState.currentJob.id));
+        switch (direction) {
+          case SwipeDirection.right:
+            context
+                .read<MatchingBloc>()
+                .add(SwipeRight(currentState.currentJob.id));
+            break;
+          case SwipeDirection.left:
+            context
+                .read<MatchingBloc>()
+                .add(SwipeLeft(currentState.currentJob.id));
+            break;
+          case SwipeDirection.down:
+          // ส่ง event สำหรับบันทึก (bookmark)
+            context
+                .read<MatchingBloc>()
+                .add(BookmarkJob(currentState.currentJob.id));
+            break;
         }
       }
     });
 
-    // Animate to end position
     final animation = Tween<Offset>(
       begin: _dragPosition,
       end: endPosition,
@@ -441,4 +446,11 @@ class _MatchingScreenState extends State<MatchingScreen>
       });
     });
   }
+}
+
+// Enum สำหรับทิศทางการ swipe
+enum SwipeDirection {
+  left,
+  right,
+  down,
 }

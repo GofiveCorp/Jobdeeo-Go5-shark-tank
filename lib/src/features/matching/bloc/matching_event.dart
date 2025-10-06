@@ -40,4 +40,13 @@ class SwipeRight extends MatchingEvent {
   List<Object?> get props => [jobId];
 }
 
+class BookmarkJob extends MatchingEvent {
+  final String jobId;
+
+  const BookmarkJob(this.jobId);
+
+  @override
+  List<Object?> get props => [jobId];
+}
+
 class ResetCards extends MatchingEvent {}

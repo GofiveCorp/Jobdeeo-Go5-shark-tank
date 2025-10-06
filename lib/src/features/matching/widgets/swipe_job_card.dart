@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 
-import '../../job_board/models/job_model.dart';
 import '../../job_board/widgets/job_section/job_tab_content.dart';
+import '../models/job_model.dart';
 
 class SwipeJobCard extends StatelessWidget {
   final JobModel job;
@@ -28,7 +30,7 @@ class SwipeJobCard extends StatelessWidget {
         SizedBox(height: 80),
         Container(
           height: 520,
-          margin: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -63,42 +65,7 @@ class SwipeJobCard extends StatelessWidget {
                     child: _buildTabContent(),
                   ),
                 ),
-                // Expanded(
-                //   child: Stack(
-                //     children: [
-                //       // Main content
-                //       _buildTabContent(),
-                //
-                //       // Invisible tap zones
-                //       Row(
-                //         children: [
-                //           // Left tap zone
-                //           Expanded(
-                //             flex: 2,
-                //             child: GestureDetector(
-                //               onTap: _handleLeftTap,
-                //               child: Container(
-                //                 color: Colors.transparent,
-                //                 height: double.infinity,
-                //               ),
-                //             ),
-                //           ),
-                //           // Right tap zone
-                //           Expanded(
-                //             flex: 3,
-                //             child: GestureDetector(
-                //               onTap: _handleRightTap,
-                //               child: Container(
-                //                 color: Colors.transparent,
-                //                 height: double.infinity,
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     ],
-                //   ),
-                // ),
+
               ],
             ),
           ),
@@ -130,7 +97,7 @@ class SwipeJobCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
-                    job.companyLogo,
+                    'assets/mock/company_logo_mock.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -151,7 +118,7 @@ class SwipeJobCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      job.companyName,
+                      job.company.name,
                       style: fontBody.copyWith(
                         color: ColorResources.backgroundColor,
                       ),
@@ -163,7 +130,7 @@ class SwipeJobCard extends StatelessWidget {
               ),
 
               Text(
-                _getTimeAgo(job.postedAt),
+                job.postedAgo,
                 style: fontSmall.copyWith(
                   color: Color(0xFF9CE9DD),
                 ),
@@ -193,7 +160,7 @@ class SwipeJobCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${job.matchPercentage}%',
+                  '${job.aiSkillMatch.score}/${job.aiSkillMatch.max}',
                   style: fontHeader4.copyWith(
                     color: Colors.white,
                   ),
@@ -253,11 +220,11 @@ class SwipeJobCard extends StatelessWidget {
       case 0:
         return OverviewSwipeTab(job: job);
       case 1:
-        return const QualificationsTab();
+        return QualificationsTab(job: job);
       case 2:
         return const LifestyleTab();
       case 3:
-        return const ContactTab();
+        return ContactTab(job: job);
       default:
         return OverviewSwipeTab(job: job);
     }
@@ -314,10 +281,11 @@ class OverviewSwipeTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              spacing: 4,
               children: [
-                _buildSkillChip('Swift', 'สูง', Color(0xFF3AA8AF)),
-                const SizedBox(width: 8),
-                _buildSkillChip('Kotlin', 'กลาง', Color(0xFF7E4FFE)),
+                _buildSkillChip(job.skills[0].name, job.skills[0].level, Color(0xFF3AA8AF)),
+                _buildSkillChip(job.skills[1].name, job.skills[1].level, Color(0xFF7E4FFE)),
+                _buildSkillChip(job.skills[2].name, job.skills[2].level, Color(0xFF4C97FF)),
               ],
             ),
 
@@ -326,9 +294,9 @@ class OverviewSwipeTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,
               children: [
-                _buildDetailRow(Icons.work_outline, '${job.level}, ${job.workType}'),
-                _buildDetailRow(Icons.location_on_outlined, job.location),
-                _buildDetailRow(Icons.attach_money, job.salaryRange),
+                _buildDetailRow(Icons.work_outline, '${job.employment.seniority}, ${job.employment.type}'),
+                _buildDetailRow(Icons.location_on_outlined, job.location.city),
+                _buildDetailRow(Icons.attach_money, '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}'),
               ],
             ),
             const Divider(color: ColorResources.colorCloud, thickness: 1),
@@ -341,8 +309,8 @@ class OverviewSwipeTab extends StatelessWidget {
                   title: 'ภาพรวมของตำแหน่งงาน',
                 ),
                 Text(
-                    'As a Systems Analyst, you will be responsible for analyzing, designing, and implementing computer systems to meet the needs of our organization. You can work individually on a project or collaborate with a team of other systems analysts on multiple projects.',
-                    style: fontBody.copyWith(color: ColorResources.colorLead)
+                    job.overview
+                    ,style: fontBody.copyWith(color: ColorResources.colorLead)
                 ),
               ],
             ),
