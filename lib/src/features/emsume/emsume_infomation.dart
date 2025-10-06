@@ -18,7 +18,7 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            appBar: AppBar(
+      appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: ColorResources.buttonColor),
           onPressed: () => Navigator.pop(context),
@@ -38,13 +38,15 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "สร้าง emsume",
-                style: fontBody.copyWith(color: ColorResources.colorPorpoise),
-              ),
-            ),
-            SizedBox(height: 24),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "สร้าง emsume",
+                    style: fontBody.copyWith(
+                      color: ColorResources.colorPorpoise,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24),
                 // Step progress
                 Container(
                   color: ColorResources.backgroundColor,
@@ -52,7 +54,6 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(6, (index) {
@@ -62,46 +63,70 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                             height: 28,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: index == 0 ? ColorResources.colorFlame : Colors.white,
-                              border: Border.all(color: index == 0 ? ColorResources.colorFlame : ColorResources.colorFlint),
+                              color:
+                                  index == 0
+                                      ? ColorResources.colorFlame
+                                      : Colors.white,
+                              border: Border.all(
+                                color:
+                                    index == 0
+                                        ? ColorResources.colorFlame
+                                        : ColorResources.colorFlint,
+                              ),
                             ),
                             child: Center(
                               child: Text(
                                 "${index + 1}",
                                 style: fontTitleStrong.copyWith(
-                                  color: index == 0 ? Colors.white : Colors.grey,
+                                  color:
+                                      index == 0 ? Colors.white : Colors.grey,
                                 ),
                               ),
                             ),
                           );
                         }),
                       ),
-                                            const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                       Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Text("ขั้นที่ 1: ",
-                              style: fontHeader4.copyWith(color:ColorResources.colorCaribbean)),
-                           Text("เริ่มต้นที่ข้อมูลพื้นฐาน",
-                              style: fontHeader4.copyWith(color: ColorResources.colorCharcoal)),
-                         ],
-                       ),
+                        children: [
+                          Text(
+                            "ขั้นที่ 1: ",
+                            style: fontHeader4.copyWith(
+                              color: ColorResources.colorCaribbean,
+                            ),
+                          ),
+                          Text(
+                            "เริ่มต้นที่ข้อมูลพื้นฐาน",
+                            style: fontHeader4.copyWith(
+                              color: ColorResources.colorCharcoal,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 24),
-                 Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                   children: [
-                     Text("ข้อมูลส่วนตัว",
-                        style: fontHeader5.copyWith(color: ColorResources.colorCharcoal)),
-                          Text("*",
-                    style: fontHeader5.copyWith(color: ColorResources.colorCaribbean)),
-                   ],
-                 ),
-                  
+                  children: [
+                    Text(
+                      "ข้อมูลส่วนตัว",
+                      style: fontHeader5.copyWith(
+                        color: ColorResources.colorCharcoal,
+                      ),
+                    ),
+                    Text(
+                      "*",
+                      style: fontHeader5.copyWith(
+                        color: ColorResources.colorCaribbean,
+                      ),
+                    ),
+                  ],
+                ),
 
                 const SizedBox(height: 12),
                 // Upload profile
@@ -114,12 +139,14 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                     color: Colors.grey.shade100,
                   ),
                   child: Column(
-                    children: const [
+                    children:  [
                       Icon(Icons.person_outline, size: 40, color: Colors.grey),
                       SizedBox(height: 8),
-                      Text("อัปโหลดรูปโปรไฟล์*"),
-                      Text("ขนาดไม่ควรเกิน 20 MB",
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text("อัปโหลดรูปโปรไฟล์*",style: fontBody.copyWith(color: ColorResources.colorFlint),),
+                      Text(
+                        "ขนาดไม่ควรเกิน 20 MB",
+                        style: fontBody.copyWith(color: ColorResources.colorFlint),
+                      ),
                     ],
                   ),
                 ),
@@ -135,13 +162,18 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                     color: Colors.grey.shade100,
                   ),
                   child: Column(
-                    children: const [
-                      Icon(Icons.insert_drive_file_outlined,
-                          size: 40, color: Colors.grey),
+                    children:  [
+                      Icon(
+                        Icons.insert_drive_file_outlined,
+                        size: 40,
+                        color: Colors.grey,
+                      ),
                       SizedBox(height: 8),
-                      Text("อัปโหลดเรซูเม่หรือซีวี*"),
-                      Text(".pdf, .png, .jpg, .jpeg | ไม่เกิน 20 MB",
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text("อัปโหลดเรซูเม่หรือซีวี*",style: fontBody.copyWith(color: ColorResources.colorFlint),),
+                      Text(
+                        ".pdf, .png, .jpg, .jpeg | ไม่เกิน 20 MB",
+                        style: fontBody.copyWith(color: ColorResources.colorFlint),
+                      ),
                     ],
                   ),
                 ),
@@ -150,14 +182,14 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                 Row(
                   children: [
                     ChoiceChip(
-                      label: const Text("คนไทย"),
+                      label:  Text("คนไทย",style: fontBody.copyWith(color: ColorResources.colorFlint),),
                       selected: true,
                       onSelected: (_) {},
                       selectedColor: Colors.teal.shade100,
                     ),
                     const SizedBox(width: 8),
                     ChoiceChip(
-                      label: const Text("ชาวต่างชาติ"),
+                      label:  Text("ชาวต่างชาติ",style: fontBody.copyWith(color: ColorResources.colorFlint),),
                       selected: false,
                       onSelected: (_) {},
                     ),
@@ -167,38 +199,37 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   decoration: _inputDecoration("คำนำหน้าชื่อ*"),
-                  items: ["นาย", "นางสาว", "นาง"]
-                      .map((e) =>
-                          DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
+                  items:
+                      ["นาย", "นางสาว", "นาง"]
+                          .map(
+                            (e) => DropdownMenuItem(value: e, child: Text(e,style: fontBody.copyWith(color: ColorResources.colorCharcoal),)),
+                          )
+                          .toList(),
                   onChanged: (val) => setState(() => _selectedTitle = val),
                 ),
 
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("ชื่อภาษาไทย*")),
+                TextFormField(decoration: _inputDecoration("ชื่อภาษาไทย*")),
+                const SizedBox(height: 12),
+                TextFormField(decoration: _inputDecoration("นามสกุลภาษาไทย*")),
+                const SizedBox(height: 12),
+                TextFormField(decoration: _inputDecoration("ชื่อภาษาอังกฤษ*")),
                 const SizedBox(height: 12),
                 TextFormField(
-                    decoration: _inputDecoration("นามสกุลภาษาไทย*")),
+                  decoration: _inputDecoration("นามสกุลภาษาอังกฤษ*"),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(decoration: _inputDecoration("ชื่อเล่นภาษาไทย")),
+                const SizedBox(height: 12),
+                TextFormField(decoration: _inputDecoration("ชื่อเล่นอังกฤษ")),
                 const SizedBox(height: 12),
                 TextFormField(
-                    decoration: _inputDecoration("ชื่อภาษาอังกฤษ*")),
-                const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("นามสกุลภาษาอังกฤษ*")),
-                const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("ชื่อเล่นภาษาไทย")),
-                const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("ชื่อเล่นอังกฤษ")),
-                const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("วันเกิด*"),
-                    readOnly: true,
-                    onTap: () {
-                      // TODO: Date Picker
-                    }),
+                  decoration: _inputDecoration("วันเกิด*"),
+                  readOnly: true,
+                  onTap: () {
+                    // TODO: Date Picker
+                  },
+                ),
 
                 const SizedBox(height: 12),
                 Row(
@@ -207,7 +238,7 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                       child: RadioListTile<String>(
                         value: "ชาย",
                         groupValue: _gender,
-                        title: const Text("ชาย"),
+                        title:  Text("ชาย",style: fontBody.copyWith(color: ColorResources.colorFlint),),
                         onChanged: (val) => setState(() => _gender = val),
                       ),
                     ),
@@ -215,7 +246,7 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                       child: RadioListTile<String>(
                         value: "หญิง",
                         groupValue: _gender,
-                        title: const Text("หญิง"),
+                        title:  Text("หญิง",style: fontBody.copyWith(color: ColorResources.colorFlint),),
                         onChanged: (val) => setState(() => _gender = val),
                       ),
                     ),
@@ -223,7 +254,7 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
                       child: RadioListTile<String>(
                         value: "อื่นๆ",
                         groupValue: _gender,
-                        title: const Text("อื่นๆ"),
+                        title:  Text("อื่นๆ",style:fontBody.copyWith(color: ColorResources.colorFlint),),
                         onChanged: (val) => setState(() => _gender = val),
                       ),
                     ),
@@ -232,50 +263,66 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
 
                 const SizedBox(height: 12),
                 TextFormField(
-                    decoration: _inputDecoration("เลขประจำตัวประชาชน*")),
+                  decoration: _inputDecoration("เลขประจำตัวประชาชน*"),
+                ),
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("โทรศัพท์*")),
+                TextFormField(decoration: _inputDecoration("โทรศัพท์*")),
                 const SizedBox(height: 12),
                 TextFormField(
                   initialValue: "best.p@gmail.com",
                   decoration: _inputDecoration("อีเมล*"),
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("ที่อยู่ปัจจุบัน*")),
+                TextFormField(decoration: _inputDecoration("ที่อยู่ปัจจุบัน*")),
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("แขวง/ตำบล*")),
+                TextFormField(decoration: _inputDecoration("แขวง/ตำบล*")),
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("เขต/อำเภอ*")),
+                TextFormField(decoration: _inputDecoration("เขต/อำเภอ*")),
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("จังหวัด*")),
+                TextFormField(decoration: _inputDecoration("จังหวัด*")),
                 const SizedBox(height: 12),
-                TextFormField(
-                    decoration: _inputDecoration("รหัสไปรษณีย์*")),
+                TextFormField(decoration: _inputDecoration("รหัสไปรษณีย์*")),
 
                 const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton(
+                      child: ElevatedButton(
                         onPressed: () {},
-                        child: const Text("ยกเลิก"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorResources.colorWhite,
+                          disabledForegroundColor:
+                              ColorResources.colorSoftCloud,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6), // มุมโค้ง 6
+                          ),
+                        ),
+                        child: Text(
+                          "ถัดไป",
+                          style: fontTitleStrong.copyWith(
+                            color: ColorResources.colorSilver,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                        ),
                         onPressed: () {},
-                        child: const Text("ถัดไป"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorResources.colorCaribbean,
+                          disabledForegroundColor:
+                              ColorResources.colorCaribbean,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6), // มุมโค้ง 6
+                          ),
+                        ),
+                        child: Text(
+                          "ถัดไป",
+                          style: fontTitleStrong.copyWith(
+                            color: ColorResources.colorWhite,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -290,9 +337,12 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
 
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
+   focusColor: ColorResources.colorCaribbean,
       labelText: label,
+      labelStyle: fontBody.copyWith(color: ColorResources.colorFlint),
+      hintStyle: fontBody.copyWith(color: ColorResources.colorFlint),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
     );
   }
 }
