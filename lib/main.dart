@@ -4,7 +4,6 @@ import 'package:jobdeeo/src/authentication/login/login_screen.dart';
 import 'package:jobdeeo/src/dashboard/dashboard_screen.dart';
 import 'src/config/app_routes.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
