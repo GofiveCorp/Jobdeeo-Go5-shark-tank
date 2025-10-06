@@ -6,9 +6,10 @@ import '../models/job_model.dart';
 
 class MatchingRepository {
   final String baseUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1';
-  final String bookmarkUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1/myJob';
-  final String applyJobUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1/applyJob'; // ✅ เพิ่ม
-
+  final String bookmarkUrl =
+      'https://68dead5c898434f41355aa16.mockapi.io/v1/myJob';
+  final String applyJobUrl =
+      'https://68dead5c898434f41355aa16.mockapi.io/v1/applyJob'; // ✅ เพิ่ม
 
   int currentCardIndex = 1;
   final int maxCards = 9;
@@ -18,21 +19,25 @@ class MatchingRepository {
       throw Exception('No more jobs available');
     }
 
-
     debugPrint('current : $baseUrl/swipe$currentCardIndex');
 
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/swipe$currentCardIndex'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        currentCardIndex++;
-        return JobModel.fromJson(jsonData);
+
+        // ✅ MockAPI ส่งเป็น List, เลยต้องดึงตัวแรกออกมา
+        if (jsonData is List && jsonData.isNotEmpty) {
+          final job = JobModel.fromJson(jsonData.first);
+          currentCardIndex++;
+          return job;
+        } else {
+          throw Exception('Empty or invalid job data');
+        }
       } else {
         throw Exception('Failed to load job: ${response.statusCode}');
       }
@@ -50,14 +55,18 @@ class MatchingRepository {
       try {
         final response = await http.get(
           Uri.parse('$baseUrl/swipe$i'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: {'Content-Type': 'application/json'},
         );
 
         if (response.statusCode == 200) {
           final jsonData = json.decode(response.body);
-          jobs.add(JobModel.fromJson(jsonData));
+
+          if (jsonData is List && jsonData.isNotEmpty) {
+            // ถ้า API ส่ง list ของงานหลายตัว ก็เพิ่มทั้งหมด
+            for (var item in jsonData) {
+              jobs.add(JobModel.fromJson(item));
+            }
+          }
         }
       } catch (e) {
         print('Error fetching swipe$i: $e');
@@ -72,15 +81,13 @@ class MatchingRepository {
   }
 
   // ✅ เพิ่ม: บันทึกงานไปยัง API
-  Future<Map<String, dynamic>> bookmarkJob(String jobId) async {
+  Future<List<dynamic>> bookmarkJob(String jobId) async {
     try {
       final response = await http.post(
         Uri.parse(bookmarkUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'jobId': jobId,  // ส่ง jobId ไปยัง API
+          'jobId': jobId, // ส่ง jobId ไปยัง API
         }),
       );
 
@@ -101,9 +108,7 @@ class MatchingRepository {
     try {
       final response = await http.get(
         Uri.parse(bookmarkUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -112,11 +117,13 @@ class MatchingRepository {
         // แปลง response เป็น list ของ jobId
         // ⚠️ แก้ไข: จัดการกรณีที่ jobId อาจเป็น null
         return jsonData
-            .where((item) => item['jobId'] != null)  // กรอง null ออก
+            .where((item) => item['jobId'] != null) // กรอง null ออก
             .map((item) => item['jobId'] as String)
             .toList();
       } else {
-        throw Exception('Failed to fetch bookmarked jobs: ${response.statusCode}');
+        throw Exception(
+          'Failed to fetch bookmarked jobs: ${response.statusCode}',
+        );
       }
     } catch (e) {
       print('❌ Error fetching bookmarked jobs: $e');
@@ -130,9 +137,7 @@ class MatchingRepository {
       // หา bookmark ID จาก jobId
       final response = await http.get(
         Uri.parse(bookmarkUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -140,7 +145,7 @@ class MatchingRepository {
 
         // หา bookmark ที่ตรงกับ jobId
         final bookmark = jsonData.firstWhere(
-              (item) => item['jobId'] == jobId || item['id'].toString() == jobId,
+          (item) => item['jobId'] == jobId || item['id'].toString() == jobId,
           orElse: () => null,
         );
 
@@ -148,15 +153,15 @@ class MatchingRepository {
           // DELETE bookmark
           final deleteResponse = await http.delete(
             Uri.parse('$bookmarkUrl/${bookmark['id']}'),
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: {'Content-Type': 'application/json'},
           );
 
           if (deleteResponse.statusCode == 200) {
             print('✅ Bookmark removed successfully');
           } else {
-            throw Exception('Failed to remove bookmark: ${deleteResponse.statusCode}');
+            throw Exception(
+              'Failed to remove bookmark: ${deleteResponse.statusCode}',
+            );
           }
         }
       }
@@ -177,13 +182,11 @@ class MatchingRepository {
     }
   }
 
-  Future<Map<String, dynamic>> applyJob(JobModel job) async {
+  Future<List<dynamic>> applyJob(JobModel job) async {
     try {
       final response = await http.post(
         Uri.parse(applyJobUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: json.encode(job.toJson()),
       );
 
@@ -204,9 +207,7 @@ class MatchingRepository {
     try {
       final response = await http.get(
         Uri.parse(applyJobUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
@@ -215,9 +216,7 @@ class MatchingRepository {
         print('📥 Applied Jobs Response: ${jsonData.length} jobs');
 
         // แปลง response เป็น list ของ JobModel
-        return jsonData
-            .map((item) => JobModel.fromJson(item))
-            .toList();
+        return jsonData.map((item) => JobModel.fromJson(item)).toList();
       } else {
         throw Exception('Failed to fetch applied jobs: ${response.statusCode}');
       }
