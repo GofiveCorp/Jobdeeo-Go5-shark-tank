@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:jobdeeo/src/config/app_routes.dart';
 import 'package:jobdeeo/src/core/base/color_resource.dart';
 import 'package:jobdeeo/src/core/base/image_resource.dart';

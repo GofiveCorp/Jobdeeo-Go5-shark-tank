@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';

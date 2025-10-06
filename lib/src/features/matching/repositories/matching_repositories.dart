@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/job_model.dart';
 
 class MatchingRepository {
-  final String baseUrl = 'https://6b5e14d6-3455-4722-b2b2-79dc5f24943c.mock.pstmn.io/v1';
-  final String bookmarkUrl = 'https://68dead5c898434f41355aa16.mockapi.io/v1/myJob';
-  final String applyJobUrl = 'https://68dead5c898434f41355aa16.mockapi.io/v1/applyJob'; // ✅ เพิ่ม
+  final String baseUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1';
+  final String bookmarkUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1/myJob';
+  final String applyJobUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1/applyJob'; // ✅ เพิ่ม
 
 
   int currentCardIndex = 1;
@@ -16,6 +17,9 @@ class MatchingRepository {
     if (currentCardIndex > maxCards) {
       throw Exception('No more jobs available');
     }
+
+
+    debugPrint('current : $baseUrl/swipe$currentCardIndex');
 
     try {
       final response = await http.get(
@@ -42,6 +46,7 @@ class MatchingRepository {
     currentCardIndex = 1;
 
     for (int i = 1; i <= maxCards; i++) {
+      debugPrint('i = $baseUrl/swipe$i');
       try {
         final response = await http.get(
           Uri.parse('$baseUrl/swipe$i'),

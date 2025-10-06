@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import '../../../../../utils/time_utils.dart';
 import '../../../matching/models/job_model.dart';
 
 class JobAppBarInfo extends StatelessWidget {

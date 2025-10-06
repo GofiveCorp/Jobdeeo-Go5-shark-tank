@@ -1,5 +1,3 @@
-import 'dart:ui' as BorderType;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:jobdeeo/src/config/app_routes.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import 'package:jobdeeo/src/features/matching/screen/matching_screen.dart';
 
-import '../../../config/app_routes.dart';
+import '../../../core/services/preferences_service.dart';
+import '../../../dashboard/dashboard_screen.dart';
 import '../models/questionnaire_models.dart';
 
 class CompletionScreen extends StatelessWidget {
@@ -39,13 +39,19 @@ class CompletionScreen extends StatelessWidget {
                 SizedBox(
                   width: 167.5,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MatchingScreen(),
-                        ),
-                      );
+                    onPressed: () async{
+                      await PreferencesService.setQuestionnaireCompleted();
+
+                      // ไปที่ Dashboard tab ที่ 2 (Matching)
+                      if (context.mounted) {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DashboardScreen(initialIndex: 2),
+                          ),
+                              (route) => false, // ลบ route ทั้งหมดก่อนหน้า
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorResources.buttonColor,
