@@ -49,6 +49,9 @@ static const String icEdu = 'assets/common/image_edu.png';
 static const String icExp = 'assets/common/image_exp.png';
 static const String imgUpdateRem = 'assets/common/image_update_resume.png';
 static const String imgSkillAdd = 'assets/common/image_skill_add.png';
+static const String gifFindResume = 'assets/common/empeo_Animation.gif';
+static const String imageGender = 'assets/common/image_gender.png';
+static const String profileSection = 'assets/common/profile_section.png';
 
 
 }

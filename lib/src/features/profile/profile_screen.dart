@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   radius: 36,
                                   backgroundColor: Colors.grey[300],
                                   backgroundImage: NetworkImage(
-                                    "https://cdn.discordapp.com/attachments/951012805170061322/1425906954861281354/image.png?ex=68e94ad6&is=68e7f956&hm=0d323df7de38addbac4c97ded9414004cb61135babf5af3c160886ab166b1b25",
+                                    "https://media.discordapp.net/attachments/951012805170061322/1425926853641638044/image.png?ex=68e95d5e&is=68e80bde&hm=c23e2b3a10d908d88cd85ceab89af4646aae0dac0022e28ab1426dcbffa3f24e&=&format=webp&quality=lossless&width=1200&height=1200"
                                   ),
                                 ),
 
