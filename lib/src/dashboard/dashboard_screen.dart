@@ -62,12 +62,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
-        ImageResource.newFeedUnselected,
+        ImageResource.bookmarkUnselected
+        ,
         width: 28,
         height: 28,
       ),
       activeIcon: SvgPicture.asset(
-        ImageResource.newFeedSelected,
+        ImageResource.bookmarkselected,
         width: 28,
         height: 28,
       ),
@@ -88,12 +89,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
-        ImageResource.learnUnselected,
+        ImageResource.newFeedUnselected,
         width: 28,
         height: 28,
       ),
       activeIcon: SvgPicture.asset(
-        ImageResource.learnSelected,
+        ImageResource.newFeedSelected,
         width: 28,
         height: 28,
       ),

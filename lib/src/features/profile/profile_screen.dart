@@ -12,6 +12,26 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  // 🔹 Keys สำหรับแต่ละ section
+  final GlobalKey _skillKey = GlobalKey();
+  final GlobalKey _resumeKey = GlobalKey();
+  final GlobalKey _certKey = GlobalKey();
+  final GlobalKey _expKey = GlobalKey();
+  final GlobalKey _eduKey = GlobalKey();
+
+  // 🔹 ฟังก์ชันเลื่อน
+  void _scrollToSection(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           // เผื่อ scroll ได้
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 🔹 Profile Header
               Container(
@@ -66,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(width: 12),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children:  [
+                                  children: [
                                     Text(
                                       "วินิตรา แสงสร้อย",
                                       style: fontTitleStrong,
@@ -75,15 +94,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       children: [
                                         Text(
                                           "Mobile Developer,",
-                                          style: fontSmallStrong.copyWith(color: ColorResources.colorCaribbean)),
-                                        
+                                          style: fontSmallStrong.copyWith(
+                                            color:
+                                                ColorResources.colorCaribbean,
+                                          ),
+                                        ),
+
                                         Text(
-                                      " 2 yrs experience",
-                                      style: fontSmallStrong,
-                                    ),
+                                          " 2 yrs experience",
+                                          style: fontSmallStrong,
+                                        ),
                                       ],
                                     ),
-                                    
+
                                     Text("Bangkok", style: fontSmall),
                                     Text(
                                       "Winittra.works@gmail.com",
@@ -102,46 +125,125 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(height: 12),
 
                             // Profile Strength + Jobs
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: const [
-                                          Text(
-                                            "80% Profile Strength",
-                                            style: fontTitleStrong,
-                                          ),
-                                          Text(
-                                            "Update profile",
-                                            style: fontTitleStrong,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Column(
-                                        children: const [
-                                          Text("1", style: fontTitleStrong),
-                                          Text(
-                                            "งานที่สมัคร",
-                                            style: fontTitleStrong,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.colorWhite,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ), // สีเงา (จาง ๆ)
+                                            blurRadius: 8, // 👈 ความเบลอของเงา
+                                            offset: const Offset(
+                                              0,
+                                              2,
+                                            ), // ตำแหน่งเงา (แนวตั้ง 2px)
                                           ),
                                         ],
                                       ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "80% ",
+                                                      style: fontBodyStrong
+                                                          .copyWith(
+                                                            color: Colors.pink,
+                                                          ),
+                                                    ),
+                                                    Text(
+                                                      "Profile Strength",
+                                                      style: fontBodyStrong,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      ImageResource.icPencill,
+                                                    ),
+                                                    SizedBox(width: 4),
+                                                    Text(
+                                                      "Update profile",
+                                                      style: fontSmall.copyWith(
+                                                        color:
+                                                            ColorResources
+                                                                .colorCaribbean,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  ImageResource
+                                                      .icProfileStrength,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.colorWhite,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ), // สีเงา (จาง ๆ)
+                                            blurRadius: 8, // 👈 ความเบลอของเงา
+                                            offset: const Offset(
+                                              0,
+                                              2,
+                                            ), // ตำแหน่งเงา (แนวตั้ง 2px)
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          children: [
+                                            Text("1", style: fontBodyStrong),
+                                            Text(
+                                              "งานที่สมัคร",
+                                              style: fontSmall.copyWith(
+                                                fontFamily: GofiveMedium,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -156,46 +258,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // 🔹 AI Suggestion Box
               Container(
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                padding: const EdgeInsets.all(16),
+
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: const LinearGradient(
-                    colors: [Colors.pinkAccent, Colors.orangeAccent],
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF426CFF).withOpacity(0.1),
+                      Color(0xFFFF6EBD).withOpacity(0.1),
+                      Color(0xFFFEB83C).withOpacity(0.1),
+                    ],
                   ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text("✨ AI Suggestion", style: fontTitleStrong),
-                    SizedBox(height: 8),
-                    Text(
-                      "You have 85% Matches with Mobile Developer",
-                      style: fontTitleStrong,
+                  children: [
+                    // ✅ รูปเต็มหน้าจอ
+                    Container(
+                      width: double.infinity,
+                      child: SvgPicture.asset(
+                        ImageResource.icProfileAiImprove,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    SizedBox(height: 8),
-                    Text("To get 100%, Try to", style: fontTitleStrong),
-                    SizedBox(height: 8),
-                    Text("1. Improve your resume", style: fontTitleStrong),
-                    Text("2. Add more skills", style: fontTitleStrong),
+
+                    // ✅ เนื้อหามี padding แยก
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 16.0,
+                        horizontal: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "คุณ Match",
+                                style: fontBody.copyWith(
+                                  color: ColorResources.colorPorpoise,
+                                ),
+                              ),
+                              Text(
+                                " 85%",
+                                style: fontTitleStrong.copyWith(
+                                  color: Colors.purple,
+                                ),
+                              ),
+                              Text(
+                                " กับตำแหน่ง",
+                                style: fontBody.copyWith(
+                                  color: ColorResources.colorPorpoise,
+                                ),
+                              ),
+                              Text(
+                                " Mobile Developer",
+                                style: fontTitleStrong.copyWith(
+                                  color: ColorResources.colorPorpoise,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "To get 100%, Try to",
+                            style: fontBody.copyWith(
+                              color: ColorResources.colorPorpoise,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(right: 8),
+                                child: CircleAvatar(minRadius: 12),
+                              ),
+                              Text(
+                                "อัปเดต Resume",
+                                style: fontBodyStrong,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16,),
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(right: 8),
+                                child: CircleAvatar(minRadius: 12),
+                              ),
+                              Text(
+                                "เพิ่มสกิลใหม่",
+                                style: fontBodyStrong,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 16),
+               Container(color: ColorResources.colorSoftCloud,height: 8),
 
               // 🔹 Skill / Resume Tabs
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
-                  children: const [
-                    Text("Skill", style: fontTitleStrong),
-                    SizedBox(width: 16),
-                    Text("Resume", style: fontTitleStrong),
-                    SizedBox(width: 16),
-                    Text("Certifications", style: fontTitleStrong),
-                    SizedBox(width: 16),
-                    Text("Experience", style: fontTitleStrong),
+                  children:  [
+                    _buildTabButton("สกิล", () => _scrollToSection(_skillKey)),
+                    _buildTabButton("Resume", () => _scrollToSection(_resumeKey)),
+                    _buildTabButton("ใบรับรอง", () => _scrollToSection(_certKey)),
+                    _buildTabButton("ประสบการณ์", () => _scrollToSection(_expKey)),
+                    _buildTabButton("การศึกษา", () => _scrollToSection(_eduKey)),
                   ],
                 ),
               ),
@@ -203,47 +377,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 12),
 
               // 🔹 Skill tags
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    Chip(label: Text("Swift สูง", style: fontBodyBold)),
-                    Chip(label: Text("Kotlin กลาง", style: fontBodyBold)),
-                    Chip(
-                      label: Text("Firebase เบื้องต้น", style: fontBodyBold),
-                    ),
-                    Chip(
-                      label: Text("+ Flutter กลาง", style: fontBodyBold),
-                      backgroundColor: Colors.pink.shade100,
-                    ),
-                  ],
+             
+            const SizedBox(height: 24),
+
+            // 🔹 Resume Section
+            _sectionWrapper(
+              key: _resumeKey,
+              title: "Resume",
+              child: Card(
+                child: ListTile(
+                  leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                  title: const Text("Portfolio.pdf"),
+                  subtitle: const Text("05/04/2023"),
+                  trailing: const Text("Default"),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
-              // 🔹 Resume
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Card(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.picture_as_pdf,
-                      color: Colors.red,
-                    ),
-                    title: const Text("Portfolio.pdf", style: fontTitleStrong),
-                    subtitle: const Text("05/04/2023", style: fontBody),
-                    trailing: const Text("Default", style: fontBodyBold),
-                  ),
-                ),
-              ),
+            // 🔹 Certifications Section
+            _sectionWrapper(
+              key: _certKey,
+              title: "Certifications",
+              child: const Text("Coming soon..."),
+            ),
 
-              const SizedBox(height: 80), // เผื่อ space ข้างล่าง
+            const SizedBox(height: 24),
+
+            // 🔹 Experience Section
+            _sectionWrapper(
+              key: _expKey,
+              title: "Experience",
+              child: const Text("Your work experience here..."),
+            ),
+
+            const SizedBox(height: 80),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String label, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          
+          child: Text(
+            label,
+            style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 🔹 Helper: Section Wrapper
+  Widget _sectionWrapper({
+    required GlobalKey key,
+    required String title,
+    required Widget child,
+  }) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          child,
+        ],
       ),
     );
   }
