@@ -43,5 +43,12 @@ static const String icCreateEmsume = 'assets/common/ic_create_emsume.svg';
 static const String icUploadResume = 'assets/common/ic_upload_resume.svg';
 static const String icUpload = 'assets/common/ic_upload.svg';
 static const String icProcessing = 'assets/common/ic_process.png';
+static const String icPdf = 'assets/common/ic_pdf.svg';
+static const String icCer = 'assets/common/ic_cer.svg';
+static const String icEdu = 'assets/common/image_edu.png';
+static const String icExp = 'assets/common/image_exp.png';
+static const String imgUpdateRem = 'assets/common/image_update_resume.png';
+static const String imgSkillAdd = 'assets/common/image_skill_add.png';
+
 
 }
