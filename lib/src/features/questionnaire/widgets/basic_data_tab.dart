@@ -1,15 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobdeeo/src/features/questionnaire/widgets/questionaire_components.dart';
+import '../../../core/base/txt_styles.dart';
+import '../../../core/color_resources.dart';
 import '../bloc/questionnaire_bloc.dart';
 import '../bloc/questionnaire_event.dart';
 import '../bloc/questionnaire_state.dart';
 import '../models/questionnaire_models.dart';
 
-class BasicDataTab extends StatelessWidget {
+class BasicDataTab extends StatefulWidget {
   final Function(int) onTabChange;
 
   const BasicDataTab({super.key, required this.onTabChange});
+
+  @override
+  State<BasicDataTab> createState() => _BasicDataTabState();
+}
+
+class _BasicDataTabState extends State<BasicDataTab> {
+  List<TextEditingController> _jobPositionControllers = [TextEditingController()];
+  bool _isFormValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _jobPositionControllers[0].addListener(_validateForm);
+  }
+
+  void _validateForm() {
+    setState(() {
+      _isFormValid = _jobPositionControllers[0].text.trim().isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _jobPositionControllers) {
+      controller.removeListener(_validateForm);
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +65,16 @@ class BasicDataTab extends StatelessWidget {
       listener: (context, state) {
         if (state is QuestionnaireBasicSubmitted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('บันทึกข้อมูลสำเร็จ!'),
-              backgroundColor: Color(0xFF24CAB1),
+            SnackBar(
+              content: Text('บันทึกข้อมูลสำเร็จ!', style: fontBody.copyWith(color: Colors.white)),
+              backgroundColor: ColorResources.primaryColor,
             ),
           );
-          onTabChange(1);
+          widget.onTabChange(1);
         } else if (state is QuestionnaireError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
+              content: Text(state.message, style: fontBody.copyWith(color: Colors.white)),
               backgroundColor: Colors.red,
             ),
           );
@@ -68,18 +99,37 @@ class BasicDataTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SubSectionHeader(title: 'ตำแหน่งงานที่ต้องการ'),
-                    CustomTextField(
-                      hintText: 'กรอกตำแหน่งงาน',
-                      initialValue: basicData.jobPosition,
-                      isOptional: true,
-                      onAddPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('คุณสามารถข้ามได้หากไม่ต้องการระบุ')),
-                        );
+                    ...List.generate(_jobPositionControllers.length, (index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          children: [
+                            CustomTextField(
+                              controller: _jobPositionControllers[index],
+                              hintText: 'กรอกตำแหน่งงาน',
+                              isOptional: false,
+                              onAddPressed: null,
+                              onChanged: (value) {
+                                if (index == 0) _validateForm();
+                                context.read<QuestionnaireBloc>().add(UpdateJobPosition(value));
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          final newController = TextEditingController();
+                          _jobPositionControllers.add(newController);
+                        });
                       },
-                      onChanged: (value) {
-                        context.read<QuestionnaireBloc>().add(UpdateJobPosition(value));
-                      },
+                      child: Text(
+                        '+ เพิ่ม',
+                        style: fontBodyStrong.copyWith(color: ColorResources.primaryColor),
+                      ),
                     ),
                   ],
                 ),
@@ -90,14 +140,8 @@ class BasicDataTab extends StatelessWidget {
                     const SubSectionHeader(title: 'เงินเดือนที่คาดหวัง'),
                     CustomTextField(
                       hintText: 'กรอกตัวเลข เช่น 25000',
-                      initialValue: basicData.expectedSalary,
                       onChanged: (value) {
                         context.read<QuestionnaireBloc>().add(UpdateExpectedSalary(value));
-                      },
-                      onAddPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('คุณสามารถข้ามได้หากไม่ต้องการระบุ')),
-                        );
                       },
                     ),
                   ],
@@ -168,9 +212,13 @@ class BasicDataTab extends StatelessWidget {
             submitText: 'บันทึกและไปต่อ',
             cancleText: 'ยกเลิก',
             isLoading: isLoading,
+            isEnabled: _isFormValid,
             onCancel: () => Navigator.pop(context),
             onSubmit: () {
-              context.read<QuestionnaireBloc>().add(SubmitBasicData());
+              if (_isFormValid) {
+                widget.onTabChange(1);
+                context.read<QuestionnaireBloc>().add(SubmitBasicData());
+              }
             },
           ),
         );

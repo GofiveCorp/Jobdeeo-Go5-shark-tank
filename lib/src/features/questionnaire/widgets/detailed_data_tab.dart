@@ -9,7 +9,12 @@ import '../models/questionnaire_models.dart';
 import '../screen/completion_screen.dart';
 
 class DetailedDataTab extends StatelessWidget {
-  const DetailedDataTab({super.key});
+  final VoidCallback? onBackToFirstTab;
+
+  const DetailedDataTab({
+    super.key,
+    this.onBackToFirstTab,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +134,9 @@ class DetailedDataTab extends StatelessWidget {
             submitText: 'บันทึก',
             cancleText: 'ย้อนกลับ',
             isLoading: isLoading,
-            onCancel: () => Navigator.pop(context),
+            onCancel: () {
+              onBackToFirstTab?.call();
+            },
             onSubmit: () {
               context.read<QuestionnaireBloc>().add(SubmitCompleteData());
             },

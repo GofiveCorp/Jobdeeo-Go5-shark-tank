@@ -17,21 +17,38 @@ class QuestionnaireScreen extends StatefulWidget {
 class _QuestionnaireScreenState extends State<QuestionnaireScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _canNavigateToSecondTab = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        if (_tabController.index == 1 && !_canNavigateToSecondTab) {
+
+          Future.microtask(() {
+            if (mounted) {
+              _tabController.animateTo(0);
+            }
+          });
+        }
+      }
+    });
+  }
+
+  void _onTabChange(int index) {
+    if (index == 1) {
+      _canNavigateToSecondTab = true;
+    }
+    _tabController.animateTo(index);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  void _onTabChange(int index) {
-    _tabController.animateTo(index);
   }
 
   @override
@@ -85,6 +102,12 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen>
                 indicatorSize: TabBarIndicatorSize.label,
                 labelPadding: EdgeInsets.only(right: 30, left: 0),
                 padding: EdgeInsets.symmetric(horizontal: 16),
+                physics: NeverScrollableScrollPhysics(),
+                onTap: (index) {
+                  if (index == 0) {
+                    _tabController.animateTo(0);
+                  }
+                },
                 tabs: const [
                   Tab(child: Text('ข้อมูลพื้นฐาน', style: fontBody)),
                   Tab(child: Text('ข้อมูลเชิงลึก', style: fontBody)),
@@ -93,10 +116,13 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen>
             ),
             Expanded(
               child: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: [
                   BasicDataTab(onTabChange: _onTabChange),
-                  const DetailedDataTab(),
+                  DetailedDataTab(onBackToFirstTab: () {
+                    _tabController.animateTo(0);
+                  },),
                 ],
               ),
             ),

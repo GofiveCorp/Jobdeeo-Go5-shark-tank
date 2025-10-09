@@ -42,19 +42,19 @@ class SubSectionHeader extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
-  final String? hintText;
-  final String? initialValue;
-  final Function(String) onChanged;
+  final String hintText;
+  final TextEditingController? controller;
   final bool isOptional;
   final VoidCallback? onAddPressed;
+  final ValueChanged<String>? onChanged;
 
   const CustomTextField({
     super.key,
-    this.hintText,
-    this.initialValue,
-    required this.onChanged,
-    this.isOptional = false,
+    required this.hintText,
+    this.controller,
+    this.isOptional = true,
     this.onAddPressed,
+    this.onChanged,
   });
 
   @override
@@ -62,7 +62,7 @@ class CustomTextField extends StatelessWidget {
     return Column(
       children: [
         TextFormField(
-          initialValue: initialValue,
+          controller: controller,
           onChanged: onChanged,
           cursorColor: ColorResources.primaryColor,
           style: fontBody.copyWith(color: ColorResources.colorCharcoal),
@@ -104,7 +104,7 @@ class CustomTextField extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
         ),
-        if (isOptional && onAddPressed != null)
+        if (!isOptional && onAddPressed != null)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Align(
@@ -112,12 +112,12 @@ class CustomTextField extends StatelessWidget {
               child: GestureDetector(
                 onTap: onAddPressed,
                 child: Text(
-                  '+ เพิ่ม',
-                  style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
-                  ),
+                    '+ เพิ่ม',
+                    style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
                 ),
               ),
             ),
+          ),
       ],
     );
   }
@@ -180,19 +180,21 @@ class MultiSelectChip extends StatelessWidget {
 }
 
 class StickyBottomButtons extends StatelessWidget {
-  final VoidCallback? onCancel;
-  final VoidCallback? onSubmit;
   final String submitText;
   final String cancleText;
   final bool isLoading;
+  final bool isEnabled;
+  final VoidCallback? onCancel;
+  final VoidCallback? onSubmit;
 
   const StickyBottomButtons({
     super.key,
-    this.onCancel,
-    this.onSubmit,
     required this.submitText,
     required this.cancleText,
     this.isLoading = false,
+    this.isEnabled = true,
+    this.onCancel,
+    this.onSubmit,
   });
 
   @override
@@ -232,12 +234,12 @@ class StickyBottomButtons extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
-                onPressed: isLoading ? null : onSubmit,
+                onPressed: isEnabled && !isLoading ? onSubmit : null,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  backgroundColor: ColorResources.primaryColor,
+                  backgroundColor: isEnabled  ? ColorResources.primaryColor : ColorResources.colorSoftCloud,
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 ),
                 child: isLoading
@@ -251,7 +253,7 @@ class StickyBottomButtons extends StatelessWidget {
                 )
                     : Text(
                   submitText,
-                  style: fontTitleStrong.copyWith(color: Colors.white)
+                  style: fontTitleStrong.copyWith(color:  isEnabled ?Colors.white : ColorResources.colorSilver)
                 ),
               ),
             ),

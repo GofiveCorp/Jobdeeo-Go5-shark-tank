@@ -47,9 +47,9 @@ class CompletionScreen extends StatelessWidget {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DashboardScreen(initialIndex: 2),
+                            builder: (context) => const DashboardScreen(),
                           ),
-                              (route) => false, // ลบ route ทั้งหมดก่อนหน้า
+                              (route) => false,
                         );
                       }
                     },
