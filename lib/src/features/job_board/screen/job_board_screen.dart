@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
-import 'package:jobdeeo/src/features/matching/repositories/matching_repositories.dart';
+import 'package:jobdeeo/src/features/job_board/repositories/job_repositories.dart';
 import '../../../core/color_resources.dart';
+import '../../../core/services/preferences_service.dart';
+import '../../../dashboard/dashboard_screen.dart';
 import '../bloc/company/company_bloc.dart';
 import '../bloc/company/company_event.dart';
 import '../bloc/company/company_state.dart';
@@ -27,11 +30,21 @@ class JobBoardScreen extends StatefulWidget {
 }
 
 class _JobBoardScreenState extends State<JobBoardScreen> {
+  bool _isQuestionnaireCompleted = false;
+
   @override
   void initState() {
     super.initState();
+    _checkQuestionnaireStatus();
     context.read<JobBloc>().add(LoadRecommendedJobs());
     context.read<CompanyBloc>().add(LoadTopCompanies());
+  }
+
+  Future<void> _checkQuestionnaireStatus() async {
+    final isCompleted = await PreferencesService.isQuestionnaireCompleted();
+    setState(() {
+      _isQuestionnaireCompleted = isCompleted;
+    });
   }
 
   @override
@@ -40,7 +53,7 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
       backgroundColor: ColorResources.backgroundColor,
       body: Column(
         children: [
-          const JobBoardHeader(),
+          JobBoardHeader(isQuestionnaireCompleted: _isQuestionnaireCompleted),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -49,6 +62,7 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
                   spacing: 20,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (!_isQuestionnaireCompleted) _buildCreateResumeNotice(),
                     _buildRecommendedJobsSection(),
                     _buildTopCompaniesSection(),
                   ],
@@ -61,13 +75,68 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
     );
   }
 
+  Widget _buildCreateResumeNotice() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DashboardScreen(initialIndex: 2),
+          ),
+              (route) => false,
+        ).then((_) {
+          _checkQuestionnaireStatus();
+        });
+      },
+      child: Container(
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          gradient: ColorResources.gd3Gradient.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(6),
+          border: GradientBoxBorder(
+            gradient: ColorResources.gd3Gradient,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          spacing: 2,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.diamond,
+              size: 12,
+              color: Color(0xFF596DF8),
+            ),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Create resume to view matching score, ',
+                      style: fontSmallStrong.copyWith(color: Color(0xFF596DF8)),
+                    ),
+                    TextSpan(
+                      text: 'Click to Create',
+                      style: fontSmallStrong.copyWith(color: Color(0xFF596DF8), decoration: TextDecoration.underline),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildRecommendedJobsSection() {
     return Column(
       spacing: 8,
       children: [
         SectionHeader(
-          title: 'งานแนะนำ',
-          actionText: 'ดูงานเพิ่มเติม',
+          title: 'Matches Jobs',
+          actionText: 'View Job listings',
           onActionPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -76,7 +145,7 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
           ),
         ),
         SizedBox(
-          height: 260,
+          height: _isQuestionnaireCompleted ? 260 : 246,
           child: BlocBuilder<JobBloc, JobState>(
             builder: (context, state) {
               if (state is JobLoading) {
@@ -93,17 +162,18 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
                       ),
                       child: JobCard(
                         job: job,
+                        showMatchScore: _isQuestionnaireCompleted,
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
-                              create: (context) => JobBloc(MatchingRepository())..add(LoadJobDetail(job.id)),
+                              create: (context) => JobBloc(JobRepositories())..add(LoadJobDetail(job.id)),
                               child: JobDetailScreen(jobId: job.id),
                             ),
                           ),
                         ).then((_) {
                           context.read<JobBloc>().add(LoadRecommendedJobs());
-                        })
+                        }),
                       ),
                     );
                   },
@@ -129,8 +199,8 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
       spacing: 8,
       children: [
         SectionHeader(
-          title: 'บริษัทชั้นนำ',
-          actionText: 'ดูทั้งหมด',
+          title: 'Hot Companies',
+          actionText: 'View All',
           onActionPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -152,7 +222,7 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
                     final company = state.companies[index];
                     return Padding(
                       padding: EdgeInsets.only(
-                        left: index == 0 ? 0 : 16,
+                        left: index == 0 ? 0 : 8,
                       ),
                       child: CompanyCard(
                         company: company,
@@ -160,8 +230,8 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
-                              create: (context) => CompanyBloc()..add(LoadCompanyDetail(company.id)),
-                              child: CompanyDetailScreen(companyId: company.id),
+                              create: (context) => CompanyBloc()..add(LoadCompanyDetail(company.companyId)),
+                              child: CompanyDetailScreen(companyId: company.companyId),
                             ),
                           ),
                         ).then((_) {
@@ -189,7 +259,12 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
 }
 
 class JobBoardHeader extends StatelessWidget {
-  const JobBoardHeader({super.key});
+  final bool isQuestionnaireCompleted;
+
+  const JobBoardHeader({
+    super.key,
+    required this.isQuestionnaireCompleted,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +274,9 @@ class JobBoardHeader extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const HeaderTopSection(),
+          Padding(padding: const EdgeInsets.only(right: 16, top: 48),
+          child: isQuestionnaireCompleted ? HeaderTopSection() : SizedBox(height: 28),
+              ),
           const HeaderMiddleSection(),
           HeaderSearchSection(),
         ],
@@ -214,33 +291,30 @@ class HeaderTopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16, top: 48),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BookmarkScreen(),
-              ),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(81.25),
-              ),
-              child: Icon(
-                Icons.bookmark,
-                color: ColorResources.primaryColor,
-                size: 16,
-              ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BookmarkScreen(),
             ),
           ),
-        ],
-      ),
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(81.25),
+            ),
+            child: Icon(
+              Icons.bookmark,
+              color: ColorResources.primaryColor,
+              size: 16,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

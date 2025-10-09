@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import '../../../matching/models/job_model.dart';
+
+import '../../models/job_model.dart';
 
 class JobAppBarInfo extends StatelessWidget {
   final JobModel job;
@@ -64,13 +65,16 @@ class JobOverviewDetails extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: Colors.orange,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Image.asset(
-                'assets/mock/company_logo_mock.png',
-                width: 48,
-                height: 48,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  job.logoURL, fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons.business, color: Colors.white);
+                  },
+                ),
               ),
             ),
             const SizedBox(width: 8),
@@ -130,14 +134,14 @@ class JobOverviewDetails extends StatelessWidget {
           ),
         ),
         // Skills Section
-        Row(
-          spacing: 8,
-          children: [
-            _buildSkillChip(job.skills[0].name, job.skills[0].level, Color(0xFF3AA8AF)),
-            _buildSkillChip(job.skills[1].name, job.skills[1].level, Color(0xFF7E4FFE)),
-            _buildSkillChip(job.skills[2].name, job.skills[2].level, Color(0xFF4C97FF)),
-          ],
-        ),
+        // Row(
+        //   spacing: 8,
+        //   children: [
+        //     _buildSkillChip(job.skills[0].name, job.skills[0].level, Color(0xFF3AA8AF)),
+        //     _buildSkillChip(job.skills[1].name, job.skills[1].level, Color(0xFF7E4FFE)),
+        //     _buildSkillChip(job.skills[2].name, job.skills[2].level, Color(0xFF4C97FF)),
+        //   ],
+        // ),
 
         // Job Details
         Column(

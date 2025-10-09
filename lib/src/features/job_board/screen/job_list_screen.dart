@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import 'package:jobdeeo/src/features/matching/repositories/matching_repositories.dart';
+import 'package:jobdeeo/src/features/job_board/repositories/job_repositories.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
+import '../models/job_model.dart';
 import 'advanced_search_screen.dart';
 import 'job_detail_screen.dart';
 
@@ -204,7 +205,7 @@ class _JobListScreenState extends State<JobListScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
-                              create: (context) => JobBloc(MatchingRepository())..add(LoadJobDetail(job.id)),
+                              create: (context) => JobBloc(JobRepositories())..add(LoadJobDetail(job.id)),
                               child: JobDetailScreen(jobId: job.id),
                             ),
                           ),
@@ -260,7 +261,7 @@ class _JobListScreenState extends State<JobListScreen> {
 }
 
 class JobListCard extends StatelessWidget {
-  final job;
+  final JobModel job;
   final VoidCallback? onTap;
 
   const JobListCard({
@@ -271,6 +272,14 @@ class JobListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // แสดงเงินเดือนหรือซ่อน
+    String salaryText;
+    if (job.salaryRange.isHidden) {
+      salaryText = 'ตามตกลง';
+    } else {
+      salaryText = '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}';
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -289,10 +298,37 @@ class JobListCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 16,
               children: [
-                Image.asset(
-                  'assets/mock/company_logo_mock.png',
+                // Company Logo
+                job.company.logoUrl != null
+                    ? Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            shape: BoxShape.circle,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              job.logoURL,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.business, color: Colors.white);
+              },
+            ),
+          ),
+        )
+                    : Container(
                   width: 48,
                   height: 48,
+                  decoration: BoxDecoration(
+                    color: ColorResources.colorCloud,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.business,
+                    color: ColorResources.colorFlint,
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -300,20 +336,23 @@ class JobListCard extends StatelessWidget {
                     children: [
                       Text(
                         job.title,
-                        style: fontTitleStrong.copyWith(color: ColorResources.colorCharcoal),
+                        style: fontTitleStrong.copyWith(
+                            color: ColorResources.colorCharcoal),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       Text(
                         job.company.name,
-                        style: fontBody.copyWith(color: ColorResources.colorPorpoise),
+                        style: fontBody.copyWith(
+                            color: ColorResources.colorPorpoise),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
+                // AI Match Score
                 Container(
                   height: 20,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -336,14 +375,14 @@ class JobListCard extends StatelessWidget {
                       ),
                       Text(
                         '${job.aiSkillMatch.score * 10}%',
-                        style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                        style: fontSmallStrong.copyWith(
+                            color: Color(0xFF596DF8)),
                       )
                     ],
                   ),
                 ),
               ],
             ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 4,
@@ -357,12 +396,12 @@ class JobListCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                        '${job.employment.seniority}, ${job.employment.type}',
-                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                      '${job.employment.seniority}, ${job.employment.type}',
+                      style: fontSmall.copyWith(
+                          color: ColorResources.colorPorpoise),
                     ),
                   ],
                 ),
-
                 Row(
                   children: [
                     Icon(
@@ -372,12 +411,12 @@ class JobListCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                        job.location.city,
-                        style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                      job.location.city,
+                      style: fontSmall.copyWith(
+                          color: ColorResources.colorPorpoise),
                     ),
                   ],
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -390,14 +429,16 @@ class JobListCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                            '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}',
-                            style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
+                          salaryText,
+                          style: fontSmall.copyWith(
+                              color: ColorResources.colorPorpoise),
                         ),
                       ],
                     ),
                     Text(
-                        job.postedAgo,
-                        style: fontSmall.copyWith(color: ColorResources.colorFlint)
+                      job.postedAgo,
+                      style:
+                      fontSmall.copyWith(color: ColorResources.colorFlint),
                     ),
                   ],
                 ),

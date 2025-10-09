@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import '../../../core/color_resources.dart';
-import '../../matching/repositories/matching_repositories.dart';
 import '../bloc/job/job_bloc.dart';
 import '../bloc/job/job_event.dart';
 import '../bloc/job/job_state.dart';
+import '../models/job_model.dart';
+import '../repositories/job_repositories.dart';
 import '../widgets/job_section/job_bottom_bar.dart';
 import '../widgets/job_section/job_tab_content.dart';
 
@@ -22,7 +23,7 @@ class JobDetailScreen extends StatefulWidget {
 class _JobDetailScreenState extends State<JobDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late MatchingRepository _repository;
+  late JobRepositories _repository;
 
   bool _isBookmarked = false;
   bool _isApplying = false;
@@ -32,7 +33,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _repository = MatchingRepository();
+    _repository = JobRepositories();
 
     // โหลด bloc และเช็ค bookmark status
     context.read<JobBloc>().add(LoadJobDetail(widget.jobId));
@@ -356,7 +357,7 @@ class JobTabBar extends StatelessWidget {
 
 class JobTabContent extends StatelessWidget {
   final TabController tabController;
-  final job;
+  final JobModel job;
 
   const JobTabContent({
     super.key,

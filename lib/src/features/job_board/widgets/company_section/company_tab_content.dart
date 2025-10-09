@@ -10,6 +10,7 @@ import '../../models/company_model.dart';
 import '../../screen/job_detail_screen.dart';
 import '../job_section/job_tab_content.dart';
 
+
 class CompanyTabContent extends StatelessWidget {
   final TabController tabController;
   final CompanyModel company;
@@ -28,9 +29,9 @@ class CompanyTabContent extends StatelessWidget {
       controller: tabController,
       children: [
         CompanyInfoTab(company: company),
-        CompanyBenefitsTab(),
+        CompanyBenefitsTab(company: company),
         CompanyLifestyleTab(),
-        CompanyContactTab(),
+        CompanyContactTab(company: company),
         CompanyJobsTab(companyId: companyId, companyName: company.name),
       ],
     );
@@ -59,10 +60,17 @@ class CompanyInfoTab extends StatelessWidget {
                 height: 56,
                 decoration: BoxDecoration(
                   color: Colors.orange,
-                  shape: BoxShape.circle
+                  shape: BoxShape.circle,
                 ),
-                child: Image.asset(
-                  company.logo, fit: BoxFit.cover
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(28),
+                  child: Image.network(
+                    company.logoURL,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(Icons.business, color: Colors.white);
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -76,35 +84,9 @@ class CompanyInfoTab extends StatelessWidget {
           ),
           // Company Description
           Text(
-            company.description,
+            company.plainDescription,
             style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
-
-          if (company.name == 'Gofive Company Limited') ...[
-            Column(
-              spacing: 8,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Gofive คือบริษัท Startup ใน T.K.S. Group เราสร้าง Tech Ecosystem ที่เป็นแข็งแกร่งเพื่อผลักดันธุรกิจให้ Scale Up แบบก้าวกระโดดพร้อมกับ Career Path ที่มั่นคงในการทำงานที่ Gofive เราให้ความสำคัญในการใส่ใจเพื่อร่วมงาน รวมไปถึงการเปิดใจรับฟังและเรียนรู้สิ่งใหม่ๆอยู่เสมอ เพื่อให้ทีมงานของเรานั้นน่าอยู่สำหรับทุกคน',
-                  style: fontBody.copyWith(color: ColorResources.colorLead)
-                ),
-              ],
-            ),
-            Text(
-              'เรามี Products อะไรบ้าง?',
-              style: fontBody.copyWith(color: ColorResources.colorLead)
-            ),
-            CompanyProductsList(),
-            Text(
-              'มารู้จักเรามากขึ้น?',
-              style: fontBody.copyWith(color: ColorResources.colorLead)
-            ),
-            Text(
-              'บรรยากาศการทำงานที่ Gofive: https://youtu.be/LLRtw5_n764 \n\nติดตามเราที่: www.facebook.com/GofiveFamily',
-              style: fontBody.copyWith(color: ColorResources.colorLead)
-            ),
-          ],
         ],
       ),
     );
@@ -113,7 +95,9 @@ class CompanyInfoTab extends StatelessWidget {
 
 // Company Benefits Tab
 class CompanyBenefitsTab extends StatelessWidget {
-  const CompanyBenefitsTab({super.key});
+  final CompanyModel company;
+  const CompanyBenefitsTab({super.key,
+    required this.company,});
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +121,9 @@ class CompanyBenefitsTab extends StatelessWidget {
               ),
             ],
           ),
-          BenefitsList(),
+          BenefitsList(
+            benefitDescription: company.benefitDescription,
+          ),
         ],
       ),
     );
@@ -202,7 +188,8 @@ class CompanyLifestyleTab extends StatelessWidget {
 
 // Company Contact Tab
 class CompanyContactTab extends StatelessWidget {
-  const CompanyContactTab({super.key});
+  final CompanyModel company;
+  const CompanyContactTab({super.key, required this.company});
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +200,7 @@ class CompanyContactTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-              'At Gofive, we share a passion for driving digital transformation for businesses of all sizes. We pay attention to every detail and are committed to delivering an exceptional software experience to our users.',
+            company.plainAboutUs,
               style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
           Column(
@@ -557,20 +544,49 @@ class CompanyProductsList extends StatelessWidget {
 }
 
 class BenefitsList extends StatelessWidget {
-  const BenefitsList({super.key});
+  final String benefitDescription;
+
+  const BenefitsList({
+    super.key,
+    required this.benefitDescription,
+  });
+
+  List<String> _parseBenefits() {
+    if (benefitDescription.isEmpty) return [];
+
+    try {
+      // Extract text between <li> and </li> tags
+      final liRegex = RegExp(r'<li[^>]*>(.*?)</li>', dotAll: true);
+      final matches = liRegex.allMatches(benefitDescription);
+
+      List<String> benefits = [];
+      for (var match in matches) {
+        String content = match.group(1) ?? '';
+
+        // Remove all HTML tags
+        content = content.replaceAll(RegExp(r'<[^>]*>'), '');
+
+        // Trim and add to list
+        content = content.trim();
+        if (content.isNotEmpty) {
+          benefits.add(content);
+        }
+      }
+
+      return benefits;
+    } catch (e) {
+      print('Error parsing benefits: $e');
+      return [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final benefits = [
-      'Performance Bonus ประจำปี',
-      'กองทุนสำรองเลี้ยงชีพ',
-      'ประกันสุขภาพกลุ่ม ประกันอุบัติเหตุ ประกันชีวิต',
-      'คอร์สเรียน Upskill ได้ตามต้องการ',
-      'Notebook ส่วนตัว หรือถ้าอยากใช้ของตัวเองก็มี Reward ให้',
-      'Outing ท่องเที่ยวประจำปี',
-      'กิจกรรมจัดเต็มตลอดทั้งปี',
-      'ออฟฟิศใจกลางเมืองเดินทางสะดวกที่ FYI Center ติด MRT ศูนย์ประชุมแห่งชาติสีลรักษ์',
-    ];
+    final benefits = _parseBenefits();
+
+    if (benefits.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       children: benefits.map((benefit) => Padding(
@@ -590,7 +606,7 @@ class BenefitsList extends StatelessWidget {
             Expanded(
               child: Text(
                 benefit,
-                style: fontBody.copyWith(color: ColorResources.colorLead)
+                style: fontBody.copyWith(color: ColorResources.colorLead),
               ),
             ),
           ],

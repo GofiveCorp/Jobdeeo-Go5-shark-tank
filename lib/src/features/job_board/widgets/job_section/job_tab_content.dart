@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 
-import '../../../matching/models/job_model.dart';
+import '../../models/job_model.dart';
 import 'job_header_widget.dart';
 
 class OverviewTab extends StatelessWidget {
-  final JobModel job;
+  final job;
 
   const OverviewTab({super.key, required this.job});
 
@@ -33,8 +33,8 @@ class OverviewTab extends StatelessWidget {
                   title: 'ภาพรวมของตำแหน่งงาน',
                 ),
                 Text(
-                  'As a Systems Analyst, you will be responsible for analyzing, designing, and implementing computer systems to meet the needs of our organization. You can work individually on a project or collaborate with a team of other systems analysts on multiple projects.',
-                  style: fontBody.copyWith(color: ColorResources.colorLead)
+                    job.benefitDescription,
+                    style: fontBody.copyWith(color: ColorResources.colorLead)
                 ),
               ],
             ),
@@ -96,9 +96,9 @@ class QualificationsTab extends StatelessWidget {
             title: 'คุณสมบัติของผู้สมัคร',
           ),
           const SizedBox(height: 16),
-          BulletPointList(
-            points: job.requirements
-          ),
+          // BulletPointList(
+          //   points: job.responsibility
+          // ),
         ],
       ),
     );
@@ -175,7 +175,8 @@ class ContactTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            job.aboutCompany, style: fontBody.copyWith(color: ColorResources.colorLead)
+            ""
+            // job.aboutCompany, style: fontBody.copyWith(color: ColorResources.colorLead)
           ),
           Column(
             spacing: 4,
@@ -185,9 +186,9 @@ class ContactTab extends StatelessWidget {
                 title: 'การติดต่อ',
               ),
               Text(
-                  job.branches[1].name != null || job.branches[0].name != null
-                      ?'${job.branches[0].name}  |  ${job.branches[1].name}'
-                  :'',
+              //     job.branches[1].name != null || job.branches[0].name != null
+              //         ?'${job.branches[0].name}  |  ${job.branches[1].name}'
+                  '',
                 style: fontBodyStrong.copyWith(color: ColorResources.primaryColor)
                 ),
             ],

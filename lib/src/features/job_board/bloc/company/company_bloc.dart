@@ -1,10 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../utils/mock_data.dart';
+import '../../repositories/company_repositories.dart';
 import 'company_event.dart';
 import 'company_state.dart';
 
 class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
-  CompanyBloc() : super(CompanyInitial()) {
+  final CompanyRepository repository;
+
+  CompanyBloc({CompanyRepository? repository})
+      : repository = repository ?? CompanyRepository(),
+        super(CompanyInitial()) {
     on<LoadTopCompanies>(_onLoadTopCompanies);
     on<LoadAllCompanies>(_onLoadAllCompanies);
     on<LoadCompanyDetail>(_onLoadCompanyDetail);
@@ -16,11 +20,10 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       ) async {
     emit(CompanyLoading());
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
-      final companies = MockData.getTopCompanies();
+      final companies = await repository.getTopCompanies(limit: 10);
       emit(CompanyLoaded(companies));
     } catch (e) {
-      emit(CompanyError('Failed to load top companies'));
+      emit(CompanyError('Failed to load top companies: ${e.toString()}'));
     }
   }
 
@@ -30,11 +33,10 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       ) async {
     emit(CompanyLoading());
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
-      final companies = MockData.getTopCompanies();
+      final companies = await repository.getAllCompanies();
       emit(CompanyLoaded(companies));
     } catch (e) {
-      emit(CompanyError('Failed to load companies'));
+      emit(CompanyError('Failed to load companies: ${e.toString()}'));
     }
   }
 
@@ -44,12 +46,10 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       ) async {
     emit(CompanyLoading());
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      final companies = MockData.getTopCompanies();
-      final company = companies.firstWhere((c) => c.id == event.companyId);
+      final company = await repository.getCompanyById(event.companyId);
       emit(CompanyDetailLoaded(company));
     } catch (e) {
-      emit(CompanyError('Failed to load company detail'));
+      emit(CompanyError('Failed to load company detail: ${e.toString()}'));
     }
   }
 }

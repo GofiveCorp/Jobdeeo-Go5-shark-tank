@@ -219,11 +219,11 @@ class SwipeJobCard extends StatelessWidget {
       case 0:
         return OverviewSwipeTab(job: job);
       case 1:
-        return QualificationsTab(job: job);
+        // return QualificationsTab(job: job);
       case 2:
         return const LifestyleTab();
       case 3:
-        return ContactTab(job: job);
+        // return ContactTab(job: job);
       default:
         return OverviewSwipeTab(job: job);
     }

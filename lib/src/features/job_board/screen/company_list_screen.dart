@@ -40,7 +40,7 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
         _filteredCompanies = _allCompanies
             .where((company) =>
         company.name.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-            company.industry.toLowerCase().contains(_searchController.text.toLowerCase()))
+            company.siteName.toLowerCase().contains(_searchController.text.toLowerCase()))
             .toList();
       }
     });
@@ -182,12 +182,12 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => BlocProvider(
-                                create: (context) => CompanyBloc()..add(LoadCompanyDetail(company.id)),
-                                child: CompanyDetailScreen(companyId: company.id),
+                                create: (context) => CompanyBloc()..add(LoadCompanyDetail(company.companyId)),
+                                child: CompanyDetailScreen(companyId: company.companyId),
                               ),
                             ),
                           ).then((_) {
-                            context.read<CompanyBloc>().add(LoadTopCompanies());
+                            context.read<CompanyBloc>().add(LoadAllCompanies());
                           })
                         );
                       },
@@ -275,8 +275,14 @@ class CompanyListCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Image.asset(
-                      company.logo, fit: BoxFit.cover
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                      company.logoURL, fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.business, color: Colors.white);
+                        },
+                      ),
                     ),
                   ),
 
@@ -301,7 +307,7 @@ class CompanyListCard extends StatelessWidget {
               ),
 
               Text(
-                company.description,
+                company.plainDescription,
                 style: fontSmall.copyWith(color: ColorResources.colorPorpoise),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

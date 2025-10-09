@@ -19,7 +19,7 @@ class CompanyCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 200,
-        margin: const EdgeInsets.only(right: 16),
+        margin: const EdgeInsets.only(right: 8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -52,8 +52,20 @@ class CompanyCard extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: Image.asset(company.image, fit: BoxFit.cover)
-              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+        child: Image.network(
+          company.coverURL,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(Icons.business, color: Colors.white);
+          },
+        ),
+      ),
+    ),
 
 
             Padding(
@@ -75,7 +87,7 @@ class CompanyCard extends StatelessWidget {
                   ),
 
                   Text(
-                    company.description,
+                    company.plainDescription,
                     style: fontExtraSmall.copyWith(color: ColorResources.colorGray),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

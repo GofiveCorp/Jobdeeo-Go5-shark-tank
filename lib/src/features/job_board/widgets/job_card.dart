@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import '../../matching/models/job_model.dart';
+
+import '../models/job_model.dart';
 
 class JobCard extends StatelessWidget {
   final JobModel job;
   final VoidCallback? onTap;
+  final bool showMatchScore;
 
   const JobCard({
     super.key,
     required this.job,
     this.onTap,
+    this.showMatchScore = true,
   });
 
   @override
@@ -33,10 +36,22 @@ class JobCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  'assets/mock/company_logo_mock.png',
-                  width: 48,
-                  height: 48,
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      job.logoURL,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.business, color: ColorResources.primaryColor);
+                      },
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -60,33 +75,34 @@ class JobCard extends StatelessWidget {
               spacing: 4,
               children: [
                 // Match Percentage
-                Container(
-                  height: 20,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    gradient: ColorResources.gd3Gradient.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: GradientBoxBorder(
-                      gradient: ColorResources.gd3Gradient,
-                      width: 1,
+                if (showMatchScore)
+                  Container(
+                    height: 20,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      gradient: ColorResources.gd3Gradient.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: GradientBoxBorder(
+                        gradient: ColorResources.gd3Gradient,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      spacing: 2,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.diamond,
+                          size: 12,
+                          color: Color(0xFF596DF8),
+                        ),
+                        Text(
+                          '${job.aiSkillMatch.score * 10}% Skill Matches',
+                          style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
+                        )
+                      ],
                     ),
                   ),
-                  child: Row(
-                    spacing: 2,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.diamond,
-                        size: 12,
-                        color: Color(0xFF596DF8),
-                      ),
-                      Text(
-                        '${job.aiSkillMatch.score * 10}% Skill Matches',
-                        style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
-                      )
-                    ],
-                  ),
-                ),
 
                 Row(
                   children: [
@@ -118,20 +134,24 @@ class JobCard extends StatelessWidget {
                   ],
                 ),
 
-                Row(
-                  children: [
-                    Icon(
-                      Icons.attach_money,
-                      size: 18,
-                      color: ColorResources.colorPorpoise,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                        '${job.salaryRange.min} - ${job.salaryRange.max} ${job.salaryRange.currency}',
-                      style: fontSmall.copyWith(color: ColorResources.colorPorpoise)
-                    ),
-                  ],
-                ),
+                if (job.salaryRange.isHidden)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.attach_money,
+                        size: 18,
+                        color: ColorResources.colorPorpoise,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                          '${job.salaryRange.min} - ${job.salaryRange.max} ${job
+                              .salaryRange.currency}',
+                          style: fontSmall.copyWith(
+                              color: ColorResources.colorPorpoise)
+                      ),
+                    ],
+                  ),
+
               ],
             ),
 

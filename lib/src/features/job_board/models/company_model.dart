@@ -1,61 +1,102 @@
 import 'package:equatable/equatable.dart';
 
 class CompanyModel extends Equatable {
-  final String id;
+  final String companyId;
   final String name;
-  final String logo;
-  final String image;
+  final String siteName;
   final String description;
-  final String industry;
-  final int employeeCount;
-  final String website;
+  final String coverURL;
+  final String logoURL;
+  final String benefitDescription;
+  final String aboutUs;
+  final double? latitude;
+  final double? longitude;
 
   const CompanyModel({
-    required this.id,
+    required this.companyId,
     required this.name,
-    required this.logo,
-    required this.image,
+    required this.siteName,
     required this.description,
-    required this.industry,
-    required this.employeeCount,
-    required this.website,
+    required this.coverURL,
+    required this.logoURL,
+    required this.benefitDescription,
+    required this.aboutUs,
+    this.latitude,
+    this.longitude,
   });
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) {
     return CompanyModel(
-      id: json['id'],
-      name: json['name'],
-      logo: json['logo'],
-      image: json['image'],
-      description: json['description'],
-      industry: json['industry'],
-      employeeCount: json['employeeCount'],
-      website: json['website'],
+      companyId: json['companyId']?.toString() ?? '',
+      name: json['name'] ?? '',
+      siteName: json['siteName'] ?? '',
+      description: json['description'] ?? '',
+      coverURL: json['coverURL'] ?? '',
+      logoURL: json['logoURL'] ?? '',
+      benefitDescription: json['benefitDescription'] ?? '',
+      aboutUs: json['aboutUs'] ?? '',
+      latitude: json['latitude'] != null
+          ? double.tryParse(json['latitude'].toString())
+          : null,
+      longitude: json['longitude'] != null
+          ? double.tryParse(json['longitude'].toString())
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'companyId': companyId,
       'name': name,
-      'logo': logo,
-      'image': image,
+      'siteName': siteName,
       'description': description,
-      'industry': industry,
-      'employeeCount': employeeCount,
-      'website': website,
+      'coverURL': coverURL,
+      'logoURL': logoURL,
+      'benefitDescription': benefitDescription,
+      'aboutUs': aboutUs,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 
+  // Helper method to strip HTML tags
+  String _stripHtml(String htmlString) {
+    if (htmlString.isEmpty) return '';
+
+    // Remove HTML tags
+    String text = htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
+
+    // Decode HTML entities
+    text = text
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'")
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('\n', ' ')
+        .replaceAll(RegExp(r'\s+'), ' '); // Replace multiple spaces with single space
+
+    return text.trim();
+  }
+
+// Getter for plain text description
+  String get plainDescription => _stripHtml(description);
+
+// Getter for plain text about us
+  String get plainAboutUs => _stripHtml(aboutUs);
+
   @override
   List<Object?> get props => [
-    id,
+    companyId,
     name,
-    logo,
-    image,
+    siteName,
     description,
-    industry,
-    employeeCount,
-    website,
+    coverURL,
+    logoURL,
+    benefitDescription,
+    aboutUs,
+    latitude,
+    longitude,
   ];
 }

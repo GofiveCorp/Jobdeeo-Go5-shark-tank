@@ -13,6 +13,7 @@ import 'package:jobdeeo/src/features/matching/bloc/matching_bloc.dart';
 import 'package:jobdeeo/src/features/matching/repositories/matching_repositories.dart';
 import 'package:jobdeeo/src/features/matching/screen/matching_screen.dart';
 import 'src/config/app_routes.dart';
+import 'src/features/job_board/repositories/job_repositories.dart';
 
 
 void main() {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-        BlocProvider(create: (context) => JobBloc(MatchingRepository())),
+        BlocProvider(create: (context) => JobBloc(JobRepositories())),
           BlocProvider(create: (context) => CompanyBloc()),
           BlocProvider(create: (context) => MatchingBloc(repository: MatchingRepository())),
         ]
