@@ -272,7 +272,6 @@ class JobListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // แสดงเงินเดือนหรือซ่อน
     String salaryText;
     if (job.salaryRange.isHidden) {
       salaryText = 'ตามตกลง';
@@ -304,11 +303,10 @@ class JobListCard extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: Colors.orange,
-            shape: BoxShape.circle,
+            shape: BoxShape.rectangle,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             child: Image.network(
               job.logoURL,
               fit: BoxFit.cover,
@@ -374,7 +372,7 @@ class JobListCard extends StatelessWidget {
                         color: Color(0xFF596DF8),
                       ),
                       Text(
-                        '${job.aiSkillMatch.score * 10}%',
+                        '${(job.aiSkillMatch.score * 10).round()}%',
                         style: fontSmallStrong.copyWith(
                             color: Color(0xFF596DF8)),
                       )

@@ -127,21 +127,21 @@ class JobOverviewDetails extends StatelessWidget {
                 color: Color(0xFF596DF8),
               ),
               Text(
-                '${job.aiSkillMatch.score * 10}% Skill Matches',
+                '${(job.aiSkillMatch.score * 10).round()}% Skill Matches',
                 style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
               )
             ],
           ),
         ),
         // Skills Section
-        // Row(
-        //   spacing: 8,
-        //   children: [
-        //     _buildSkillChip(job.skills[0].name, job.skills[0].level, Color(0xFF3AA8AF)),
-        //     _buildSkillChip(job.skills[1].name, job.skills[1].level, Color(0xFF7E4FFE)),
-        //     _buildSkillChip(job.skills[2].name, job.skills[2].level, Color(0xFF4C97FF)),
-        //   ],
-        // ),
+        Row(
+          spacing: 8,
+          children: [
+            _buildSkillChip("Excel", "สูง", Color(0xFF3AA8AF)),
+            _buildSkillChip("Design", "กลาง", Color(0xFF7E4FFE)),
+            _buildSkillChip("Creative", "เบื้องต้น", Color(0xFF4C97FF)),
+          ],
+        ),
 
         // Job Details
         Column(

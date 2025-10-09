@@ -170,7 +170,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
       builder: (context, state) {
         String jobTitle = '';
         String companyName = '';
-        int matchPercentage = 0;
+        double matchPercentage = 0;
 
         if (state is JobDetailLoaded) {
           jobTitle = state.job.title;
@@ -226,7 +226,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
 class JobDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String jobTitle;
   final String companyName;
-  final int matchPercentage;
+  final double matchPercentage;
 
   const JobDetailAppBar({
     super.key,

@@ -2,83 +2,80 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/job_model.dart';
+import '../../job_board/models/job_model.dart';
+
 
 class MatchingRepository {
-  final String baseUrl = 'https://68dcea2b7cd1948060abb8d3.mockapi.io/v1';
+  static const String baseUrl = 'https://api-emconnect.empeo.com/api/v1';
+  static const String apiKey = '3e1u2p9aB40V5a9uf+v9Cyb2T4CT8XIRKA6eZjY9Q4i/FZF0=';
+
+  Map<String, String> get _headers => {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:142.0) Gecko/20100101 Firefox/142.0',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'th,en-US;q=0.7,en;q=0.3',
+    'Authorization': 'bearer undefined',
+    'Content-Type': 'application/json',
+    'X-API-KEY-EMCONNECT': apiKey,
+  };
+
   final String bookmarkUrl =
       'https://68dead5c898434f41355aa16.mockapi.io/v1/myJob';
   final String applyJobUrl =
-      'https://68dead5c898434f41355aa16.mockapi.io/v1/applyJob'; // ✅ เพิ่ม
+      'https://68dead5c898434f41355aa16.mockapi.io/v1/applyJob';
 
-  int currentCardIndex = 1;
-  final int maxCards = 9;
-
-  Future<JobModel> fetchNextJob() async {
-    if (currentCardIndex > maxCards) {
-      throw Exception('No more jobs available');
-    }
-
-    debugPrint('current : $baseUrl/swipe$currentCardIndex');
-
+  Future<List<JobModel>> fetchAllJobs({
+    int skipRow = 0,
+    int takeRow = 10,
+    String? keyword,
+  }) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/swipe$currentCardIndex'),
-        headers: {'Content-Type': 'application/json'},
+      final Map<String, dynamic> requestBody = {
+        'skipRow': skipRow,
+        'takeRow': takeRow,
+        'isEmjobs': true,
+        'isSystem': true,
+        'isRandom': true,
+      };
+
+      // เพิ่ม keyword ถ้ามี
+      if (keyword != null && keyword.isNotEmpty) {
+        requestBody['keyword'] = keyword;
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/Position/Jobs'),
+        headers: _headers,
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
-        // ✅ MockAPI ส่งเป็น List, เลยต้องดึงตัวแรกออกมา
-        if (jsonData is List && jsonData.isNotEmpty) {
-          final job = JobModel.fromJson(jsonData.first);
-          currentCardIndex++;
-          return job;
+        if (jsonResponse['status']['code'] == '1000') {
+          final List<dynamic> jobsJson =
+              jsonResponse['data']['positionAvailables'] ?? [];
+
+          return jobsJson
+              .map((json) => JobModel.fromJson(json))
+              .toList();
         } else {
-          throw Exception('Empty or invalid job data');
+          throw Exception('API Error: ${jsonResponse['status']['description']}');
         }
       } else {
-        throw Exception('Failed to load job: ${response.statusCode}');
+        throw Exception('Failed to load recommended jobs: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to fetch job: $e');
+      throw Exception('Error fetching recommended jobs: $e');
     }
   }
 
-  Future<List<JobModel>> fetchAllJobs() async {
-    List<JobModel> jobs = [];
-    currentCardIndex = 1;
-
-    for (int i = 1; i <= maxCards; i++) {
-      debugPrint('i = $baseUrl/swipe$i');
-      try {
-        final response = await http.get(
-          Uri.parse('$baseUrl/swipe$i'),
-          headers: {'Content-Type': 'application/json'},
-        );
-
-        if (response.statusCode == 200) {
-          final jsonData = json.decode(response.body);
-
-          if (jsonData is List && jsonData.isNotEmpty) {
-            // ถ้า API ส่ง list ของงานหลายตัว ก็เพิ่มทั้งหมด
-            for (var item in jsonData) {
-              jobs.add(JobModel.fromJson(item));
-            }
-          }
-        }
-      } catch (e) {
-        print('Error fetching swipe$i: $e');
-      }
-    }
-
-    if (jobs.isEmpty) {
-      throw Exception('No jobs found');
-    }
-
-    return jobs;
+  Future<List<JobModel>> fetchRecommendedJobs({
+    int skipRow = 0,
+    int takeRow = 20,
+  }) {
+    return fetchAllJobs(skipRow: skipRow, takeRow: takeRow);
   }
+
 
   // ✅ เพิ่ม: บันทึกงานไปยัง API
   Future<List<dynamic>> bookmarkJob(String jobId) async {
@@ -232,16 +229,13 @@ class MatchingRepository {
       final appliedJobs = await fetchAppliedJobs();
       return appliedJobs.any((job) => job.id == jobId);
     } catch (e) {
-      print('❌ Error checking applied status: $e');
+      debugPrint('❌ Error checking applied status: $e');
       return false;
     }
   }
 
-  void resetCardIndex() {
-    currentCardIndex = 1;
-  }
+  int _currentCardIndex = 0;
+  void resetCardIndex() => _currentCardIndex = 0;
+  int get currentCardIndex => _currentCardIndex;
 
-  bool hasMoreJobs() {
-    return currentCardIndex <= maxCards;
-  }
 }

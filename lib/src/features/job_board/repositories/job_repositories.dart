@@ -18,29 +18,83 @@ class JobRepositories {
     'Referer': 'https://jobdeeo.com/',
   };
 
-  /// ดึงรายการงานทั้งหมด
-  Future<List<JobModel>> fetchAllJobs({
+  /// ดึงงานแนะนำ (ใช้ isRecommend)
+  Future<List<JobModel>> getRecommendedJobs({
     int skipRow = 0,
-    int takeRow = 100,
-    bool isRandom = true,
+    int takeRow = 10,
+    String? keyword, // เพิ่ม parameter
   }) async {
     try {
+      final Map<String, dynamic> requestBody = {
+        'skipRow': skipRow,
+        'takeRow': takeRow,
+        'isEmjobs': true,
+        'isSystem': true,
+        'isRandom': true,
+      };
+
+      // เพิ่ม keyword ถ้ามี
+      if (keyword != null && keyword.isNotEmpty) {
+        requestBody['keyword'] = keyword;
+      }
+
       final response = await http.post(
         Uri.parse('$baseUrl/Position/Jobs'),
         headers: _headers,
-        body: jsonEncode({
-          'skipRow': skipRow,
-          'takeRow': takeRow,
-          'isEmjobs': true,
-          'isSystem': true,
-          'isRandom': isRandom,
-        }),
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
-        // ตรวจสอบ status code
+        if (jsonResponse['status']['code'] == '1000') {
+          final List<dynamic> jobsJson =
+              jsonResponse['data']['positionAvailables'] ?? [];
+
+          return jobsJson
+              .map((json) => JobModel.fromJson(json))
+              .toList();
+        } else {
+          throw Exception('API Error: ${jsonResponse['status']['description']}');
+        }
+      } else {
+        throw Exception('Failed to load recommended jobs: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching recommended jobs: $e');
+    }
+  }
+
+  /// ดึงรายการงานทั้งหมด
+  Future<List<JobModel>> fetchAllJobs({
+    int skipRow = 0,
+    int takeRow = 100,
+    bool isRandom = true,
+    String? keyword, // เพิ่ม parameter
+  }) async {
+    try {
+      final Map<String, dynamic> requestBody = {
+        'skipRow': skipRow,
+        'takeRow': takeRow,
+        'isEmjobs': true,
+        'isSystem': true,
+        'isRandom': isRandom,
+      };
+
+      // เพิ่ม keyword ถ้ามี
+      if (keyword != null && keyword.isNotEmpty) {
+        requestBody['keyword'] = keyword;
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/Position/Jobs'),
+        headers: _headers,
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
         if (jsonResponse['status']['code'] == '1000') {
           final List<dynamic> jobsJson =
               jsonResponse['data']['positionAvailables'] ?? [];
@@ -176,46 +230,6 @@ class JobRepositories {
       }
     } catch (e) {
       throw Exception('Error filtering jobs: $e');
-    }
-  }
-
-  /// ดึงงานแนะนำ (ใช้ isRecommend)
-  Future<List<JobModel>> getRecommendedJobs({
-    int skipRow = 0,
-    int takeRow = 10,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/Position/Jobs'),
-        headers: _headers,
-        body: jsonEncode({
-          'skipRow': skipRow,
-          'takeRow': takeRow,
-          'isEmjobs': true,
-          'isSystem': true,
-          'isRandom': true,
-          // 'isRecommend': true, // เน้นงานแนะนำ
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-
-        if (jsonResponse['status']['code'] == '1000') {
-          final List<dynamic> jobsJson =
-              jsonResponse['data']['positionAvailables'] ?? [];
-
-          return jobsJson
-              .map((json) => JobModel.fromJson(json))
-              .toList();
-        } else {
-          throw Exception('API Error: ${jsonResponse['status']['description']}');
-        }
-      } else {
-        throw Exception('Failed to load recommended jobs: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error fetching recommended jobs: $e');
     }
   }
 

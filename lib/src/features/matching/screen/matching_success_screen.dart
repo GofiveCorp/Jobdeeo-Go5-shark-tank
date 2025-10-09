@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
-import 'package:jobdeeo/src/features/matching/models/job_model.dart';
 
 import '../../../config/app_routes.dart';
+import '../../job_board/models/job_model.dart';
 import '../bloc/matching_bloc.dart';
 import '../bloc/matching_event.dart';
 import '../repositories/matching_repositories.dart';
 
 class MatchingSuccessScreen extends StatelessWidget {
-  final JobModel job; // ✅ เพิ่ม field
+  final JobModel job;
 
-  const MatchingSuccessScreen({super.key, required this.job}); // ✅ แก้ไข constructor
+  const MatchingSuccessScreen({super.key, required this.job});
 
   Future<void> _quickApply(BuildContext context) async {
     try {

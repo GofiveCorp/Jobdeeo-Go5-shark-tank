@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jobdeeo/src/features/questionnaire/widgets/questionaire_components.dart';
 import '../../../core/base/txt_styles.dart';
 import '../../../core/color_resources.dart';
+import '../../../core/services/preferences_service.dart';
 import '../bloc/questionnaire_bloc.dart';
 import '../bloc/questionnaire_event.dart';
 import '../bloc/questionnaire_state.dart';
@@ -214,8 +215,15 @@ class _BasicDataTabState extends State<BasicDataTab> {
             isLoading: isLoading,
             isEnabled: _isFormValid,
             onCancel: () => Navigator.pop(context),
-            onSubmit: () {
+            onSubmit: () async {
               if (_isFormValid) {
+                final positions = _jobPositionControllers
+                    .map((controller) => controller.text.trim())
+                    .where((text) => text.isNotEmpty)
+                    .toList();
+
+                await PreferencesService.setJobPositions(positions);
+
                 widget.onTabChange(1);
                 context.read<QuestionnaireBloc>().add(SubmitBasicData());
               }

@@ -97,7 +97,7 @@ class JobCard extends StatelessWidget {
                           color: Color(0xFF596DF8),
                         ),
                         Text(
-                          '${job.aiSkillMatch.score * 10}% Skill Matches',
+                          '${(job.aiSkillMatch.score * 10).round()}% Skill Matches',
                           style: fontSmallStrong.copyWith(color : Color(0xFF596DF8)),
                         )
                       ],

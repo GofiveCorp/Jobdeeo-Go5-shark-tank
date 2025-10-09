@@ -58,11 +58,6 @@ class _BookmarkScreenState extends State<BookmarkScreen>
             child: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios_new_rounded,
-                    color: ColorResources.buttonColor),
-                onPressed: () => Navigator.pop(context),
-              ),
               title: Text('งานของฉัน',
                   style: fontHeader5.copyWith(
                       color: ColorResources.colorCharcoal)),

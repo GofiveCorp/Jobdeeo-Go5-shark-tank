@@ -45,6 +45,52 @@ class JobModel extends Equatable {
     this.applyCount = 0,
   });
 
+  JobModel copyWith({
+    String? id,
+    String? title,
+    String? titleEn,
+    CompanyInfo? company,
+    AISkillMatch? aiSkillMatch,
+    EmploymentInfo? employment,
+    LocationInfo? location,
+    SalaryRange? salaryRange,
+    String? postedAgo,
+    DateTime? dateCreated,
+    String? qualifications,
+    String? responsibility,
+    String? benefitDescription,
+    String? logoURL,
+    String? coverURL,
+    String? aboutUs,
+    String? siteName,
+    String? siteURL,
+    int? viewCount,
+    int? applyCount,
+  }) {
+    return JobModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      titleEn: titleEn ?? this.titleEn,
+      company: company ?? this.company,
+      aiSkillMatch: aiSkillMatch ?? this.aiSkillMatch,
+      employment: employment ?? this.employment,
+      location: location ?? this.location,
+      salaryRange: salaryRange ?? this.salaryRange,
+      postedAgo: postedAgo ?? this.postedAgo,
+      dateCreated: dateCreated ?? this.dateCreated,
+      qualifications: qualifications ?? this.qualifications,
+      responsibility: responsibility ?? this.responsibility,
+      benefitDescription: benefitDescription ?? this.benefitDescription,
+      logoURL: logoURL ?? this.logoURL,
+      coverURL: coverURL ?? this.coverURL,
+      aboutUs: aboutUs ?? this.aboutUs,
+      siteName: siteName ?? this.siteName,
+      siteURL: siteURL ?? this.siteURL,
+      viewCount: viewCount ?? this.viewCount,
+      applyCount: applyCount ?? this.applyCount,
+    );
+  }
+
   factory JobModel.fromJson(Map<String, dynamic> json) {
     // คำนวณเวลาที่โพสต์
     final dateCreated = DateTime.parse(json['dateCreated']);
@@ -166,6 +212,30 @@ class JobModel extends Equatable {
   ];
 }
 
+class AISkillMatch extends Equatable {
+  final double score;
+  final List<String> matchedSkills;
+
+  const AISkillMatch({
+    required this.score,
+    required this.matchedSkills,
+  });
+
+  // เพิ่ม copyWith method
+  AISkillMatch copyWith({
+    double? score,
+    List<String>? matchedSkills,
+  }) {
+    return AISkillMatch(
+      score: score ?? this.score,
+      matchedSkills: matchedSkills ?? this.matchedSkills,
+    );
+  }
+
+  @override
+  List<Object?> get props => [score, matchedSkills];
+}
+
 // Supporting classes
 class CompanyInfo extends Equatable {
   final String id;
@@ -188,19 +258,6 @@ class CompanyInfo extends Equatable {
 
   @override
   List<Object?> get props => [id, name, nameEn, logoUrl, coverUrl, aboutUs, themeColor];
-}
-
-class AISkillMatch extends Equatable {
-  final int score; // 0-10
-  final List<String> matchedSkills;
-
-  const AISkillMatch({
-    required this.score,
-    required this.matchedSkills,
-  });
-
-  @override
-  List<Object?> get props => [score, matchedSkills];
 }
 
 class EmploymentInfo extends Equatable {

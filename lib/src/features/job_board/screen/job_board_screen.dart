@@ -81,7 +81,7 @@ class _JobBoardScreenState extends State<JobBoardScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const DashboardScreen(initialIndex: 2),
+            builder: (context) => const DashboardScreen(initialIndex: 1),
           ),
               (route) => false,
         ).then((_) {
@@ -295,12 +295,7 @@ class HeaderTopSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BookmarkScreen(),
-            ),
-          ),
+          onTap: null,
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
@@ -308,7 +303,7 @@ class HeaderTopSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(81.25),
             ),
             child: Icon(
-              Icons.bookmark,
+              Icons.notifications_rounded,
               color: ColorResources.primaryColor,
               size: 16,
             ),

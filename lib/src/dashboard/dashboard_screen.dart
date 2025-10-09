@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jobdeeo/src/features/job_board/screen/bookmark_screen.dart';
 import 'package:jobdeeo/src/features/job_board/screen/job_board_screen.dart';
 import 'package:jobdeeo/src/core/base/image_resource.dart';
+import '../core/services/preferences_service.dart';
 import '../features/community/community_screen.dart';
 import '../features/learn/learn_scren.dart';
 import '../features/matching/matching_screen.dart';
@@ -18,20 +20,30 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
+  bool _isQuestionnaireCompleted = false;
 
-  final List<Widget> _screens = const [
-    JobBoardScreen(),
-    CommunityScreen(),
-    MatchingScreen(),
-    LearnScreen(),
-    ProfileScreen(),
-  ];
 
   @override
   void initState() {
     super.initState();
+    _checkQuestionnaireStatus();
     _currentIndex = widget.initialIndex;
   }
+
+  Future<void> _checkQuestionnaireStatus() async {
+    final isCompleted = await PreferencesService.isQuestionnaireCompleted();
+    setState(() {
+      _isQuestionnaireCompleted = isCompleted;
+    });
+  }
+
+  List<Widget> get _screens => [
+        JobBoardScreen(),
+        if (_isQuestionnaireCompleted) BookmarkScreen(),
+        MatchingScreen(),
+        LearnScreen(),
+        ProfileScreen(),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -60,20 +72,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       label: '',
     ),
-    BottomNavigationBarItem(
-      icon: SvgPicture.asset(
-        ImageResource.bookmarkUnselected
-        ,
-        width: 28,
-        height: 28,
+    if (_isQuestionnaireCompleted)
+      BottomNavigationBarItem(
+        icon: SvgPicture.asset(
+          ImageResource.bookmarkUnselected
+          ,
+          width: 28,
+          height: 28,
+        ),
+        activeIcon: SvgPicture.asset(
+          ImageResource.bookmarkselected,
+          width: 28,
+          height: 28,
+        ),
+        label: '',
       ),
-      activeIcon: SvgPicture.asset(
-        ImageResource.bookmarkselected,
-        width: 28,
-        height: 28,
-      ),
-      label: '',
-    ),
     BottomNavigationBarItem(
       icon: SvgPicture.asset(
         ImageResource.swipeUnselected,

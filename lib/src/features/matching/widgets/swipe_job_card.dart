@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 
+import '../../job_board/models/job_model.dart';
 import '../../job_board/widgets/job_section/job_tab_content.dart';
-import '../models/job_model.dart';
 
 class SwipeJobCard extends StatelessWidget {
   final JobModel job;
@@ -90,14 +90,16 @@ class SwipeJobCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.orange,
+                  shape: BoxShape.rectangle,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    'assets/mock/company_logo_mock.png',
+                  child: Image.network(
+                    job.logoURL,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(Icons.business, color: ColorResources.primaryColor);
+                    },
                   ),
                 ),
               ),
@@ -159,7 +161,7 @@ class SwipeJobCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${job.aiSkillMatch.score}/${job.aiSkillMatch.max}',
+                  '${job.aiSkillMatch.score}/10',
                   style: fontHeader4.copyWith(
                     color: Colors.white,
                   ),
@@ -219,11 +221,11 @@ class SwipeJobCard extends StatelessWidget {
       case 0:
         return OverviewSwipeTab(job: job);
       case 1:
-        // return QualificationsTab(job: job);
+        return QualificationsTab(job: job);
       case 2:
         return const LifestyleTab();
       case 3:
-        // return ContactTab(job: job);
+        return ContactTab(job: job);
       default:
         return OverviewSwipeTab(job: job);
     }
@@ -282,9 +284,9 @@ class OverviewSwipeTab extends StatelessWidget {
             Row(
               spacing: 4,
               children: [
-                _buildSkillChip(job.skills[0].name, job.skills[0].level, Color(0xFF3AA8AF)),
-                _buildSkillChip(job.skills[1].name, job.skills[1].level, Color(0xFF7E4FFE)),
-                _buildSkillChip(job.skills[2].name, job.skills[2].level, Color(0xFF4C97FF)),
+                _buildSkillChip("Excel", "สูง", Color(0xFF3AA8AF)),
+                _buildSkillChip("Design", "กลาง", Color(0xFF7E4FFE)),
+                _buildSkillChip("Creative", "สูง", Color(0xFF4C97FF)),
               ],
             ),
 
@@ -308,7 +310,7 @@ class OverviewSwipeTab extends StatelessWidget {
                   title: 'ภาพรวมของตำแหน่งงาน',
                 ),
                 Text(
-                    job.overview
+                    job.benefitDescription ?? ""
                     ,style: fontBody.copyWith(color: ColorResources.colorLead)
                 ),
               ],
