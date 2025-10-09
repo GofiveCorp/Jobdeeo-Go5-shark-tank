@@ -9,12 +9,15 @@ class ImageResource {
   static const String newFeedUnselected = 'assets/common/ic_new_feed_unselect.svg'; 
   static const String profileUnselected = 'assets/common/ic_profile_unselect.svg'; 
   static const String swipeUnselected = 'assets/common/ic_swipe_unselect.svg'; 
+  static const String bookmarkUnselected = 'assets/common/ic_nav_bookmark_unselect.svg'; 
  
   static const String homeSelected = 'assets/common/ic_home.svg';
   static const String learnSelected = 'assets/common/ic_learn.svg';
   static const String newFeedSelected = 'assets/common/ic_new_feed.svg';
   static const String profileSelected = 'assets/common/ic_profile.svg';
   static const String swipeSelected = 'assets/common/ic_swipe.svg';
+    static const String bookmarkselected = 'assets/common/ic_nav_bookmark.svg'; 
+
 
   static const String icProfileHeader = 'assets/common/ic_profile_header.svg';
   static const String icEditProfile = 'assets/common/ic_edit_profile.svg';
@@ -25,6 +28,7 @@ class ImageResource {
   static const String icProfileJobs = 'assets/common/ic_profile_jobs.svg';
   static const String icProfileMapPin = 'assets/common/ic_profile_map_pin.svg';
   static const String icProfileStrength = 'assets/common/ic_profile_strength.svg';
+  static const String icPencill = 'assets/common/ic_pencill.svg';
 
 static const String icConnectEmsume = 'assets/common/ic_connect_emsume.svg';
 static const String bgHeaderEmsume = 'assets/common/bg/bg_header_emsume.svg';
@@ -39,5 +43,15 @@ static const String icCreateEmsume = 'assets/common/ic_create_emsume.svg';
 static const String icUploadResume = 'assets/common/ic_upload_resume.svg';
 static const String icUpload = 'assets/common/ic_upload.svg';
 static const String icProcessing = 'assets/common/ic_process.png';
+static const String icPdf = 'assets/common/ic_pdf.svg';
+static const String icCer = 'assets/common/ic_cer.svg';
+static const String icEdu = 'assets/common/image_edu.png';
+static const String icExp = 'assets/common/image_exp.png';
+static const String imgUpdateRem = 'assets/common/image_update_resume.png';
+static const String imgSkillAdd = 'assets/common/image_skill_add.png';
+static const String gifFindResume = 'assets/common/empeo_Animation.gif';
+static const String imageGender = 'assets/common/image_gender.png';
+static const String profileSection = 'assets/common/profile_section.png';
+
 
 }
