@@ -187,6 +187,32 @@ class JobModel extends Equatable {
     };
   }
 
+  String _stripHtml(String htmlString) {
+    if (htmlString.isEmpty) return '';
+
+    // Remove HTML tags
+    String text = htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
+
+    // Decode HTML entities
+    text = text
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'")
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('\n', ' ')
+        .replaceAll(RegExp(r'\s+'), ' '); // Replace multiple spaces with single space
+
+    return text.trim();
+  }
+
+// Getter for plain text description
+  String get plainDescription => _stripHtml(benefitDescription ?? "");
+
+// Getter for plain text about us
+  String get plainAboutUs => _stripHtml(aboutUs ?? "");
+
   @override
   List<Object?> get props => [
     id,

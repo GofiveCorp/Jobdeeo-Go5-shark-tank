@@ -123,11 +123,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ],
                                 ),
                                 const SizedBox(width: 80),
-                                SvgPicture.asset(
-                                  ImageResource.icEditProfile,
-                                  width: 28,
-                                  height: 28,
-                                ),
+                                // SvgPicture.asset(
+                                //   ImageResource.icEditProfile,
+                                //   width: 28,
+                                //   height: 28,
+                                // ),
                               ],
                             ),
                             const SizedBox(height: 12),

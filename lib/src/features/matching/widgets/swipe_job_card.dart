@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:jobdeeo/src/core/base/txt_styles.dart';
 import 'package:jobdeeo/src/core/color_resources.dart';
 
@@ -309,9 +310,32 @@ class OverviewSwipeTab extends StatelessWidget {
                   icon: Icons.work,
                   title: 'ภาพรวมของตำแหน่งงาน',
                 ),
-                Text(
-                    job.benefitDescription ?? ""
-                    ,style: fontBody.copyWith(color: ColorResources.colorLead)
+                Builder(
+                  builder: (_) {
+                    final html = job.benefitDescription?.trim();
+
+                    return Html(
+                      data: html,
+                      style: {
+                        'ul': Style.fromTextStyle(fontSmall.copyWith(color: ColorResources.colorLead),
+                        ).copyWith(margin: Margins.only(left: 12), padding: HtmlPaddings.zero),
+                        'li': Style.fromTextStyle(fontSmall.copyWith(color: ColorResources.colorLead),
+                        ).copyWith(
+                          fontSize: FontSize(fontBody.fontSize ?? 14),
+                          lineHeight: const LineHeight(1.4),
+                          color: ColorResources.colorLead,
+                        ),
+                        'div': Style.fromTextStyle(fontSmall.copyWith(color: ColorResources.colorLead),
+                        ).copyWith(margin: Margins.zero, padding: HtmlPaddings.zero),
+                        'p': Style.fromTextStyle(fontSmall.copyWith(color: ColorResources.colorLead),
+                        ).copyWith(
+                          margin: Margins.only(bottom: 8),
+                          fontSize: FontSize(fontBody.fontSize ?? 14),
+                          color: ColorResources.colorLead,
+                        ),
+                      },
+                    );
+                  },
                 ),
               ],
             ),

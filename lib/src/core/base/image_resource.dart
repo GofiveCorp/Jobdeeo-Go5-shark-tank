@@ -52,6 +52,8 @@ static const String imgSkillAdd = 'assets/common/image_skill_add.png';
 static const String gifFindResume = 'assets/common/empeo_Animation.gif';
 static const String imageGender = 'assets/common/image_gender.png';
 static const String profileSection = 'assets/common/profile_section.png';
+  static const String emsumeSection = 'assets/common/img_resume_news.png';
+
 
 
 }

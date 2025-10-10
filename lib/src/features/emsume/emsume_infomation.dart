@@ -146,7 +146,7 @@ class _EmsumeInfomationScreenState extends State<EmsumeInfomationScreen> {
 
                   const SizedBox(height: 12),
                   // Upload profile
-                  Image.asset(ImageResource.profileSection, height: 372),
+                  Image.asset(ImageResource.emsumeSection, height: 372),
 
                   const SizedBox(height: 20),
                   DropdownButtonFormField<String>(

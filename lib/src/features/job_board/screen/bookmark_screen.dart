@@ -384,7 +384,7 @@ class BookmarkJobCard extends StatelessWidget {
                             color: Color(0xFF596DF8),
                           ),
                           Text(
-                            '${job.aiSkillMatch.percentage}%',
+                            '${(job.aiSkillMatch.percentage).round()}%',
                             style: fontSmallStrong.copyWith(
                                 color: Color(0xFF596DF8)),
                           )
